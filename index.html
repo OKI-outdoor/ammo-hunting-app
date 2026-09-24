@@ -88,12 +88,14 @@
       })
 
 
-      .catch(error => {
+.catch(error => {
 
-        document.getElementById('status').textContent =
-          '通信エラー：' + error.message;
+  document.getElementById('status').textContent =
+    '通信エラー：' + error;
 
-      });
+  console.error(error);
+
+});
 
   </script>
 
