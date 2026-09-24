@@ -8,23 +8,19 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-  <title>実包・狩猟管理</title>
+  <title>GAS通信テスト</title>
 
 </head>
 
 <body>
 
-  <h1>実包・狩猟管理</h1>
+  <h1>GAS通信テスト</h1>
 
   <p id="status">
-    GASからデータを取得しています…
+    通信を確認しています…
   </p>
 
-  <h2>現在庫</h2>
-
-  <div id="stock">
-    読み込み中…
-  </div>
+  <pre id="result"></pre>
 
 
   <script>
@@ -33,138 +29,50 @@
       'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
 
 
-    <script>
-
-  const GAS_URL =
-    'ここにGASのウェブアプリURL';
+    const callbackName =
+      'gasTestCallback';
 
 
-  function testCallback(data) {
+    window[callbackName] =
+      function(data) {
 
-    if (!data || !data.success) {
+        document.getElementById('status').textContent =
+          'GASとの通信に成功しました。';
 
-      document.getElementById('status').textContent =
-        'データ取得に失敗しました。';
+        document.getElementById('result').textContent =
+          JSON.stringify(
+            data,
+            null,
+            2
+          );
 
-      return;
-
-    }
-
-
-    document.getElementById('status').textContent =
-      'GASとの通信：OK';
-
-
-    const stock =
-      data.stock || {};
+      };
 
 
-    const stockArea =
-      document.getElementById('stock');
+    const script =
+      document.createElement('script');
 
 
-    stockArea.innerHTML = '';
+    script.src =
+      GAS_URL +
+      '?api=jsonp&callback=' +
+      callbackName +
+      '&_=' +
+      Date.now();
 
 
-    const types =
-      Object.keys(stock);
+    script.onerror =
+      function() {
+
+        document.getElementById('status').textContent =
+          'GASとの通信に失敗しました。';
+
+      };
 
 
-    if (types.length === 0) {
+    document.body.appendChild(script);
 
-      stockArea.textContent =
-        '在庫データがありません。';
-
-      return;
-
-    }
-
-
-    types.forEach(function(type) {
-
-      const div =
-        document.createElement('div');
-
-      div.textContent =
-        type + '：' +
-        stock[type] +
-        '発';
-
-      div.style.fontSize = '24px';
-      div.style.marginBottom = '12px';
-
-      stockArea.appendChild(div);
-
-    });
-
-  }
-
-
-  const script =
-    document.createElement('script');
-
-
-  script.src =
-  GAS_URL +
-  '?api=jsonp&callback=testCallback&_=' +
-  Date.now();
-
-
-  script.onerror =
-  function() {
-
-    document.getElementById('status').textContent =
-      'GASとの通信に失敗しました。';
-
-  };
-
-script.onload =
-  function() {
-
-    document.getElementById('status').textContent =
-      'GASからデータを受信しました。';
-
-  };
-
-
-  document.body.appendChild(script);
-
-</script>
-
-  <script>
-  function testCallback(data) {
-
-    document.getElementById('status').textContent =
-      'GASからデータを受信しました。';
-
-    const stock =
-      data.stock || {};
-
-    const stockArea =
-      document.getElementById('stock');
-
-    stockArea.innerHTML = '';
-
-    Object.keys(stock).forEach(function(type) {
-
-      const div =
-        document.createElement('div');
-
-      div.textContent =
-        type + '：' + stock[type] + '発';
-
-      div.style.fontSize = '24px';
-      div.style.marginBottom = '12px';
-
-      stockArea.appendChild(div);
-
-    });
-  }
-</script>
-
-<script
-  src="https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec">
-</script>
+  </script>
 
 </body>
 
