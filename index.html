@@ -33,69 +33,94 @@
       'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
 
 
-    fetch(GAS_URL + '?api=data')
+    <script>
 
-      .then(response => response.json())
-
-      .then(data => {
-
-        document.getElementById('status').textContent =
-          'GASとの通信：OK';
+  const GAS_URL =
+    'ここにGASのウェブアプリURL';
 
 
-        const stock =
-          data.stock || {};
+  function testCallback(data) {
+
+    if (!data || !data.success) {
+
+      document.getElementById('status').textContent =
+        'データ取得に失敗しました。';
+
+      return;
+
+    }
 
 
-        const stockArea =
-          document.getElementById('stock');
+    document.getElementById('status').textContent =
+      'GASとの通信：OK';
 
 
-        stockArea.innerHTML = '';
+    const stock =
+      data.stock || {};
 
 
-        const types =
-          Object.keys(stock);
+    const stockArea =
+      document.getElementById('stock');
 
 
-        if (types.length === 0) {
-
-          stockArea.textContent =
-            '在庫データがありません。';
-
-          return;
-
-        }
+    stockArea.innerHTML = '';
 
 
-        types.forEach(function(type) {
-
-          const div =
-            document.createElement('div');
-
-          div.textContent =
-            type + '：' +
-            stock[type] +
-            '発';
-
-          div.style.fontSize = '24px';
-          div.style.marginBottom = '12px';
-
-          stockArea.appendChild(div);
-
-        });
-
-      })
+    const types =
+      Object.keys(stock);
 
 
-.catch(error => {
+    if (types.length === 0) {
 
-  document.getElementById('status').textContent =
-    '通信エラー：' + error;
+      stockArea.textContent =
+        '在庫データがありません。';
 
-  console.error(error);
+      return;
 
-});
+    }
+
+
+    types.forEach(function(type) {
+
+      const div =
+        document.createElement('div');
+
+      div.textContent =
+        type + '：' +
+        stock[type] +
+        '発';
+
+      div.style.fontSize = '24px';
+      div.style.marginBottom = '12px';
+
+      stockArea.appendChild(div);
+
+    });
+
+  }
+
+
+  const script =
+    document.createElement('script');
+
+
+  script.src =
+    GAS_URL +
+    '?api=jsonp&callback=testCallback';
+
+
+  script.onerror =
+    function() {
+
+      document.getElementById('status').textContent =
+        'GASとの通信に失敗しました。';
+
+    };
+
+
+  document.body.appendChild(script);
+
+</script>
 
   </script>
 
