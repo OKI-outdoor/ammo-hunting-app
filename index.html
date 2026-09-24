@@ -105,8 +105,9 @@
 
 
   script.src =
-    GAS_URL +
-    '?api=jsonp&callback=testCallback';
+  GAS_URL +
+  '?api=jsonp&callback=testCallback&_=' +
+  Date.now();
 
 
   script.onerror =
