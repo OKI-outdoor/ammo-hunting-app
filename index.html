@@ -111,12 +111,20 @@
 
 
   script.onerror =
-    function() {
+  function() {
 
-      document.getElementById('status').textContent =
-        'GASとの通信に失敗しました。';
+    document.getElementById('status').textContent =
+      'GASとの通信に失敗しました。';
 
-    };
+  };
+
+script.onload =
+  function() {
+
+    document.getElementById('status').textContent =
+      'GASからデータを受信しました。';
+
+  };
 
 
   document.body.appendChild(script);
