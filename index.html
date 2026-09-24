@@ -16,34 +16,86 @@
 
   <h1>実包・狩猟管理</h1>
 
-  <p>
-    <p id="result">
-  GASとの通信を確認しています…
-</p>
+  <p id="status">
+    GASからデータを取得しています…
+  </p>
 
-<script>
+  <h2>現在庫</h2>
 
-  const GAS_URL =
-    'ここにGASのウェブアプリURLを入れる';
+  <div id="stock">
+    読み込み中…
+  </div>
 
-  fetch(GAS_URL + 'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec')
-    .then(response => response.json())
-    .then(data => {
 
-      document.getElementById('result').textContent =
-        data.message;
+  <script>
 
-    })
-    .catch(error => {
+    const GAS_URL =
+      'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
 
-      document.getElementById('result').textContent =
-        '通信エラー：' + error.message;
 
-    });
+    fetch(GAS_URL + '?api=data')
 
-</script>
+      .then(response => response.json())
 
-</p>
+      .then(data => {
+
+        document.getElementById('status').textContent =
+          'GASとの通信：OK';
+
+
+        const stock =
+          data.stock || {};
+
+
+        const stockArea =
+          document.getElementById('stock');
+
+
+        stockArea.innerHTML = '';
+
+
+        const types =
+          Object.keys(stock);
+
+
+        if (types.length === 0) {
+
+          stockArea.textContent =
+            '在庫データがありません。';
+
+          return;
+
+        }
+
+
+        types.forEach(function(type) {
+
+          const div =
+            document.createElement('div');
+
+          div.textContent =
+            type + '：' +
+            stock[type] +
+            '発';
+
+          div.style.fontSize = '24px';
+          div.style.marginBottom = '12px';
+
+          stockArea.appendChild(div);
+
+        });
+
+      })
+
+
+      .catch(error => {
+
+        document.getElementById('status').textContent =
+          '通信エラー：' + error.message;
+
+      });
+
+  </script>
 
 </body>
 
