@@ -131,6 +131,40 @@ script.onload =
 
 </script>
 
+  <script>
+  function testCallback(data) {
+
+    document.getElementById('status').textContent =
+      'GASからデータを受信しました。';
+
+    const stock =
+      data.stock || {};
+
+    const stockArea =
+      document.getElementById('stock');
+
+    stockArea.innerHTML = '';
+
+    Object.keys(stock).forEach(function(type) {
+
+      const div =
+        document.createElement('div');
+
+      div.textContent =
+        type + '：' + stock[type] + '発';
+
+      div.style.fontSize = '24px';
+      div.style.marginBottom = '12px';
+
+      stockArea.appendChild(div);
+
+    });
+  }
+</script>
+
+<script
+  src="https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec">
+</script>
 
 </body>
 
