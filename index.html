@@ -17,8 +17,33 @@
   <h1>実包・狩猟管理</h1>
 
   <p>
-    GitHub Pages版のテスト画面です。
-  </p>
+    <p id="result">
+  GASとの通信を確認しています…
+</p>
+
+<script>
+
+  const GAS_URL =
+    'ここにGASのウェブアプリURLを入れる';
+
+  fetch(GAS_URL + 'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec')
+    .then(response => response.json())
+    .then(data => {
+
+      document.getElementById('result').textContent =
+        data.message;
+
+    })
+    .catch(error => {
+
+      document.getElementById('result').textContent =
+        '通信エラー：' + error.message;
+
+    });
+
+</script>
+
+</p>
 
 </body>
 
