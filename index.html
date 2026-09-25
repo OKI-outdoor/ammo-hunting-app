@@ -17,17 +17,63 @@
 
   <h1>実包・狩猟管理</h1>
 
-  <p>
-    GitHub PagesからGASへの通信テスト
-  </p>
+  <h2>現在庫</h2>
 
-  <p>
-    <a
-      href="https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec?api=jsonp&callback=gasDataCallback"
-      target="_blank">
-      GAS通信テストを開く
-    </a>
-  </p>
+  <div id="stock">
+    読み込み中…
+  </div>
+
+
+  <script>
+
+    const GAS_URL =
+      'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
+
+
+    window.gasDataCallback =
+      function(data) {
+
+        const stock =
+          data.stock || {};
+
+        const area =
+          document.getElementById('stock');
+
+        area.innerHTML = '';
+
+
+        Object.keys(stock).forEach(
+          function(type) {
+
+            const p =
+              document.createElement('p');
+
+            p.textContent =
+              type + '：' +
+              stock[type] +
+              '発';
+
+            area.appendChild(p);
+
+          }
+        );
+
+      };
+
+
+    const script =
+      document.createElement('script');
+
+
+    script.src =
+      GAS_URL +
+      '?api=jsonp&callback=gasDataCallback&_=' +
+      Date.now();
+
+
+    document.body.appendChild(script);
+
+  </script>
 
 </body>
 
