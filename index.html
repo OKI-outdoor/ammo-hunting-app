@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -8,125 +9,27 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-  <title>GASデータ通信テスト</title>
+  <title>実包・狩猟管理</title>
 
 </head>
 
 <body>
 
-  <h1>GASデータ通信テスト</h1>
+  <h1>実包・狩猟管理</h1>
 
-  <p id="status">
-    GASからデータを取得しています…
+  <p>
+    GitHub PagesからGASへの通信テスト
   </p>
 
-  <h2>現在庫</h2>
-
-  <pre id="stock">
-    読み込み中…
-  </pre>
-
-  <h2>弾種</h2>
-
-  <pre id="ammo">
-    読み込み中…
-  </pre>
-
-  <h2>銃砲</h2>
-
-  <pre id="guns">
-    読み込み中…
-  </pre>
-
-  <h2>鳥獣</h2>
-
-  <pre id="animals">
-    読み込み中…
-  </pre>
-
-
-  <script>
-
-    const GAS_URL =
-      'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
-
-
-    const callbackName =
-      'gasDataCallback';
-
-
-    window[callbackName] =
-      function(data) {
-
-        document.getElementById('status')
-          .textContent =
-          'GASからデータを取得しました。';
-
-
-        document.getElementById('stock')
-          .textContent =
-          JSON.stringify(
-            data.stock,
-            null,
-            2
-          );
-
-
-        document.getElementById('ammo')
-          .textContent =
-          JSON.stringify(
-            data.ammoTypes,
-            null,
-            2
-          );
-
-
-        document.getElementById('guns')
-          .textContent =
-          JSON.stringify(
-            data.guns,
-            null,
-            2
-          );
-
-
-        document.getElementById('animals')
-          .textContent =
-          JSON.stringify(
-            data.animals,
-            null,
-            2
-          );
-
-      };
-
-
-    const script =
-      document.createElement('script');
-
-
-    script.src =
-      GAS_URL +
-      '?api=jsonp&callback=' +
-      callbackName +
-      '&_=' +
-      Date.now();
-
-
-    script.onerror =
-      function() {
-
-        document.getElementById('status')
-          .textContent =
-          'GASとの通信に失敗しました。';
-
-      };
-
-
-    document.body.appendChild(script);
-
-  </script>
+  <p>
+    <a
+      href="https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec?api=jsonp&callback=gasDataCallback"
+      target="_blank">
+      GAS通信テストを開く
+    </a>
+  </p>
 
 </body>
 
 </html>
+```
