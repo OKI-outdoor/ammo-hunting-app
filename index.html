@@ -26,12 +26,22 @@
 
   <script>
 
-    const GAS_URL =
-      'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
+  const API_URL =
+    'https://ammo-gas-api.kikorinmura.workers.dev';
 
+  fetch(API_URL)
+    .then(function(response) {
 
-  window.gasDataCallback =
-    function(data) {
+      if (!response.ok) {
+        throw new Error(
+          'HTTPエラー: ' + response.status
+        );
+      }
+
+      return response.json();
+
+    })
+    .then(function(data) {
 
       alert(
         'GASからデータを受信しました！'
@@ -41,40 +51,15 @@
         .textContent =
         JSON.stringify(data, null, 2);
 
-    };
-
-
-  const script =
-    document.createElement('script');
-
-
-  script.src =
-    GAS_URL +
-    '?api=jsonp&callback=gasDataCallback&_=' +
-    Date.now();
-
-
-  script.onload =
-    function() {
+    })
+    .catch(function(error) {
 
       alert(
-        'GASのスクリプトを読み込みました'
+        'GASスクリプトの読み込みに失敗しました\n' +
+        error.message
       );
 
-    };
-
-
-  script.onerror =
-    function() {
-
-      alert(
-        'GASスクリプトの読み込みに失敗しました'
-      );
-
-    };
-
-
-  document.body.appendChild(script);
+    });
 
 </script>
 
