@@ -30,50 +30,53 @@
       'https://script.google.com/macros/s/AKfycbzRtkR5QMaKLnkxtJsN2qnmQxbCYY0qqtd77c7hKFSXuOx_3XDHDnl0C5jsYSrCuAl1/exec';
 
 
-    window.gasDataCallback =
-      function(data) {
+  window.gasDataCallback =
+    function(data) {
 
-        const stock =
-          data.stock || {};
+      alert(
+        'GASからデータを受信しました！'
+      );
 
-        const area =
-          document.getElementById('stock');
+      document.getElementById('stock')
+        .textContent =
+        JSON.stringify(data, null, 2);
 
-        area.innerHTML = '';
-
-
-        Object.keys(stock).forEach(
-          function(type) {
-
-            const p =
-              document.createElement('p');
-
-            p.textContent =
-              type + '：' +
-              stock[type] +
-              '発';
-
-            area.appendChild(p);
-
-          }
-        );
-
-      };
+    };
 
 
-    const script =
-      document.createElement('script');
+  const script =
+    document.createElement('script');
 
 
-    script.src =
-      GAS_URL +
-      '?api=jsonp&callback=gasDataCallback&_=' +
-      Date.now();
+  script.src =
+    GAS_URL +
+    '?api=jsonp&callback=gasDataCallback&_=' +
+    Date.now();
 
 
-    document.body.appendChild(script);
+  script.onload =
+    function() {
 
-  </script>
+      alert(
+        'GASのスクリプトを読み込みました'
+      );
+
+    };
+
+
+  script.onerror =
+    function() {
+
+      alert(
+        'GASスクリプトの読み込みに失敗しました'
+      );
+
+    };
+
+
+  document.body.appendChild(script);
+
+</script>
 
 </body>
 
