@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -11,59 +10,421 @@
 
   <title>実包・狩猟管理</title>
 
+  <style>
+
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .stock-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .stock-item:last-child {
+      border-bottom: none;
+    }
+
+    .number {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    #status {
+      color: #666;
+      margin-bottom: 16px;
+    }
+
+  </style>
+
 </head>
 
 <body>
 
   <h1>実包・狩猟管理</h1>
 
-  <h2>現在庫</h2>
+  <div id="status">
+    データ読み込み中…
+  </div>
 
-  <div id="stock">
-    読み込み中…
+
+  <!-- 現在庫 -->
+
+  <div class="card">
+
+    <h2>現在庫</h2>
+
+    <div id="stock">
+      読み込み中…
+    </div>
+
+  </div>
+
+
+  <!-- 弾種 -->
+
+  <div class="card">
+
+    <h2>弾種</h2>
+
+    <div id="ammoTypes">
+      読み込み中…
+    </div>
+
+  </div>
+
+
+  <!-- 銃砲 -->
+
+  <div class="card">
+
+    <h2>銃砲</h2>
+
+    <div id="guns">
+      読み込み中…
+    </div>
+
+  </div>
+
+
+  <!-- 鳥獣 -->
+
+  <div class="card">
+
+    <h2>鳥獣</h2>
+
+    <div id="animals">
+      読み込み中…
+    </div>
+
   </div>
 
 
   <script>
 
-  const API_URL =
-    'https://ammo-gas-api.kikorinmura.workers.dev';
+    const API_URL =
+      'https://ammo-gas-api.kikorinmura.workers.dev';
 
-  fetch(API_URL)
-    .then(function(response) {
 
-      if (!response.ok) {
-        throw new Error(
-          'HTTPエラー: ' + response.status
+    // --------------------------------
+    // GAS / Workerからデータ取得
+    // --------------------------------
+
+    fetch(API_URL)
+
+      .then(function(response) {
+
+        if (!response.ok) {
+
+          throw new Error(
+            'HTTPエラー: ' +
+            response.status
+          );
+
+        }
+
+        return response.json();
+
+      })
+
+      .then(function(data) {
+
+        console.log(
+          '取得データ',
+          data
         );
+
+        renderApp(data);
+
+      })
+
+      .catch(function(error) {
+
+        console.error(error);
+
+        document.getElementById('status')
+          .textContent =
+          'データの読み込みに失敗しました';
+
+        alert(
+          'GASスクリプトの読み込みに失敗しました\n' +
+          error.message
+        );
+
+      });
+
+
+    // --------------------------------
+    // 画面表示
+    // --------------------------------
+
+    function renderApp(data) {
+
+      document.getElementById('status')
+        .textContent =
+        'データを読み込みました';
+
+
+      renderStock(data.stock);
+
+      renderAmmoTypes(data.ammoTypes);
+
+      renderGuns(data.guns);
+
+      renderAnimals(data.animals);
+
+    }
+
+
+    // --------------------------------
+    // 在庫表示
+    // --------------------------------
+
+    function renderStock(stock) {
+
+      const element =
+        document.getElementById('stock');
+
+      element.innerHTML = '';
+
+
+      if (!stock) {
+
+        element.textContent =
+          '在庫データがありません';
+
+        return;
+
       }
 
-      return response.json();
 
-    })
-    .then(function(data) {
+      const keys =
+        Object.keys(stock);
 
-      alert(
-        'GASからデータを受信しました！'
-      );
 
-      document.getElementById('stock')
-        .textContent =
-        JSON.stringify(data, null, 2);
+      if (keys.length === 0) {
 
-    })
-    .catch(function(error) {
+        element.textContent =
+          '在庫データがありません';
 
-      alert(
-        'GASスクリプトの読み込みに失敗しました\n' +
-        error.message
-      );
+        return;
 
-    });
+      }
 
-</script>
+
+      keys.forEach(function(type) {
+
+        const div =
+          document.createElement('div');
+
+        div.className =
+          'stock-item';
+
+
+        const name =
+          document.createElement('span');
+
+        name.textContent =
+          type;
+
+
+        const quantity =
+          document.createElement('span');
+
+        quantity.className =
+          'number';
+
+        quantity.textContent =
+          stock[type] + ' 発';
+
+
+        div.appendChild(name);
+
+        div.appendChild(quantity);
+
+        element.appendChild(div);
+
+      });
+
+    }
+
+
+    // --------------------------------
+    // 弾種表示
+    // --------------------------------
+
+    function renderAmmoTypes(ammoTypes) {
+
+      const element =
+        document.getElementById('ammoTypes');
+
+      element.innerHTML = '';
+
+
+      if (
+        !ammoTypes ||
+        ammoTypes.length === 0
+      ) {
+
+        element.textContent =
+          '登録されている弾種はありません';
+
+        return;
+
+      }
+
+
+      const ul =
+        document.createElement('ul');
+
+
+      ammoTypes.forEach(function(name) {
+
+        const li =
+          document.createElement('li');
+
+        li.textContent =
+          name;
+
+        ul.appendChild(li);
+
+      });
+
+
+      element.appendChild(ul);
+
+    }
+
+
+    // --------------------------------
+    // 銃砲表示
+    // --------------------------------
+
+    function renderGuns(guns) {
+
+      const element =
+        document.getElementById('guns');
+
+      element.innerHTML = '';
+
+
+      if (
+        !guns ||
+        guns.length === 0
+      ) {
+
+        element.textContent =
+          '登録されている銃砲はありません';
+
+        return;
+
+      }
+
+
+      const ul =
+        document.createElement('ul');
+
+
+      guns.forEach(function(gun) {
+
+        const li =
+          document.createElement('li');
+
+        li.textContent =
+          gun.name +
+          '（' +
+          gun.caliber +
+          '）';
+
+        ul.appendChild(li);
+
+      });
+
+
+      element.appendChild(ul);
+
+    }
+
+
+    // --------------------------------
+    // 鳥獣表示
+    // --------------------------------
+
+    function renderAnimals(animals) {
+
+      const element =
+        document.getElementById('animals');
+
+      element.innerHTML = '';
+
+
+      if (
+        !animals ||
+        animals.length === 0
+      ) {
+
+        element.textContent =
+          '登録されている鳥獣はありません';
+
+        return;
+
+      }
+
+
+      const ul =
+        document.createElement('ul');
+
+
+      animals.forEach(function(animal) {
+
+        const li =
+          document.createElement('li');
+
+        li.textContent =
+          animal.name +
+          '（単位：' +
+          animal.unit +
+          '）';
+
+        ul.appendChild(li);
+
+      });
+
+
+      element.appendChild(ul);
+
+    }
+
+  </script>
 
 </body>
 
 </html>
-```
