@@ -75,7 +75,17 @@
     データ読み込み中…
   </div>
 
-
+  <button
+  onclick="testBuySend()"
+  style="
+    font-size:18px;
+    padding:12px 20px;
+    margin-bottom:20px;
+  "
+>
+  購入送信テスト
+</button>
+  
   <!-- 現在庫 -->
 
   <div class="card">
@@ -127,7 +137,94 @@
 
   </div>
 
+  function testBuySend() {
 
+  const testData = {
+
+    recordId: 'TEST-' + Date.now(),
+
+    date: '2026-09-28',
+
+    kind: '購入',
+
+    type: '12番スラッグ',
+
+    qty: 10,
+
+    purpose: '狩猟',
+
+    gun: 'ハーフライフル',
+
+    place: 'テスト購入',
+
+    unitPrice: 100,
+
+    total: 1000,
+
+    note: 'API通信テスト'
+
+  };
+
+
+  fetch(
+    API_URL,
+    {
+      method: 'POST',
+
+      headers: {
+        'Content-Type':
+          'application/json'
+      },
+
+      body:
+        JSON.stringify(testData)
+
+    }
+  )
+
+  .then(function(response) {
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTPエラー: ' +
+        response.status
+      );
+
+    }
+
+    return response.json();
+
+  })
+
+  .then(function(data) {
+
+    console.log(
+      '購入送信結果',
+      data
+    );
+
+    alert(
+      JSON.stringify(
+        data,
+        null,
+        2
+      )
+    );
+
+  })
+
+  .catch(function(error) {
+
+    alert(
+      '購入データ送信エラー\n' +
+      error.message
+    );
+
+  });
+
+}
+  
   <script>
 
     const API_URL =
