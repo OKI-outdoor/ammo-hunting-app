@@ -982,151 +982,119 @@
 
   function saveBuy() {
 
-    const button =
-      document.getElementById(
-        'buySaveButton'
-      );
+  const button =
+    document.getElementById('buySaveButton');
+
+  if (button.disabled) {
+    return;
+  }
+
+  const date =
+    document.getElementById('buyDate').value;
+
+  const type =
+    document.getElementById('buyType').value;
+
+  const qty =
+    Number(
+      document.getElementById('buyQty').value || 0
+    );
+
+  const purpose =
+    document.getElementById('buyPurpose').value;
+
+  const gun =
+    document.getElementById('buyGun').value;
+
+  const place =
+    document.getElementById('buyPlace').value;
+
+  const unitPrice =
+    Number(
+      document.getElementById('buyUnitPrice').value || 0
+    );
+
+  const total =
+    qty * unitPrice;
+
+  const note =
+    document.getElementById('buyNote').value;
+
+  const receiptFile =
+    document.getElementById('buyReceipt').files[0];
 
 
-    if (button.disabled) {
-      return;
-    }
+  // 入力チェック
+
+  if (!date) {
+    alert('日付を入力してください。');
+    return;
+  }
+
+  if (!type) {
+    alert('弾種を選択してください。');
+    return;
+  }
+
+  if (qty <= 0) {
+    alert('数量を入力してください。');
+    return;
+  }
+
+  if (!gun) {
+    alert('使用銃砲を選択してください。');
+    return;
+  }
+
+  if (unitPrice < 0) {
+    alert('単価を確認してください。');
+    return;
+  }
 
 
-    const date =
-      document.getElementById(
-        'buyDate'
-      ).value;
+  // 二重登録防止
+
+  button.disabled = true;
+  button.textContent = '画像準備中…';
 
 
-    const type =
-      document.getElementById(
-        'buyType'
-      ).value;
+  imageToDataUrl(
+    receiptFile,
+    1600,
+    0.7
+  )
+
+  .then(function(receiptDataUrl) {
+
+    const record = {
+
+      recordId:
+        'BUY-' +
+        Date.now() +
+        '-' +
+        Math.random()
+          .toString(36)
+          .substring(2,10),
+
+      date: date,
+      kind: '購入',
+      type: type,
+      qty: qty,
+      purpose: purpose,
+      gun: gun,
+      place: place,
+      unitPrice: unitPrice,
+      total: total,
+      receiptDataUrl: receiptDataUrl,
+      note: note
+
+    };
 
 
-    const qty =
-      Number(
-        document.getElementById(
-          'buyQty'
-        ).value || 0
-      );
+    button.textContent = '保存中…';
 
 
-    const purpose =
-      document.getElementById(
-        'buyPurpose'
-      ).value;
-
-
-    const gun =
-      document.getElementById(
-        'buyGun'
-      ).value;
-
-
-    const place =
-      document.getElementById(
-        'buyPlace'
-      ).value;
-
-
-    const unitPrice =
-      Number(
-        document.getElementById(
-          'buyUnitPrice'
-        ).value || 0
-      );
-
-
-    const total =
-      qty * unitPrice;
-
-
-    const note =
-      document.getElementById(
-        'buyNote'
-      ).value;
-
-
-    // 入力チェック
-
-    if (!date) {
-
-      alert('日付を入力してください。');
-
-      return;
-
-    }
-
-
-    if (!type) {
-
-      alert('弾種を選択してください。');
-
-      return;
-
-    }
-
-
-    if (qty <= 0) {
-
-      alert('数量を入力してください。');
-
-      return;
-
-    }
-
-
-    if (!gun) {
-
-      alert('使用銃砲を選択してください。');
-
-      return;
-
-    }
-
-
-    if (unitPrice < 0) {
-
-      alert('単価を確認してください。');
-
-      return;
-
-    }
-
-
-const record = {
-  recordId:
-    'BUY-' +
-    Date.now() +
-    '-' +
-    Math.random()
-      .toString(36)
-      .substring(2,10),
-
-  date: date,
-  kind: '購入',
-  type: type,
-  qty: qty,
-  purpose: purpose,
-  gun: gun,
-  place: place,
-  unitPrice: unitPrice,
-  total: total,
-  note: note
-};
-
-
-    // 二重登録防止
-
-    button.disabled = true;
-
-    button.textContent =
-      '保存中…';
-
-
-    fetch(
+    return fetch(
       API_URL,
       {
         method: 'POST',
@@ -1138,96 +1106,108 @@ const record = {
 
         body:
           JSON.stringify(record)
-
       }
-    )
+    );
 
-    .then(function(response) {
+  })
 
-      if (!response.ok) {
+  .then(function(response) {
 
-        throw new Error(
-          'HTTPエラー: ' +
-          response.status
-        );
+    if (!response.ok) {
 
-      }
-
-      return response.json();
-
-    })
-
-    .then(function(data) {
-
-      if (!data.success) {
-
-        throw new Error(
-          data.error ||
-          '保存に失敗しました'
-        );
-
-      }
-
-
-      // GASから返ってきた最新データ
-      appData =
-        data.data;
-
-
-      renderAll();
-
-
-      // 入力クリア
-
-      document.getElementById(
-        'buyQty'
-      ).value = '';
-
-      document.getElementById(
-        'buyPlace'
-      ).value = '';
-
-      document.getElementById(
-        'buyUnitPrice'
-      ).value = '';
-
-      document.getElementById(
-        'buyNote'
-      ).value = '';
-
-      calculateTotal();
-
-
-      alert(
-        '購入記録を保存しました。'
+      throw new Error(
+        'HTTPエラー: ' +
+        response.status
       );
 
+    }
 
-      showPage('homePage');
+    return response.json();
 
-    })
+  })
 
-    .catch(function(error) {
+  .then(function(data) {
 
-      console.error(error);
+    if (!data.success) {
 
-      alert(
-        '購入記録の保存に失敗しました。\n' +
-        error.message
+      throw new Error(
+        data.error ||
+        '保存に失敗しました'
       );
 
-    })
+    }
 
-    .finally(function() {
 
-      button.disabled = false;
+    appData =
+      data.data;
 
-      button.textContent =
-        '購入記録を保存';
 
-    });
+    renderAll();
 
-  }
+
+    // 入力クリア
+
+    document.getElementById(
+      'buyQty'
+    ).value = '';
+
+    document.getElementById(
+      'buyPlace'
+    ).value = '';
+
+    document.getElementById(
+      'buyUnitPrice'
+    ).value = '';
+
+    document.getElementById(
+      'buyNote'
+    ).value = '';
+
+    document.getElementById(
+      'buyReceipt'
+    ).value = '';
+
+    document.getElementById(
+      'buyReceiptPreview'
+    ).style.display = 'none';
+
+    document.getElementById(
+      'buyReceiptImage'
+    ).src = '';
+
+    calculateTotal();
+
+
+    alert(
+      '購入記録を保存しました。'
+    );
+
+
+    showPage('homePage');
+
+  })
+
+  .catch(function(error) {
+
+    console.error(error);
+
+    alert(
+      '購入記録の保存に失敗しました。\n' +
+      error.message
+    );
+
+  })
+
+  .finally(function() {
+
+    button.disabled = false;
+
+    button.textContent =
+      '購入記録を保存';
+
+  });
+
+}
 
 
   // =================================
@@ -1327,7 +1307,154 @@ const record = {
 
   });
 
-  
+  function imageToDataUrl(
+  file,
+  maxSize,
+  quality
+) {
+
+  return new Promise(function(
+    resolve,
+    reject
+  ) {
+
+    // レシートなしなら空文字
+    if (!file) {
+      resolve('');
+      return;
+    }
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      function(event) {
+
+        const image =
+          new Image();
+
+
+        image.onload =
+          function() {
+
+            let width =
+              image.width;
+
+            let height =
+              image.height;
+
+
+            if (
+              width > maxSize ||
+              height > maxSize
+            ) {
+
+              if (width > height) {
+
+                height =
+                  Math.round(
+                    height *
+                    maxSize /
+                    width
+                  );
+
+                width =
+                  maxSize;
+
+              } else {
+
+                width =
+                  Math.round(
+                    width *
+                    maxSize /
+                    height
+                  );
+
+                height =
+                  maxSize;
+
+              }
+
+            }
+
+
+            const canvas =
+              document.createElement(
+                'canvas'
+              );
+
+
+            canvas.width =
+              width;
+
+            canvas.height =
+              height;
+
+
+            const context =
+              canvas.getContext(
+                '2d'
+              );
+
+
+            context.drawImage(
+              image,
+              0,
+              0,
+              width,
+              height
+            );
+
+
+            const dataUrl =
+              canvas.toDataURL(
+                'image/jpeg',
+                quality
+              );
+
+
+            resolve(dataUrl);
+
+          };
+
+
+        image.onerror =
+          function() {
+
+            reject(
+              new Error(
+                'レシート画像を読み込めませんでした。'
+              )
+            );
+
+          };
+
+
+        image.src =
+          event.target.result;
+
+      };
+
+
+    reader.onerror =
+      function() {
+
+        reject(
+          new Error(
+            'レシート画像の読み込みに失敗しました。'
+          )
+        );
+
+      };
+
+
+    reader.readAsDataURL(file);
+
+  });
+
+}
   
 </script>
 
