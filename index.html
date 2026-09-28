@@ -1096,37 +1096,33 @@
     }
 
 
-    const record = {
 
-      recordId:
-        'BUY-' +
-        Date.now() +
-        '-' +
-        Math.random()
-          .toString(36)
-          .substring(2,10),
+    const receiptFile =
+  document.getElementById('buyReceipt').files[0];
 
-      date: date,
+const receiptFile =
+  document.getElementById('buyReceipt').files[0];
 
-      kind: '購入',
+const record = {
+  recordId:
+    'BUY-' +
+    Date.now() +
+    '-' +
+    Math.random()
+      .toString(36)
+      .substring(2,10),
 
-      type: type,
-
-      qty: qty,
-
-      purpose: purpose,
-
-      gun: gun,
-
-      place: place,
-
-      unitPrice: unitPrice,
-
-      total: total,
-
-      note: note
-
-    };
+  date: date,
+  kind: '購入',
+  type: type,
+  qty: qty,
+  purpose: purpose,
+  gun: gun,
+  place: place,
+  unitPrice: unitPrice,
+  total: total,
+  note: note
+};
 
 
     // 二重登録防止
@@ -1337,6 +1333,91 @@
     reader.readAsDataURL(file);
 
   });
+
+  function imageToDataUrl(file, maxSize, quality) {
+
+  return new Promise(function(resolve, reject) {
+
+    if (!file) {
+      resolve('');
+      return;
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function(e) {
+
+      const img =
+        new Image();
+
+      img.onload = function() {
+
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxSize || height > maxSize) {
+
+          if (width > height) {
+
+            height =
+              Math.round(
+                height * maxSize / width
+              );
+
+            width = maxSize;
+
+          } else {
+
+            width =
+              Math.round(
+                width * maxSize / height
+              );
+
+            height = maxSize;
+
+          }
+
+        }
+
+        const canvas =
+          document.createElement('canvas');
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx =
+          canvas.getContext('2d');
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          width,
+          height
+        );
+
+        resolve(
+          canvas.toDataURL(
+            'image/jpeg',
+            quality
+          )
+        );
+
+      };
+
+      img.onerror = reject;
+
+      img.src = e.target.result;
+
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(file);
+
+  });
+}
   
 </script>
 
