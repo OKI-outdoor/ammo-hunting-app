@@ -486,15 +486,35 @@
       ></textarea>
 
       <label for="buyReceipt">
-        レシート
-      </label>
+  レシート
+</label>
 
-        <input
-          type="file"
-          id="buyReceipt"
-          accept="image/*"
-          capture="environment"
-        >
+<input
+  type="file"
+  id="buyReceipt"
+  accept="image/*"
+  capture="environment"
+>
+
+<div
+  id="buyReceiptPreview"
+  style="
+    margin-top:10px;
+    display:none;
+  "
+>
+  <img
+    id="buyReceiptImage"
+    style="
+      width:100%;
+      max-height:300px;
+      object-fit:contain;
+      border-radius:8px;
+      border:1px solid #ddd;
+    "
+  >
+</div>
+      
 
 
       <div style="height:20px;"></div>
@@ -1285,7 +1305,39 @@
 
   }
 
+  document
+  .getElementById('buyReceipt')
+  .addEventListener('change', function() {
 
+    const file = this.files[0];
+
+    const preview =
+      document.getElementById('buyReceiptPreview');
+
+    const image =
+      document.getElementById('buyReceiptImage');
+
+    if (!file) {
+      preview.style.display = 'none';
+      image.src = '';
+      return;
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function(e) {
+
+      image.src = e.target.result;
+
+      preview.style.display = 'block';
+
+    };
+
+    reader.readAsDataURL(file);
+
+  });
+  
 </script>
 
 </body>
