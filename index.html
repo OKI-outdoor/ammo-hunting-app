@@ -1626,7 +1626,7 @@ function saveUse() {
     '保存中…';
 
 
-  const captureAnimal =
+const captureAnimal =
   document.getElementById('captureAnimal').value;
 
 const captureCount =
@@ -1675,37 +1675,96 @@ if (captureAnimal || captureCount > 0 || capturePhotoFile) {
   });
 }
 
-const record={
-  recordId:'USE-'+Date.now()+'-'+Math.random().toString(36).substring(2,10),
-  date:date,
-  kind:'使用',
-  type:type,
-  qty:qty,
-  purpose:purpose,
-  gun:gun,
-  place:place,
-  unitPrice:0,
-  total:0,
+// 捕獲写真を送信用データに変換
+button.textContent = '画像準備中…';
 
-  // 使用記録のGPS
-  latitude:
-    document.getElementById('captureLatitude').textContent || '',
+imageToDataUrl(
+  capturePhotoFile,
+  1600,
+  0.7
+)
 
-  longitude:
-    document.getElementById('captureLongitude').textContent || '',
+.then(function(photoDataUrl) {
 
-  gpsTime:
-    document.getElementById('captureGpsTime').textContent || '',
+  // 捕獲情報がある場合、
+  // 写真データを捕獲明細に追加
+  if (captures.length > 0) {
+    captures[0].photoDataUrl =
+      photoDataUrl || '';
+  }
 
-  // 捕獲情報
-  captures: captures,
+  const record = {
 
-  note:note
-};
+    recordId:
+      'USE-' +
+      Date.now() +
+      '-' +
+      Math.random()
+        .toString(36)
+        .substring(2,10),
 
-  console.log('送信する使用記録:', JSON.stringify(record, null, 2));
+    date: date,
 
-  fetch(
+    kind: '使用',
+
+    type: type,
+
+    qty: qty,
+
+    purpose: purpose,
+
+    gun: gun,
+
+    place: place,
+
+    unitPrice: 0,
+
+    total: 0,
+
+    // 使用記録のGPS
+    latitude:
+      document
+        .getElementById(
+          'captureLatitude'
+        )
+        .textContent || '',
+
+    longitude:
+      document
+        .getElementById(
+          'captureLongitude'
+        )
+        .textContent || '',
+
+    gpsTime:
+      document
+        .getElementById(
+          'captureGpsTime'
+        )
+        .textContent || '',
+
+    // 捕獲情報
+    captures: captures,
+
+    note: note
+  };
+
+
+  console.log(
+    '送信する使用記録:',
+    JSON.stringify(
+      record,
+      null,
+      2
+    )
+  );
+
+
+  button.textContent =
+    '保存中…';
+
+
+  return fetch(
     API_URL,
     {
       method: 'POST',
@@ -1717,91 +1776,112 @@ const record={
 
       body:
         JSON.stringify(record)
-
     }
-  )
+  );
 
-  .then(function(response) {
+})
 
-    if (!response.ok) {
+.then(function(response) {
 
-      throw new Error(
-        'HTTPエラー: ' +
-        response.status
-      );
+  if (!response.ok) {
 
-    }
-
-    return response.json();
-
-  })
-
-  .then(function(data) {
-
-    if (!data.success) {
-
-      throw new Error(
-        data.error ||
-        '保存に失敗しました'
-      );
-
-    }
-
-
-    // GASから返ってきた最新データ
-
-    appData =
-      data.data;
-
-
-    renderAll();
-
-
-    // 入力クリア
-
-    document.getElementById(
-      'useQty'
-    ).value = '';
-
-    document.getElementById(
-      'usePlace'
-    ).value = '';
-
-    document.getElementById(
-      'useNote'
-    ).value = '';
-
-
-    alert(
-      '使用記録を保存しました。'
+    throw new Error(
+      'HTTPエラー: ' +
+      response.status
     );
+  }
 
+  return response.json();
 
-    showPage(
-      'homePage'
+})
+
+.then(function(data) {
+
+  if (!data.success) {
+
+    throw new Error(
+      data.error ||
+      '保存に失敗しました'
     );
+  }
 
-  })
 
-  .catch(function(error) {
+  // GASから返ってきた最新データ
+  appData =
+    data.data;
 
-    console.error(error);
 
-    alert(
-      '使用記録の保存に失敗しました。\n' +
-      error.message
-    );
+  renderAll();
 
-  })
 
-  .finally(function() {
+  // 使用記録をクリア
+  document.getElementById(
+    'useQty'
+  ).value = '';
 
-    button.disabled = false;
+  document.getElementById(
+    'usePlace'
+  ).value = '';
 
-    button.textContent =
-      '使用記録を保存';
+  document.getElementById(
+    'useNote'
+  ).value = '';
 
-  });
+
+  // 捕獲情報をクリア
+  document.getElementById(
+    'captureAnimal'
+  ).value = '';
+
+  document.getElementById(
+    'captureCount'
+  ).value = '';
+
+  document.getElementById(
+    'capturePhoto'
+  ).value = '';
+
+
+  // 写真プレビューを消す
+  document.getElementById(
+    'capturePhotoPreview'
+  ).style.display = 'none';
+
+  document.getElementById(
+    'capturePhotoImage'
+  ).src = '';
+
+
+  alert(
+    '使用記録を保存しました。'
+  );
+
+
+  showPage(
+    'homePage'
+  );
+
+})
+
+.catch(function(error) {
+
+  console.error(error);
+
+  alert(
+    '使用記録の保存に失敗しました。\n' +
+    error.message
+  );
+
+})
+
+.finally(function() {
+
+  button.disabled = false;
+
+  button.textContent =
+    '使用記録を保存';
+
+});
 
 }
 
