@@ -1174,10 +1174,170 @@ function renderFiscalYears() {
 
 
   // 最新年度を初期選択
-  select.value =
-    appData.fiscalYears[
-      appData.fiscalYears.length - 1
-    ];
+select.value =
+  appData.fiscalYears[0];
+
+// 年度を変更したとき
+select.onchange =
+  function() {
+    renderFiscalSummary();
+  };
+
+// 初期表示
+renderFiscalSummary();
+
+}
+
+  function renderFiscalSummary() {
+
+  const select =
+    document.getElementById(
+      'summaryFiscalYear'
+    );
+
+  const content =
+    document.getElementById(
+      'summaryContent'
+    );
+
+  if (
+    !select ||
+    !content ||
+    !appData ||
+    !appData.records
+  ) {
+    return;
+  }
+
+
+  const year =
+    Number(select.value);
+
+  if (!year) {
+
+    content.innerHTML =
+      '<p>年度を選択してください。</p>';
+
+    return;
+  }
+
+
+  let purchases = 0;
+  let uses = 0;
+  let purchaseTotal = 0;
+  let openingStock = 0;
+  let initialStock = 0;
+
+
+  appData.records.forEach(
+    function(record) {
+
+      const recordYear =
+        Number(
+          record['年度'] || 0
+        );
+
+      const kind =
+        String(
+          record['区分'] || ''
+        );
+
+      const qty =
+        Number(
+          record['数量'] || 0
+        );
+
+      const amount =
+        Number(
+          record['金額'] || 0
+        );
+
+
+      // 過去年度 → 期首在庫
+      if (recordYear < year) {
+
+        if (
+          kind === '初期在庫' ||
+          kind === '購入'
+        ) {
+          openingStock += qty;
+        }
+
+        if (kind === '使用') {
+          openingStock -= qty;
+        }
+
+      }
+
+
+      // 選択年度
+      if (recordYear === year) {
+
+        if (kind === '初期在庫') {
+          initialStock += qty;
+        }
+
+        if (kind === '購入') {
+          purchases += qty;
+          purchaseTotal += amount;
+        }
+
+        if (kind === '使用') {
+          uses += qty;
+        }
+
+      }
+
+    }
+  );
+
+
+  const closingStock =
+    openingStock +
+    initialStock +
+    purchases -
+    uses;
+
+
+  content.innerHTML =
+
+    '<div style="margin-top:20px;">' +
+
+      '<h3>' +
+      year +
+      '年度 実包集計</h3>' +
+
+      '<div style="line-height:2;">' +
+
+        '<div>期首在庫：' +
+        openingStock +
+        '発</div>' +
+
+        '<div>年度内初期在庫：' +
+        initialStock +
+        '発</div>' +
+
+        '<div>購入：' +
+        purchases +
+        '発</div>' +
+
+        '<div>使用：' +
+        uses +
+        '発</div>' +
+
+        '<div><strong>期末在庫：' +
+        closingStock +
+        '発</strong></div>' +
+
+        '<div>購入金額：' +
+        purchaseTotal.toLocaleString(
+          'ja-JP'
+        ) +
+        '円</div>' +
+
+      '</div>' +
+
+    '</div>';
 
 }
   
