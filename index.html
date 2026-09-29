@@ -1072,6 +1072,8 @@
 
   renderHistory();
 
+  renderFiscalYears();
+
   setToday();
 
 }
@@ -1125,6 +1127,60 @@ function getAnimalIcon(animalName) {
   // 履歴
   // =================================
 
+function renderFiscalYears() {
+
+  const select =
+    document.getElementById('summaryFiscalYear');
+
+  if (!select) {
+    return;
+  }
+
+  select.innerHTML = '';
+
+
+  if (
+    !appData ||
+    !appData.fiscalYears ||
+    appData.fiscalYears.length === 0
+  ) {
+
+    const option =
+      document.createElement('option');
+
+    option.value = '';
+    option.textContent = '年度データなし';
+
+    select.appendChild(option);
+
+    return;
+  }
+
+
+  appData.fiscalYears.forEach(
+    function(year) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = year;
+      option.textContent =
+        year + '年度';
+
+      select.appendChild(option);
+
+    }
+  );
+
+
+  // 最新年度を初期選択
+  select.value =
+    appData.fiscalYears[
+      appData.fiscalYears.length - 1
+    ];
+
+}
+  
   let historyFilter = 'すべて';
 
 
