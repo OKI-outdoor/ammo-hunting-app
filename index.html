@@ -1044,6 +1044,17 @@ function getAnimalIcon(animalName) {
     card.style.border = '1px solid #ddd';
     card.style.borderRadius = '12px';
 
+    if (record['区分'] === '購入') {
+
+  card.style.backgroundColor = '#e8f5e9';
+  card.style.borderLeft = '6px solid #2e7d32';
+
+} else if (record['区分'] === '使用') {
+
+  card.style.backgroundColor = '#fff3e0';
+  card.style.borderLeft = '6px solid #ef6c00';
+
+}
 
     const date =
       record['日付']
