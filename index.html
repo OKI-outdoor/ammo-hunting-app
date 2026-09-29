@@ -1035,6 +1035,17 @@ function getAnimalIcon(animalName) {
   // =================================
   // 履歴
   // =================================
+
+  let historyFilter = 'すべて';
+
+
+function setHistoryFilter(filter) {
+
+  historyFilter = filter;
+
+  renderHistory();
+
+}
   
   function renderHistory() {
 
@@ -1061,9 +1072,22 @@ function getAnimalIcon(animalName) {
   }
 
 
-  const records =
-    appData.records.slice().reverse();
+  let records =
+  appData.records.slice().reverse();
 
+
+if (historyFilter !== 'すべて') {
+
+  records =
+    records.filter(
+      function(record) {
+
+        return record['区分'] === historyFilter;
+
+      }
+    );
+
+}
 
   records.forEach(function(record) {
 
