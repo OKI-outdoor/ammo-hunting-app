@@ -917,18 +917,58 @@
 
   function renderAll() {
 
-    renderStock();
+  renderStock();
 
-    renderAmmoTypes();
+  renderAmmoTypes();
 
-    renderGuns();
+  renderGuns();
 
-    renderCounts();
+  renderAnimalsForUse();
 
-    setToday();
+  renderCounts();
 
+  setToday();
+
+}
+
+    // =================================
+  // 鳥獣
+  // =================================
+  
+  function renderAnimalsForUse() {
+
+  const select =
+    document.getElementById('captureAnimal');
+
+  if (!select) {
+    return;
   }
 
+  select.innerHTML =
+    '<option value="">選択してください</option>';
+
+  if (!appData || !appData.animals) {
+    return;
+  }
+
+  appData.animals.forEach(function(animal) {
+
+    const option =
+      document.createElement('option');
+
+    option.value =
+      animal.name;
+
+    option.textContent =
+      animal.name;
+
+    option.dataset.unit =
+      animal.unit || '';
+
+    select.appendChild(option);
+
+  });
+}
 
   // =================================
   // 在庫
