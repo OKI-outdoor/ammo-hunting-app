@@ -1935,6 +1935,72 @@ function updateCaptureSection() {
 
   }
 }
+function clearCaptureInputs() {
+
+  const animal =
+    document.getElementById('captureAnimal');
+
+  const count =
+    document.getElementById('captureCount');
+
+  const photo =
+    document.getElementById('capturePhoto');
+
+  const preview =
+    document.getElementById('capturePhotoPreview');
+
+  const image =
+    document.getElementById('capturePhotoImage');
+
+  const latitude =
+    document.getElementById('captureLatitude');
+
+  const longitude =
+    document.getElementById('captureLongitude');
+
+  const gpsTime =
+    document.getElementById('captureGpsTime');
+
+  const gpsStatus =
+    document.getElementById('gpsStatus');
+
+
+  if (animal) {
+    animal.value = '';
+  }
+
+  if (count) {
+    count.value = '';
+  }
+
+  if (photo) {
+    photo.value = '';
+  }
+
+  if (preview) {
+    preview.style.display = 'none';
+  }
+
+  if (image) {
+    image.src = '';
+  }
+
+  if (latitude) {
+    latitude.textContent = '';
+  }
+
+  if (longitude) {
+    longitude.textContent = '';
+  }
+
+  if (gpsTime) {
+    gpsTime.textContent = '';
+  }
+
+  if (gpsStatus) {
+    gpsStatus.style.display = 'none';
+  }
+}
   
 function getCaptureGPS() {
   const button = document.getElementById('gpsButton');
