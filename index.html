@@ -1766,6 +1766,75 @@ purposeOrder.forEach(
 
   }
 );
+
+　　　// =================================
+// 捕獲集計表示
+// =================================
+
+let captureHtml = '';
+
+Object.keys(captureSummary)
+  .forEach(function(animal) {
+
+    const item =
+      captureSummary[animal];
+
+    let icon = '🐾';
+
+    if (animal === 'エゾシカ') {
+      icon = '🦌';
+    }
+
+    if (animal === 'ヒグマ') {
+      icon = '🐻';
+    }
+
+    if (animal === 'カモ類') {
+      icon = '🦆';
+    }
+
+
+    captureHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        icon +
+        ' ' +
+        animal +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '捕獲数：' +
+        item.qty +
+        item.unit +
+        '</div>' +
+
+      '</div>';
+
+  }
+);
+
+
+// 捕獲記録がない場合
+if (!captureHtml) {
+
+  captureHtml =
+    '<div style="' +
+    'margin-top:12px;' +
+    'padding:14px;' +
+    'background:#f5f5f5;' +
+    'border-radius:10px;' +
+    '">' +
+    '捕獲記録なし' +
+    '</div>';
+
+}
     
 content.innerHTML =
 
@@ -1822,6 +1891,12 @@ reasonHtml +
 '</h3>' +
 
 purposeHtml +
+
+'<h3 style="margin-top:28px;">' +
+'捕獲集計' +
+'</h3>' +
+
+captureHtml +
 
 '</div>';
 
