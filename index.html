@@ -1072,6 +1072,12 @@ function getAnimalIcon(animalName) {
 
     const qty =
       record['数量'] || 0;
+    const qtyText =
+  record['区分'] === '購入'
+    ? '＋' + qty + '発'
+    : record['区分'] === '使用'
+      ? '−' + qty + '発'
+      : qty + '発';
 
     const purpose =
       record['目的'] || '';
@@ -1106,8 +1112,7 @@ function getAnimalIcon(animalName) {
       '<div style="margin-top:8px;">' +
       type +
       '　' +
-      qty +
-      '発' +
+      qtyText +
       '</div>' +
 
       '<div>' +
