@@ -1959,6 +1959,38 @@ function getCaptureGPS() {
 
   });
 
+  // =========================
+// 捕獲写真のプレビュー
+// =========================
+  
+  document
+  .getElementById('capturePhoto')
+  .addEventListener('change', function() {
+
+    const file = this.files[0];
+
+    const preview =
+      document.getElementById('capturePhotoPreview');
+
+    const image =
+      document.getElementById('capturePhotoImage');
+
+    if (!file) {
+      preview.style.display = 'none';
+      image.src = '';
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      image.src = e.target.result;
+      preview.style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+  });
+
   function imageToDataUrl(
   file,
   maxSize,
