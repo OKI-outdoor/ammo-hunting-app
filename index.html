@@ -1105,14 +1105,26 @@
         function(capture) {
 
           return (
-            '<div style="margin-top:8px;">' +
-            '🦌 ' +
-            capture['鳥獣名'] +
-            ' ' +
-            capture['捕獲数'] +
-            capture['単位'] +
-            '</div>'
-          );
+  '<div style="margin-top:8px;">' +
+  '🦌 ' +
+  capture['鳥獣名'] +
+  ' ' +
+  capture['捕獲数'] +
+  capture['単位'] +
+  '</div>' +
+
+  (
+    capture['写真URL']
+      ? '<div style="margin-top:6px;">' +
+        '<a href="' +
+        capture['写真URL'] +
+        '" target="_blank" rel="noopener noreferrer">' +
+        '📷 捕獲写真を見る' +
+        '</a>' +
+        '</div>'
+      : ''
+  )
+);
 
         }
       ).join('')
