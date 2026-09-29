@@ -1661,10 +1661,13 @@ capture['鳥獣名'] +
     );
 
   const purpose =
-    document.getElementById('buyPurpose').value;
+  document.getElementById('buyPurpose').value;
 
-  const gun =
-    document.getElementById('buyGun').value;
+const purchaseMethod =
+  document.getElementById('buyPurchaseMethod').value;
+
+const gun =
+  document.getElementById('buyGun').value;
 
   const place =
     document.getElementById('buyPlace').value;
@@ -1701,6 +1704,11 @@ capture['鳥獣名'] +
     return;
   }
 
+  if (!purchaseMethod) {
+  alert('譲受理由を選択してください。');
+  return;
+  }
+    
   if (!gun) {
     alert('使用銃砲を選択してください。');
     return;
@@ -2078,8 +2086,10 @@ imageToDataUrl(
     type: type,
 
     qty: qty,
-
+    
     purpose: purpose,
+
+    purchaseMethod: purchaseMethod,
 
     gun: gun,
 
