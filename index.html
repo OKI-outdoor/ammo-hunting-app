@@ -1393,6 +1393,73 @@ Object.keys(ammoSummary)
 
   });
 
+  // =================================
+// 譲受理由別集計
+// =================================
+
+const purchaseReasonSummary = {};
+
+appData.records.forEach(
+  function(record) {
+
+    const recordYear =
+      Number(
+        record['年度'] || 0
+      );
+
+    const kind =
+      String(
+        record['区分'] || ''
+      );
+
+    if (
+      recordYear !== year ||
+      kind !== '購入'
+    ) {
+      return;
+    }
+
+
+    let reason =
+      String(
+        record['譲受理由'] || ''
+      ).trim();
+
+    if (!reason) {
+      reason = '未設定';
+    }
+
+
+    const qty =
+      Number(
+        record['数量'] || 0
+      );
+
+    const amount =
+      Number(
+        record['金額'] || 0
+      );
+
+
+    if (!purchaseReasonSummary[reason]) {
+
+      purchaseReasonSummary[reason] = {
+        count: 0,
+        qty: 0,
+        amount: 0
+      };
+
+    }
+
+
+    purchaseReasonSummary[reason].count += 1;
+
+    purchaseReasonSummary[reason].qty += qty;
+
+    purchaseReasonSummary[reason].amount += amount;
+
+  }
+);
 
   let ammoHtml = '';
 
