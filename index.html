@@ -827,14 +827,37 @@
 
 
   <button
-    onclick="alert('履歴・集計は次の段階で追加します。')"
-  >
-    ☰<br>
-    その他
-  </button>
+  onclick="showPage('historyPage')"
+>
+  📋<br>
+  履歴
+</button>
 
 </nav>
 
+  <!-- ====================== -->
+<!-- 履歴画面 -->
+<!-- ====================== -->
+
+<section id="historyPage" class="page">
+
+  <div class="card">
+
+    <h2>
+      📋 履歴
+    </h2>
+
+    <div id="historyList">
+
+      <p>
+        履歴をここに表示します。
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
 
 <script>
 
