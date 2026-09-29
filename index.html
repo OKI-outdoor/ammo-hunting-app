@@ -1394,45 +1394,94 @@ Object.keys(ammoSummary)
   });
 
 
-  content.innerHTML =
+  let ammoHtml = '';
 
-    '<div style="margin-top:20px;">' +
+Object.keys(ammoSummary)
+  .forEach(function(type) {
 
-      '<h3>' +
-      year +
-      '年度 実包集計</h3>' +
+    const item =
+      ammoSummary[type];
 
-      '<div style="line-height:2;">' +
+    ammoHtml +=
 
-        '<div>期首在庫：' +
-        openingStock +
-        '発</div>' +
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
 
-        '<div>年度内初期在庫：' +
-        initialStock +
+        '<strong>' +
+        type +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '期首：' +
+        item.opening +
         '発</div>' +
 
         '<div>購入：' +
-        purchases +
+        item.purchase +
         '発</div>' +
 
         '<div>使用：' +
-        uses +
+        item.use +
         '発</div>' +
 
-        '<div><strong>期末在庫：' +
-        closingStock +
+        '<div><strong>期末：' +
+        item.closing +
         '発</strong></div>' +
 
-        '<div>購入金額：' +
-        purchaseTotal.toLocaleString(
-          'ja-JP'
-        ) +
-        '円</div>' +
+      '</div>';
 
-      '</div>' +
+  });
 
-    '</div>';
+
+content.innerHTML =
+
+  '<div style="margin-top:20px;">' +
+
+    '<h3>' +
+    year +
+    '年度 実包集計</h3>' +
+
+    '<div style="line-height:2;">' +
+
+      '<div>期首在庫：' +
+      openingStock +
+      '発</div>' +
+
+      '<div>年度内初期在庫：' +
+      initialStock +
+      '発</div>' +
+
+      '<div>購入：' +
+      purchases +
+      '発</div>' +
+
+      '<div>使用：' +
+      uses +
+      '発</div>' +
+
+      '<div><strong>期末在庫：' +
+      closingStock +
+      '発</strong></div>' +
+
+      '<div>購入金額：' +
+      purchaseTotal.toLocaleString(
+        'ja-JP'
+      ) +
+      '円</div>' +
+
+    '</div>' +
+
+    '<h3 style="margin-top:28px;">' +
+    '弾種別集計' +
+    '</h3>' +
+
+    ammoHtml +
+
+  '</div>';
 
 }
   
