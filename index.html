@@ -1521,6 +1521,87 @@ appData.records.forEach(
   }
 );
 
+  // =================================
+// 捕獲集計
+// =================================
+
+const captureSummary = {};
+
+(appData.captures || []).forEach(
+  function(capture) {
+
+    const useRecordId =
+      String(
+        capture['使用記録ID'] || ''
+      );
+
+
+    // 捕獲明細に対応する使用記録を探す
+    const useRecord =
+      appData.records.find(
+        function(record) {
+
+          return String(
+            record['記録ID'] || ''
+          ) === useRecordId;
+
+        }
+      );
+
+
+    if (!useRecord) {
+      return;
+    }
+
+
+    const recordYear =
+      Number(
+        useRecord['年度'] || 0
+      );
+
+
+    // 選択年度以外は除外
+    if (recordYear !== year) {
+      return;
+    }
+
+
+    let animal =
+      String(
+        capture['鳥獣名'] || ''
+      ).trim();
+
+    if (!animal) {
+      animal = '未設定';
+    }
+
+
+    const qty =
+      Number(
+        capture['捕獲数'] || 0
+      );
+
+    const unit =
+      String(
+        capture['単位'] || ''
+      );
+
+
+    if (!captureSummary[animal]) {
+
+      captureSummary[animal] = {
+        qty: 0,
+        unit: unit
+      };
+
+    }
+
+
+    captureSummary[animal].qty += qty;
+
+  }
+);
+    
   let ammoHtml = '';
 
 Object.keys(ammoSummary)
