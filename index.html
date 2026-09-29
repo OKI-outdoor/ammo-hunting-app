@@ -1844,35 +1844,76 @@ content.innerHTML =
     year +
     '年度 実包集計</h3>' +
 
-    '<div style="line-height:2;">' +
+    '<div style="' +
+'display:grid;' +
+'grid-template-columns:1fr 1fr;' +
+'gap:10px;' +
+'margin-top:15px;' +
+'">' +
 
-      '<div>期首在庫：' +
-      openingStock +
-      '発</div>' +
+  '<div style="' +
+  'padding:14px;' +
+  'background:#e8f5e9;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">購入</div>' +
+    '<div style="font-size:24px;font-weight:bold;">' +
+    purchases +
+    '発</div>' +
+  '</div>' +
 
-      '<div>年度内初期在庫：' +
-      initialStock +
-      '発</div>' +
+  '<div style="' +
+  'padding:14px;' +
+  'background:#fff3e0;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">使用</div>' +
+    '<div style="font-size:24px;font-weight:bold;">' +
+    uses +
+    '発</div>' +
+  '</div>' +
 
-      '<div>購入：' +
-      purchases +
-      '発</div>' +
+  '<div style="' +
+  'padding:14px;' +
+  'background:#e3f2fd;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">期末在庫</div>' +
+    '<div style="font-size:24px;font-weight:bold;">' +
+    closingStock +
+    '発</div>' +
+  '</div>' +
 
-      '<div>使用：' +
-      uses +
-      '発</div>' +
+  '<div style="' +
+  'padding:14px;' +
+  'background:#f3e5f5;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">購入金額</div>' +
+    '<div style="font-size:20px;font-weight:bold;">' +
+    purchaseTotal.toLocaleString(
+      'ja-JP'
+    ) +
+    '円</div>' +
+  '</div>' +
 
-      '<div><strong>期末在庫：' +
-      closingStock +
-      '発</strong></div>' +
+'</div>' +
 
-      '<div>購入金額：' +
-      purchaseTotal.toLocaleString(
-        'ja-JP'
-      ) +
-      '円</div>' +
-
-    '</div>' +
+'<div style="' +
+'margin-top:12px;' +
+'font-size:13px;' +
+'color:#666;' +
+'">' +
+  '期首在庫：' +
+  openingStock +
+  '発　／　年度内初期在庫：' +
+  initialStock +
+  '発' +
+'</div>' +
 
     '<h3 style="margin-top:28px;">' +
 '弾種別集計' +
