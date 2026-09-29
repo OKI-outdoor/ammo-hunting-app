@@ -1026,6 +1026,19 @@
     const place =
       record['入手先・場所'] || '';
 
+    const captures =
+      (appData.captures || []).filter(
+        function(capture) {
+
+      return String(
+        capture['使用記録ID'] || ''
+      ) === String(
+        record['記録ID'] || ''
+      );
+
+    }
+  );
+
 
     card.innerHTML =
       '<strong>' +
@@ -1084,7 +1097,27 @@
       '</a>' +
       '</div>'
     : ''
-)
+　) +
+
+      (
+  captures.length > 0
+    ? captures.map(
+        function(capture) {
+
+          return (
+            '<div style="margin-top:8px;">' +
+            '🦌 ' +
+            capture['鳥獣名'] +
+            ' ' +
+            capture['捕獲数'] +
+            capture['単位'] +
+            '</div>'
+          );
+
+        }
+      ).join('')
+    : ''
+);
 
 
     list.appendChild(card);
