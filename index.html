@@ -1339,6 +1339,253 @@
 
 }
 
+  // =================================
+// 使用保存
+// =================================
+
+function saveUse() {
+
+  const button =
+    document.getElementById(
+      'useSaveButton'
+    );
+
+
+  if (button.disabled) {
+    return;
+  }
+
+
+  const date =
+    document.getElementById(
+      'useDate'
+    ).value;
+
+
+  const type =
+    document.getElementById(
+      'useType'
+    ).value;
+
+
+  const qty =
+    Number(
+      document.getElementById(
+        'useQty'
+      ).value || 0
+    );
+
+
+  const purpose =
+    document.getElementById(
+      'usePurpose'
+    ).value;
+
+
+  const gun =
+    document.getElementById(
+      'useGun'
+    ).value;
+
+
+  const place =
+    document.getElementById(
+      'usePlace'
+    ).value;
+
+
+  const note =
+    document.getElementById(
+      'useNote'
+    ).value;
+
+
+  // 入力チェック
+
+  if (!date) {
+
+    alert(
+      '日付を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!type) {
+
+    alert(
+      '弾種を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (qty <= 0) {
+
+    alert(
+      '数量を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!gun) {
+
+    alert(
+      '使用銃砲を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  // 二重登録防止
+
+  button.disabled = true;
+
+  button.textContent =
+    '保存中…';
+
+
+  const record = {
+
+    recordId:
+      'USE-' +
+      Date.now() +
+      '-' +
+      Math.random()
+        .toString(36)
+        .substring(2,10),
+
+    date: date,
+
+    kind: '使用',
+
+    type: type,
+
+    qty: qty,
+
+    purpose: purpose,
+
+    gun: gun,
+
+    place: place,
+
+    unitPrice: 0,
+
+    total: 0,
+
+    note: note
+
+  };
+
+
+  fetch(
+    API_URL,
+    {
+      method: 'POST',
+
+      headers: {
+        'Content-Type':
+          'application/json'
+      },
+
+      body:
+        JSON.stringify(record)
+
+    }
+  )
+
+  .then(function(response) {
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTPエラー: ' +
+        response.status
+      );
+
+    }
+
+    return response.json();
+
+  })
+
+  .then(function(data) {
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        '保存に失敗しました'
+      );
+
+    }
+
+
+    // GASから返ってきた最新データ
+
+    appData =
+      data.data;
+
+
+    renderAll();
+
+
+    // 入力クリア
+
+    document.getElementById(
+      'useQty'
+    ).value = '';
+
+    document.getElementById(
+      'usePlace'
+    ).value = '';
+
+    document.getElementById(
+      'useNote'
+    ).value = '';
+
+
+    alert(
+      '使用記録を保存しました。'
+    );
+
+
+    showPage(
+      'homePage'
+    );
+
+  })
+
+  .catch(function(error) {
+
+    console.error(error);
+
+    alert(
+      '使用記録の保存に失敗しました。\n' +
+      error.message
+    );
+
+  })
+
+  .finally(function() {
+
+    button.disabled = false;
+
+    button.textContent =
+      '使用記録を保存';
+
+  });
+
+}
 
   // =================================
   // ページ切替
