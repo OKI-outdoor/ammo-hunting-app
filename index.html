@@ -1586,37 +1586,25 @@ function saveUse() {
     '保存中…';
 
 
-  const record = {
+  const record={
+  recordId:'USE-'+Date.now()+'-'+Math.random().toString(36).substring(2,10),
+  date:date,
+  kind:'使用',
+  type:type,
+  qty:qty,
+  purpose:purpose,
+  gun:gun,
+  place:place,
+  unitPrice:0,
+  total:0,
 
-    recordId:
-      'USE-' +
-      Date.now() +
-      '-' +
-      Math.random()
-        .toString(36)
-        .substring(2,10),
+  // GPS情報
+  latitude:document.getElementById('captureLatitude').textContent || '',
+  longitude:document.getElementById('captureLongitude').textContent || '',
+  gpsTime:document.getElementById('captureGpsTime').textContent || '',
 
-    date: date,
-
-    kind: '使用',
-
-    type: type,
-
-    qty: qty,
-
-    purpose: purpose,
-
-    gun: gun,
-
-    place: place,
-
-    unitPrice: 0,
-
-    total: 0,
-
-    note: note
-
-  };
+  note:note
+};
 
 
   fetch(
