@@ -1648,8 +1648,11 @@ const captureUnit =
     : '';
 
 const captures = [];
+  
+const capturePhotoFile =
+  document.getElementById('capturePhoto').files[0];
 
-if (captureAnimal || captureCount > 0) {
+if (captureAnimal || captureCount > 0 || capturePhotoFile) {
 
   if (!captureAnimal) {
     alert('捕獲鳥獣を選択してください。');
