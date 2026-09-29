@@ -1503,6 +1503,59 @@ Object.keys(ammoSummary)
 
   });
 
+    let reasonHtml = '';
+
+const reasonOrder = [
+  '許可',
+  '無許可',
+  '有害駆除',
+  '未設定'
+];
+
+reasonOrder.forEach(
+  function(reason) {
+
+    const item =
+      purchaseReasonSummary[reason];
+
+    if (!item) {
+      return;
+    }
+
+    reasonHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        reason +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '購入回数：' +
+        item.count +
+        '回</div>' +
+
+        '<div>' +
+        '購入数量：' +
+        item.qty +
+        '発</div>' +
+
+        '<div>' +
+        '購入金額：' +
+        item.amount.toLocaleString(
+          'ja-JP'
+        ) +
+        '円</div>' +
+
+      '</div>';
+
+  }
+);
 
 content.innerHTML =
 
@@ -1543,12 +1596,18 @@ content.innerHTML =
     '</div>' +
 
     '<h3 style="margin-top:28px;">' +
-    '弾種別集計' +
-    '</h3>' +
+'弾種別集計' +
+'</h3>' +
 
-    ammoHtml +
+ammoHtml +
 
-  '</div>';
+'<h3 style="margin-top:28px;">' +
+'譲受理由別集計' +
+'</h3>' +
+
+reasonHtml +
+
+'</div>';
 
 }
   
