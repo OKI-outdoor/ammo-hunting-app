@@ -1922,6 +1922,7 @@ function updateCaptureSection() {
     return;
   }
 
+  // 狩猟・有害鳥獣捕獲
   if (
     purpose === '狩猟' ||
     purpose === '有害鳥獣捕獲'
@@ -1931,8 +1932,54 @@ function updateCaptureSection() {
 
   } else {
 
+    // 標的射撃などでは捕獲情報を非表示
     section.style.display = 'none';
 
+
+    // 鳥獣名をクリア
+    document.getElementById(
+      'captureAnimal'
+    ).value = '';
+
+
+    // 捕獲数をクリア
+    document.getElementById(
+      'captureCount'
+    ).value = '';
+
+
+    // 捕獲写真をクリア
+    document.getElementById(
+      'capturePhoto'
+    ).value = '';
+
+
+    // 写真プレビューをクリア
+    document.getElementById(
+      'capturePhotoPreview'
+    ).style.display = 'none';
+
+    document.getElementById(
+      'capturePhotoImage'
+    ).src = '';
+
+
+    // GPSをクリア
+    document.getElementById(
+      'captureLatitude'
+    ).textContent = '';
+
+    document.getElementById(
+      'captureLongitude'
+    ).textContent = '';
+
+    document.getElementById(
+      'captureGpsTime'
+    ).textContent = '';
+
+    document.getElementById(
+      'gpsStatus'
+    ).style.display = 'none';
   }
 }
   
