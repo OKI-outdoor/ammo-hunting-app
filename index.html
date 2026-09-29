@@ -1474,65 +1474,6 @@
 // 使用保存
 // =================================
 
-function getCaptureGPS() {
-  const button = document.getElementById('gpsButton');
-  const status = document.getElementById('gpsStatus');
-
-  if (!navigator.geolocation) {
-    alert('この端末ではGPSを利用できません。');
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = '📍 現在地を取得中…';
-
-  navigator.geolocation.getCurrentPosition(
-    function(position) {
-
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      const gpsTime = new Date().toISOString();
-
-      document.getElementById('captureLatitude').textContent =
-        latitude.toFixed(6);
-
-      document.getElementById('captureLongitude').textContent =
-        longitude.toFixed(6);
-
-      document.getElementById('captureGpsTime').textContent =
-        new Date(gpsTime).toLocaleString('ja-JP');
-
-      status.style.display = 'block';
-
-      button.disabled = false;
-      button.textContent = '📍 現在地を取得';
-
-    },
-    function(error) {
-
-      let message = 'GPSの取得に失敗しました。';
-
-      if (error.code === 1) {
-        message += '\n位置情報の利用を許可してください。';
-      } else if (error.code === 2) {
-        message += '\n現在地を取得できませんでした。';
-      } else if (error.code === 3) {
-        message += '\nGPS取得がタイムアウトしました。';
-      }
-
-      alert(message);
-
-      button.disabled = false;
-      button.textContent = '📍 現在地を取得';
-
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
-    }
-  );
-}
   
 function saveUse() {
 
@@ -1778,6 +1719,65 @@ function saveUse() {
 
 }
 
+function getCaptureGPS() {
+  const button = document.getElementById('gpsButton');
+  const status = document.getElementById('gpsStatus');
+
+  if (!navigator.geolocation) {
+    alert('この端末ではGPSを利用できません。');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = '📍 現在地を取得中…';
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const gpsTime = new Date().toISOString();
+
+      document.getElementById('captureLatitude').textContent =
+        latitude.toFixed(6);
+
+      document.getElementById('captureLongitude').textContent =
+        longitude.toFixed(6);
+
+      document.getElementById('captureGpsTime').textContent =
+        new Date(gpsTime).toLocaleString('ja-JP');
+
+      status.style.display = 'block';
+
+      button.disabled = false;
+      button.textContent = '📍 現在地を取得';
+
+    },
+    function(error) {
+
+      let message = 'GPSの取得に失敗しました。';
+
+      if (error.code === 1) {
+        message += '\n位置情報の利用を許可してください。';
+      } else if (error.code === 2) {
+        message += '\n現在地を取得できませんでした。';
+      } else if (error.code === 3) {
+        message += '\nGPS取得がタイムアウトしました。';
+      }
+
+      alert(message);
+
+      button.disabled = false;
+      button.textContent = '📍 現在地を取得';
+
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+  );
+}
   
   // =================================
   // ページ切替
