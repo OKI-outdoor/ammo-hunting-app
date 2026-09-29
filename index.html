@@ -1669,10 +1669,19 @@ if (captureAnimal || captureCount > 0 || capturePhotoFile) {
   }
 
   captures.push({
-    animal: captureAnimal,
-    count: captureCount,
-    unit: captureUnit
-  });
+  animal: captureAnimal,
+  count: captureCount,
+  unit: captureUnit,
+
+  latitude:
+    document.getElementById('captureLatitude').textContent || '',
+
+  longitude:
+    document.getElementById('captureLongitude').textContent || '',
+
+  gpsTime:
+    document.getElementById('captureGpsTime').textContent || ''
+});
 }
 
 // 捕獲写真を送信用データに変換
