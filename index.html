@@ -1060,13 +1060,19 @@
       ) +
 
       (
-        record['緯度'] &&
-        record['経度']
-          ? '<div style="margin-top:8px;">' +
-            '📍 GPSあり' +
-            '</div>'
-          : ''
-      );
+  record['緯度'] &&
+  record['経度']
+    ? '<div style="margin-top:8px;">' +
+      '<a href="https://www.google.com/maps?q=' +
+      encodeURIComponent(record['緯度']) +
+      ',' +
+      encodeURIComponent(record['経度']) +
+      '" target="_blank" rel="noopener noreferrer">' +
+      '📍 GPSを地図で見る' +
+      '</a>' +
+      '</div>'
+    : ''
+)
 
 
     list.appendChild(card);
