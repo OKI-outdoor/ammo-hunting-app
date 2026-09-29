@@ -950,7 +950,119 @@
 
   renderCounts();
 
+  renderHistory();
+
   setToday();
+
+}
+
+  // =================================
+  // 履歴
+  // =================================
+  
+  function renderHistory() {
+
+  const list =
+    document.getElementById('historyList');
+
+  if (!list) {
+    return;
+  }
+
+  list.innerHTML = '';
+
+
+  if (
+    !appData ||
+    !appData.records ||
+    appData.records.length === 0
+  ) {
+
+    list.textContent =
+      '履歴がありません。';
+
+    return;
+  }
+
+
+  const records =
+    appData.records.slice().reverse();
+
+
+  records.forEach(function(record) {
+
+    const card =
+      document.createElement('div');
+
+    card.style.padding = '15px';
+    card.style.marginBottom = '12px';
+    card.style.border = '1px solid #ddd';
+    card.style.borderRadius = '12px';
+
+
+    const date =
+      record['日付']
+        ? new Date(
+            record['日付']
+          ).toLocaleDateString('ja-JP')
+        : '';
+
+
+    const kind =
+      record['区分'] || '';
+
+    const type =
+      record['弾種'] || '';
+
+    const qty =
+      record['数量'] || 0;
+
+    const purpose =
+      record['目的'] || '';
+
+    const gun =
+      record['使用銃砲'] || '';
+
+    const place =
+      record['入手先・場所'] || '';
+
+
+    card.innerHTML =
+      '<strong>' +
+      date +
+      '　' +
+      kind +
+      '</strong>' +
+
+      '<div style="margin-top:8px;">' +
+      type +
+      '　' +
+      qty +
+      '発' +
+      '</div>' +
+
+      '<div>' +
+      '目的：' +
+      purpose +
+      '</div>' +
+
+      '<div>' +
+      '銃砲：' +
+      gun +
+      '</div>' +
+
+      (
+        place
+          ? '<div>場所：' +
+            place +
+            '</div>'
+          : ''
+      );
+
+
+    list.appendChild(card);
+
+  });
 
 }
 
