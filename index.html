@@ -1617,6 +1617,75 @@ reasonOrder.forEach(
   }
 );
 
+　　　// =================================
+// 使用目的別表示
+// =================================
+
+let purposeHtml = '';
+
+const purposeOrder = [
+  '標的射撃',
+  '狩猟',
+  '有害鳥獣捕獲',
+  '未設定'
+];
+
+purposeOrder.forEach(
+  function(purpose) {
+
+    const item =
+      usePurposeSummary[purpose];
+
+    if (!item) {
+      return;
+    }
+
+
+    let icon = '📌';
+
+    if (purpose === '標的射撃') {
+      icon = '🎯';
+    }
+
+    if (purpose === '狩猟') {
+      icon = '🦌';
+    }
+
+    if (purpose === '有害鳥獣捕獲') {
+      icon = '⚠️';
+    }
+
+
+    purposeHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        icon +
+        ' ' +
+        purpose +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '使用回数：' +
+        item.count +
+        '回</div>' +
+
+        '<div>' +
+        '使用数量：' +
+        item.qty +
+        '発</div>' +
+
+      '</div>';
+
+  }
+);
+    
 content.innerHTML =
 
   '<div style="margin-top:20px;">' +
@@ -1666,6 +1735,12 @@ ammoHtml +
 '</h3>' +
 
 reasonHtml +
+
+'<h3 style="margin-top:28px;">' +
+'使用目的別集計' +
+'</h3>' +
+
+purposeHtml +
 
 '</div>';
 
