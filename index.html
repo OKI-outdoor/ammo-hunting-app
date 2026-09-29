@@ -1461,6 +1461,66 @@ appData.records.forEach(
   }
 );
 
+    // =================================
+// 使用目的別集計
+// =================================
+
+const usePurposeSummary = {};
+
+appData.records.forEach(
+  function(record) {
+
+    const recordYear =
+      Number(
+        record['年度'] || 0
+      );
+
+    const kind =
+      String(
+        record['区分'] || ''
+      );
+
+    if (
+      recordYear !== year ||
+      kind !== '使用'
+    ) {
+      return;
+    }
+
+
+    let purpose =
+      String(
+        record['目的'] || ''
+      ).trim();
+
+    if (!purpose) {
+      purpose = '未設定';
+    }
+
+
+    const qty =
+      Number(
+        record['数量'] || 0
+      );
+
+
+    if (!usePurposeSummary[purpose]) {
+
+      usePurposeSummary[purpose] = {
+        count: 0,
+        qty: 0
+      };
+
+    }
+
+
+    usePurposeSummary[purpose].count += 1;
+
+    usePurposeSummary[purpose].qty += qty;
+
+  }
+);
+
   let ammoHtml = '';
 
 Object.keys(ammoSummary)
