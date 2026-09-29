@@ -956,6 +956,51 @@
 
 }
 
+
+  // =================================
+  // 動物アイコン
+  // =================================
+  
+function getAnimalIcon(animalName) {
+
+  const name =
+    String(animalName || '');
+
+  if (name.includes('エゾシカ')) {
+    return '🦌';
+  }
+
+  if (
+    name.includes('カモ') ||
+    name.includes('鴨')
+  ) {
+    return '🦆';
+  }
+
+  if (
+    name.includes('ヒグマ') ||
+    name.includes('クマ')
+  ) {
+    return '🐻';
+  }
+
+  if (
+    name.includes('キツネ') ||
+    name.includes('狐')
+  ) {
+    return '🦊';
+  }
+
+  if (
+    name.includes('イノシシ') ||
+    name.includes('猪')
+  ) {
+    return '🐗';
+  }
+
+  return '🐾';
+}
+
   // =================================
   // 履歴
   // =================================
@@ -1106,8 +1151,13 @@
 
           return (
   '<div style="margin-top:8px;">' +
-  '🦌 ' +
-  capture['鳥獣名'] +
+  
+  getAnimalIcon(
+  capture['鳥獣名']
+) +
+' ' +
+capture['鳥獣名'] +
+            
   ' ' +
   capture['捕獲数'] +
   capture['単位'] +
