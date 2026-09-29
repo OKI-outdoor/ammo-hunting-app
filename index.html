@@ -209,33 +209,40 @@
     }
 
 
-    /* 下部メニュー */
+  /* 下部メニュー */
 
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 64px;
-      background: white;
-      border-top: 1px solid #ddd;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      z-index: 20;
-    }
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: grid;
 
-    .bottom-nav button {
-      min-height: 64px;
-      border-radius: 0;
-      background: white;
-      color: #666;
-      font-size: 13px;
-    }
+  /* 5ボタン対応 */
+  grid-template-columns: repeat(5, 1fr);
 
-    .bottom-nav button.active {
-      color: #1f6f43;
-      font-weight: bold;
-    }
+  z-index: 20;
+}
+
+.bottom-nav button {
+  min-height: 64px;
+  border-radius: 0;
+  background: white;
+  color: #666;
+
+  /* 5個でも見やすいサイズ */
+  font-size: 12px;
+
+  padding: 4px 2px;
+}
+
+.bottom-nav button.active {
+  color: #1f6f43;
+  font-weight: bold;
+}
 
 
     .hidden {
