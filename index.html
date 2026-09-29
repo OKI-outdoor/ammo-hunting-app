@@ -1298,6 +1298,101 @@ renderFiscalSummary();
     purchases -
     uses;
 
+    const ammoSummary = {};
+
+appData.records.forEach(
+  function(record) {
+
+    const recordYear =
+      Number(
+        record['年度'] || 0
+      );
+
+    const type =
+      String(
+        record['弾種'] || ''
+      );
+
+    const kind =
+      String(
+        record['区分'] || ''
+      );
+
+    const qty =
+      Number(
+        record['数量'] || 0
+      );
+
+
+    if (!type) {
+      return;
+    }
+
+
+    if (!ammoSummary[type]) {
+
+      ammoSummary[type] = {
+        opening: 0,
+        purchase: 0,
+        use: 0,
+        closing: 0
+      };
+
+    }
+
+
+    // 前年度までの在庫
+    if (recordYear < year) {
+
+      if (
+        kind === '初期在庫' ||
+        kind === '購入'
+      ) {
+        ammoSummary[type].opening += qty;
+      }
+
+      if (kind === '使用') {
+        ammoSummary[type].opening -= qty;
+      }
+
+    }
+
+
+    // 選択年度
+    if (recordYear === year) {
+
+      if (
+        kind === '初期在庫' ||
+        kind === '購入'
+      ) {
+
+        ammoSummary[type].purchase += qty;
+
+      }
+
+      if (kind === '使用') {
+
+        ammoSummary[type].use += qty;
+
+      }
+
+    }
+
+  }
+);
+
+
+// 期末在庫を計算
+Object.keys(ammoSummary)
+  .forEach(function(type) {
+
+    ammoSummary[type].closing =
+      ammoSummary[type].opening +
+      ammoSummary[type].purchase -
+      ammoSummary[type].use;
+
+  });
+
 
   content.innerHTML =
 
