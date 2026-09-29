@@ -678,7 +678,7 @@
         placeholder="必要に応じて入力"
       ></textarea>
 
-      <!-- ====================== -->
+<!-- ====================== -->
 <!-- 捕獲情報 -->
 <!-- ====================== -->
 
@@ -856,6 +856,12 @@
     購入
   </button>
 
+  <button
+  onclick="showPage('usePage')"
+>
+  🎯<br>
+  使用
+</button>
 
   <button
   onclick="showPage('historyPage')"
@@ -864,9 +870,54 @@
   履歴
 </button>
 
+  <button
+  onclick="showPage('summaryPage')"
+>
+  📊<br>
+  集計
+</button>
+  
 </nav>
 
-  <!-- ====================== -->
+<!-- ====================== -->
+<!-- 集計画面 -->
+<!-- ====================== -->
+
+<section id="summaryPage" class="page">
+
+  <div class="card">
+
+    <h2>
+      📊 年度集計
+    </h2>
+
+    <div class="form-group">
+
+      <label for="summaryFiscalYear">
+        年度
+      </label>
+
+      <select id="summaryFiscalYear">
+        <option value="">
+          年度を選択してください
+        </option>
+      </select>
+
+    </div>
+
+    <div id="summaryContent">
+
+      <p>
+        年度を選択すると集計結果を表示します。
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+  
+<!-- ====================== -->
 <!-- 履歴画面 -->
 <!-- ====================== -->
 
