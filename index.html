@@ -891,48 +891,53 @@
 
   function renderAmmoTypes() {
 
-    const select =
-      document.getElementById('buyType');
+  const buySelect =
+    document.getElementById('buyType');
 
-    select.innerHTML = '';
-
-    const first =
-      document.createElement('option');
-
-    first.value = '';
-
-    first.textContent =
-      '選択してください';
-
-    select.appendChild(first);
+  const useSelect =
+    document.getElementById('useType');
 
 
-    if (
-      !appData ||
-      !appData.ammoTypes
-    ) {
-      return;
-    }
+  if (buySelect) {
 
+    buySelect.innerHTML =
+      '<option value="">選択してください</option>';
 
-    appData.ammoTypes.forEach(
-      function(name) {
+    appData.ammoTypes.forEach(function(type) {
 
-        const option =
-          document.createElement('option');
+      const option =
+        document.createElement('option');
 
-        option.value =
-          name;
+      option.value = type;
+      option.textContent = type;
 
-        option.textContent =
-          name;
+      buySelect.appendChild(option);
 
-        select.appendChild(option);
-
-      }
-    );
+    });
 
   }
+
+
+  if (useSelect) {
+
+    useSelect.innerHTML =
+      '<option value="">選択してください</option>';
+
+    appData.ammoTypes.forEach(function(type) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = type;
+      option.textContent = type;
+
+      useSelect.appendChild(option);
+
+    });
+
+  }
+
+}
 
 
   // =================================
@@ -941,52 +946,53 @@
 
   function renderGuns() {
 
-    const select =
-      document.getElementById('buyGun');
+  const buySelect =
+    document.getElementById('buyGun');
 
-    select.innerHTML = '';
-
-
-    const first =
-      document.createElement('option');
-
-    first.value = '';
-
-    first.textContent =
-      '選択してください';
-
-    select.appendChild(first);
+  const useSelect =
+    document.getElementById('useGun');
 
 
-    if (
-      !appData ||
-      !appData.guns
-    ) {
-      return;
-    }
+  if (buySelect) {
 
+    buySelect.innerHTML =
+      '<option value="">選択してください</option>';
 
-    appData.guns.forEach(
-      function(gun) {
+    appData.guns.forEach(function(gun) {
 
-        const option =
-          document.createElement('option');
+      const option =
+        document.createElement('option');
 
-        option.value =
-          gun.name;
+      option.value = gun.name;
+      option.textContent = gun.name;
 
-        option.textContent =
-          gun.name +
-          '（' +
-          gun.caliber +
-          '）';
+      buySelect.appendChild(option);
 
-        select.appendChild(option);
-
-      }
-    );
+    });
 
   }
+
+
+  if (useSelect) {
+
+    useSelect.innerHTML =
+      '<option value="">選択してください</option>';
+
+    appData.guns.forEach(function(gun) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = gun.name;
+      option.textContent = gun.name;
+
+      useSelect.appendChild(option);
+
+    });
+
+  }
+
+}
 
 
   // =================================
