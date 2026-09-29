@@ -1626,7 +1626,53 @@ function saveUse() {
     '保存中…';
 
 
-  const record={
+  const captureAnimal =
+  document.getElementById('captureAnimal').value;
+
+const captureCount =
+  Number(
+    document.getElementById('captureCount').value || 0
+  );
+
+const captureSelect =
+  document.getElementById('captureAnimal');
+
+const selectedOption =
+  captureSelect.options[
+    captureSelect.selectedIndex
+  ];
+
+const captureUnit =
+  selectedOption
+    ? (selectedOption.dataset.unit || '')
+    : '';
+
+const captures = [];
+
+if (captureAnimal || captureCount > 0) {
+
+  if (!captureAnimal) {
+    alert('捕獲鳥獣を選択してください。');
+    button.disabled = false;
+    button.textContent = '使用記録を保存';
+    return;
+  }
+
+  if (captureCount <= 0) {
+    alert('捕獲数を入力してください。');
+    button.disabled = false;
+    button.textContent = '使用記録を保存';
+    return;
+  }
+
+  captures.push({
+    animal: captureAnimal,
+    count: captureCount,
+    unit: captureUnit
+  });
+}
+
+const record={
   recordId:'USE-'+Date.now()+'-'+Math.random().toString(36).substring(2,10),
   date:date,
   kind:'使用',
@@ -1638,10 +1684,18 @@ function saveUse() {
   unitPrice:0,
   total:0,
 
-  // GPS情報
-  latitude:document.getElementById('captureLatitude').textContent || '',
-  longitude:document.getElementById('captureLongitude').textContent || '',
-  gpsTime:document.getElementById('captureGpsTime').textContent || '',
+  // 使用記録のGPS
+  latitude:
+    document.getElementById('captureLatitude').textContent || '',
+
+  longitude:
+    document.getElementById('captureLongitude').textContent || '',
+
+  gpsTime:
+    document.getElementById('captureGpsTime').textContent || '',
+
+  // 捕獲情報
+  captures: captures,
 
   note:note
 };
