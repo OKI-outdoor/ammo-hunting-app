@@ -597,7 +597,7 @@
         目的
       </label>
 
-      <select id="usePurpose">
+      <select id="usePurpose" onchange="updateCaptureSection()">
 
         <option value="狩猟">
           狩猟
@@ -651,7 +651,7 @@
 <!-- 捕獲情報 -->
 <!-- ====================== -->
 
-<div
+<div　id="captureSection"
   style="
     margin-top:25px;
     padding-top:20px;
@@ -1850,7 +1850,23 @@ imageToDataUrl(
     'capturePhoto'
   ).value = '';
 
+  // GPS情報をクリア
+document.getElementById(
+  'captureLatitude'
+).textContent = '';
 
+document.getElementById(
+  'captureLongitude'
+).textContent = '';
+
+document.getElementById(
+  'captureGpsTime'
+).textContent = '';
+
+document.getElementById(
+  'gpsStatus'
+).style.display = 'none';
+  
   // 写真プレビューを消す
   document.getElementById(
     'capturePhotoPreview'
@@ -1894,6 +1910,32 @@ imageToDataUrl(
 
 }
 
+function updateCaptureSection() {
+
+  const purpose =
+    document.getElementById('usePurpose').value;
+
+  const section =
+    document.getElementById('captureSection');
+
+  if (!section) {
+    return;
+  }
+
+  if (
+    purpose === '狩猟' ||
+    purpose === '有害鳥獣捕獲'
+  ) {
+
+    section.style.display = 'block';
+
+  } else {
+
+    section.style.display = 'none';
+
+  }
+}
+  
 function getCaptureGPS() {
   const button = document.getElementById('gpsButton');
   const status = document.getElementById('gpsStatus');
