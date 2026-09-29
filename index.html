@@ -1165,14 +1165,13 @@ if (historyFilter !== 'すべて') {
       ? '−' + qty + '発'
       : qty + '発';
 
-    const purpose =
-      record['目的'] || '';
+    const purpose = record['目的'] || '';
+    
+    const purchaseMethod = record['譲受理由'] || '';
 
-    const gun =
-      record['使用銃砲'] || '';
+    const gun = record['使用銃砲'] || '';
 
-    const place =
-      record['入手先・場所'] || '';
+    const place = record['入手先・場所'] || '';
 
     const captures =
       (appData.captures || []).filter(
@@ -1201,15 +1200,15 @@ if (historyFilter !== 'すべて') {
       qtyText +
       '</div>' +
 
-      '<div>' +
-      '目的：' +
-      purpose +
-      '</div>' +
+      '<div>目的：' + purpose + '</div>' +
+      (
+        record['区分'] === '購入' &&
+        purchaseMethod
+        ? '<div>譲受理由：' + purchaseMethod + '</div>'
+        : ''
+      ) +
 
-      '<div>' +
-      '銃砲：' +
-      gun +
-      '</div>' +
+      '<div>銃砲：' + gun + '</div>' +
 
       (
       place
