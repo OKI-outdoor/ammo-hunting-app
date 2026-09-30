@@ -4888,6 +4888,244 @@ if (
   }
 
 }
+
+  async function saveGunSettings() {
+
+  const button =
+    document.getElementById(
+      'gunSettingSaveButton'
+    );
+
+  const photoInput =
+    document.getElementById(
+      'gunSettingPhoto'
+    );
+
+
+  // =================================
+  // 入力データ
+  // =================================
+
+  const gauge =
+    document.getElementById(
+      'gunSettingGauge'
+    ).value.trim();
+
+
+  const data = {
+
+    action:
+      'saveGunSettings',
+
+    gunName:
+      document.getElementById(
+        'gunSettingName'
+      ).value.trim(),
+
+    permitNumber:
+      document.getElementById(
+        'gunSettingPermitNumber'
+      ).value.trim(),
+
+    gunType:
+      document.getElementById(
+        'gunSettingType'
+      ).value.trim(),
+
+    typeModel:
+      document.getElementById(
+        'gunSettingTypeModel'
+      ).value.trim(),
+
+    serialNumber:
+      document.getElementById(
+        'gunSettingSerialNumber'
+      ).value.trim(),
+
+    maker:
+      document.getElementById(
+        'gunSettingMaker'
+      ).value.trim(),
+
+    model:
+      document.getElementById(
+        'gunSettingModel'
+      ).value.trim(),
+
+    totalLength:
+      document.getElementById(
+        'gunSettingTotalLength'
+      ).value.trim(),
+
+    barrelLength:
+      document.getElementById(
+        'gunSettingBarrelLength'
+      ).value.trim(),
+
+    // C列「口径・番径」
+    caliber:
+      gauge,
+
+    // L列「公称口（番）径」
+    gauge:
+      gauge,
+
+    magazineType:
+      document.getElementById(
+        'gunSettingMagazineType'
+      ).value.trim(),
+
+    ammo:
+      document.getElementById(
+        'gunSettingAmmo'
+      ).value.trim(),
+
+    riflingRatio:
+      document.getElementById(
+        'gunSettingRiflingRatio'
+      ).value.trim(),
+
+    applicationDate:
+      document.getElementById(
+        'gunSettingApplicationDate'
+      ).value,
+
+    expiry:
+      document.getElementById(
+        'gunSettingExpiry'
+      ).value,
+
+    seller:
+      document.getElementById(
+        'gunSettingSeller'
+      ).value.trim(),
+
+    gunPhotoDataUrl:
+      ''
+
+  };
+
+
+  // =================================
+  // 必須チェック
+  // =================================
+
+  if (!data.gunName) {
+
+    alert(
+      '銃の名称を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.gauge) {
+
+    alert(
+      '公称口（番）径を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // =================================
+    // 銃写真
+    // =================================
+
+    if (
+      photoInput &&
+      photoInput.files &&
+      photoInput.files[0]
+    ) {
+
+      data.gunPhotoDataUrl =
+        await fileToDataUrl_(
+          photoInput.files[0]
+        );
+
+    }
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '銃砲情報を保存しました。'
+    );
+
+
+    // 写真選択だけクリア
+    if (photoInput) {
+
+      photoInput.value = '';
+
+    }
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '銃砲情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
   
 </script>
 
