@@ -1267,6 +1267,61 @@
 
 
   // =================================
+  // 基本情報
+  // =================================
+  
+  function renderBasicSettings() {
+
+  if (
+    !appData ||
+    !appData.basicSettings
+  ) {
+    return;
+  }
+
+
+  const data =
+    appData.basicSettings;
+
+
+  document.getElementById(
+    'basicName'
+  ).value =
+    data.name || '';
+
+
+  document.getElementById(
+    'basicBirthDate'
+  ).value =
+    data.birthDate || '';
+
+
+  document.getElementById(
+    'basicAddress'
+  ).value =
+    data.address || '';
+
+
+  document.getElementById(
+    'basicGunPermitNumber'
+  ).value =
+    data.gunPermitNumber || '';
+
+
+  document.getElementById(
+    'basicGunPermitExpiry'
+  ).value =
+    data.gunPermitExpiry || '';
+
+
+  document.getElementById(
+    'basicNote'
+  ).value =
+    data.note || '';
+
+}
+
+  // =================================
   // 全体表示
   // =================================
 
@@ -1285,6 +1340,8 @@
   renderHistory();
 
   renderFiscalYears();
+
+  renderBasicSettings();
 
   setToday();
 
