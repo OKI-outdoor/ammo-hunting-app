@@ -1348,6 +1348,36 @@
   ).value =
     data.note || '';
 
+  const photoBox =
+  document.getElementById(
+    'basicGunPermitPhotoSaved'
+  );
+
+const photoLink =
+  document.getElementById(
+    'basicGunPermitPhotoLink'
+  );
+
+
+if (
+  data.gunPermitPhotoUrl
+) {
+
+  photoBox.style.display =
+    'block';
+
+  photoLink.href =
+    data.gunPermitPhotoUrl;
+
+} else {
+
+  photoBox.style.display =
+    'none';
+
+  photoLink.href =
+    '#';
+
+}
 }
 
   // =================================
