@@ -1560,6 +1560,98 @@ if (
 }
 
   // =================================
+  // 狩猟免許情報
+  // =================================
+
+  function renderHuntingLicenses() {
+
+  const container =
+    document.getElementById(
+      'huntingLicenseList'
+    );
+
+  if (!container) {
+    return;
+  }
+
+
+  const licenses =
+    appData &&
+    Array.isArray(
+      appData.huntingLicenses
+    )
+      ? appData.huntingLicenses
+      : [];
+
+
+  if (licenses.length === 0) {
+
+    container.innerHTML =
+      '<p>登録されている狩猟免許はありません。</p>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    licenses.map(license => {
+
+      const frontPhoto =
+        license.frontPhotoUrl
+          ? `
+            <a
+              href="${license.frontPhotoUrl}"
+              target="_blank"
+            >
+              📷 表写真
+            </a>
+          `
+          : '';
+
+      const backPhoto =
+        license.backPhotoUrl
+          ? `
+            <a
+              href="${license.backPhotoUrl}"
+              target="_blank"
+            >
+              📷 裏写真
+            </a>
+          `
+          : '';
+
+
+      return `
+        <div class="card">
+
+          <strong>
+            ${license.licenseType || ''}
+          </strong>
+
+          <div>
+            免状番号：
+            ${license.licenseNumber || ''}
+          </div>
+
+          <div>
+            有効期限：
+            ${license.licenseExpiry || ''}
+          </div>
+
+          <div>
+            ${frontPhoto}
+            ${backPhoto}
+          </div>
+
+        </div>
+      `;
+
+    }).join('');
+
+}
+  
+  // =================================
   // 全体表示
   // =================================
 
@@ -1580,6 +1672,8 @@ if (
   renderFiscalYears();
 
   renderBasicSettings();
+
+  renderHuntingLicenses();
 
   setToday();
 
