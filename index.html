@@ -258,18 +258,6 @@
   font-size: 16px;
 }
 
-    #gunSettingsPage {
-  padding-left: 16px;
-  padding-right: 16px;
-  box-sizing: border-box;
-}
-    #gunSettingsPage input,
-#gunSettingsPage select,
-#gunSettingsPage textarea,
-#gunSettingsPage button {
-  width: 100%;
-  box-sizing: border-box;
-}
     
   </style>
 
@@ -1373,130 +1361,297 @@
 
   <section id="gunSettingsPage" class="page">
 
-  <h2>🔫 銃砲設定</h2>
+  <div class="card">
 
-  <label>銃の名称</label>
-  <input
-    type="text"
-    id="gunSettingName"
-    placeholder="例：ハーフライフル"
-  >
+    <h2>🔫 銃砲設定</h2>
 
-  <label>銃所持許可番号</label>
-  <input
-    type="text"
-    id="gunSettingPermitNumber"
-  >
 
-  <label>種類</label>
-  <input
-    type="text"
-    id="gunSettingType"
-    placeholder="例：散弾銃"
-  >
+    <div class="form-group">
 
-  <label>型式</label>
-  <input
-    type="text"
-    id="gunSettingTypeModel"
-  >
+      <label for="gunSettingName">
+        銃の名称
+      </label>
 
-  <label>銃番号</label>
-  <input
-    type="text"
-    id="gunSettingSerialNumber"
-  >
+      <input
+        type="text"
+        id="gunSettingName"
+        placeholder="例：ハーフライフル"
+      >
 
-  <label>メーカー名</label>
-  <input
-    type="text"
-    id="gunSettingMaker"
-  >
+    </div>
 
-  <label>モデル名</label>
-  <input
-    type="text"
-    id="gunSettingModel"
-  >
 
-  <label>銃の全長</label>
-  <input
-    type="text"
-    id="gunSettingTotalLength"
-    placeholder="例：110 cm"
-  >
+    <div class="form-group">
 
-  <label>銃身長</label>
-  <input
-    type="text"
-    id="gunSettingBarrelLength"
-    placeholder="例：60 cm"
-  >
+      <label for="gunSettingPermitNumber">
+        銃所持許可番号
+      </label>
 
-  <label>公称口（番）径</label>
-  <input
-    type="text"
-    id="gunSettingGauge"
-    placeholder="例：12番"
-  >
+      <input
+        type="text"
+        id="gunSettingPermitNumber"
+        placeholder="許可番号を入力"
+      >
 
-  <label>弾倉型式</label>
-  <input
-    type="text"
-    id="gunSettingMagazineType"
-  >
+    </div>
 
-  <label>適合実包</label>
-  <input
-    type="text"
-    id="gunSettingAmmo"
-    placeholder="例：12番"
-  >
 
-  <label>鉄腔内腔線割合</label>
-  <input
-    type="text"
-    id="gunSettingRiflingRatio"
-  >
+    <div class="form-group">
 
-  <label>許可申請日</label>
-  <input
-    type="date"
-    id="gunSettingApplicationDate"
-  >
+      <label for="gunSettingType">
+        種類
+      </label>
 
-  <label>許可期限</label>
-  <input
-    type="date"
-    id="gunSettingExpiry"
-  >
+      <input
+        type="text"
+        id="gunSettingType"
+        placeholder="例：散弾銃"
+      >
 
-  <label>譲受先</label>
-  <input
-    type="text"
-    id="gunSettingSeller"
-  >
+    </div>
 
-  <label>銃写真</label>
-  <input
-    type="file"
-    id="gunSettingPhoto"
-    accept="image/*"
-  >
 
-  <button
-    id="gunSettingSaveButton"
-    type="button"
-  >
-    保存
-  </button>
+    <div class="form-group">
 
-  <button
-    type="button"
-    onclick="showPage('settingsPage')"
-  >
-    ← 初期設定へ戻る
-  </button>
+      <label for="gunSettingTypeModel">
+        型式
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingTypeModel"
+        placeholder="型式を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingSerialNumber">
+        銃番号
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingSerialNumber"
+        placeholder="銃番号を入力"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      銃砲詳細
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingMaker">
+        メーカー名
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingMaker"
+        placeholder="メーカー名を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingModel">
+        モデル名
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingModel"
+        placeholder="モデル名を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingTotalLength">
+        銃の全長
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingTotalLength"
+        placeholder="例：110 cm"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingBarrelLength">
+        銃身長
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingBarrelLength"
+        placeholder="例：60 cm"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingGauge">
+        公称口（番）径
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingGauge"
+        placeholder="例：12番"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingMagazineType">
+        弾倉型式
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingMagazineType"
+        placeholder="弾倉型式を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingAmmo">
+        適合実包
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingAmmo"
+        placeholder="例：12番"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingRiflingRatio">
+        鉄腔内腔線割合
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingRiflingRatio"
+        placeholder="割合を入力"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      許可情報
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingApplicationDate">
+        許可申請日
+      </label>
+
+      <input
+        type="date"
+        id="gunSettingApplicationDate"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingExpiry">
+        許可期限
+      </label>
+
+      <input
+        type="date"
+        id="gunSettingExpiry"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingSeller">
+        譲受先
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingSeller"
+        placeholder="譲受先を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingPhoto">
+        銃写真
+      </label>
+
+      <input
+        type="file"
+        id="gunSettingPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="gunSettingSaveButton">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
 
 </section>
   
