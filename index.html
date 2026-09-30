@@ -1125,7 +1125,8 @@
     <button
       type="button"
       class="main-button"
-      id="basicSaveButton">
+      id="basicSaveButton"
+      onclick="saveBasicSettings()">
       保存
     </button>
 
@@ -3797,7 +3798,127 @@ function getCaptureGPS() {
   });
 
 }
-  
+
+  async function saveBasicSettings() {
+
+  const button =
+    document.getElementById(
+      'basicSaveButton'
+    );
+
+  const data = {
+
+    action:
+      'saveBasicSettings',
+
+    name:
+      document.getElementById(
+        'basicName'
+      ).value.trim(),
+
+    birthDate:
+      document.getElementById(
+        'basicBirthDate'
+      ).value,
+
+    address:
+      document.getElementById(
+        'basicAddress'
+      ).value.trim(),
+
+    gunPermitNumber:
+      document.getElementById(
+        'basicGunPermitNumber'
+      ).value.trim(),
+
+    gunPermitExpiry:
+      document.getElementById(
+        'basicGunPermitExpiry'
+      ).value,
+
+    note:
+      document.getElementById(
+        'basicNote'
+      ).value.trim()
+
+  };
+
+
+  if (!data.name) {
+
+    alert(
+      '氏名を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '基本情報を保存しました。'
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '基本情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
 </script>
 
 </body>
