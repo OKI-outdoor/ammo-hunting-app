@@ -4277,6 +4277,16 @@ if (
       'licenseSaveButton'
     );
 
+  const frontPhotoInput =
+    document.getElementById(
+      'licenseFrontPhoto'
+    );
+
+  const backPhotoInput =
+    document.getElementById(
+      'licenseBackPhoto'
+    );
+
 
   const data = {
 
@@ -4301,7 +4311,11 @@ if (
     note:
       document.getElementById(
         'licenseNote'
-      ).value.trim()
+      ).value.trim(),
+
+    frontPhotoDataUrl: '',
+
+    backPhotoDataUrl: ''
 
   };
 
@@ -4347,6 +4361,46 @@ if (
       '保存中…';
 
 
+    // ===============================
+    // 表写真をDataURLへ変換
+    // ===============================
+
+    if (
+      frontPhotoInput &&
+      frontPhotoInput.files &&
+      frontPhotoInput.files[0]
+    ) {
+
+      data.frontPhotoDataUrl =
+        await fileToDataUrl_(
+          frontPhotoInput.files[0]
+        );
+
+    }
+
+
+    // ===============================
+    // 裏写真をDataURLへ変換
+    // ===============================
+
+    if (
+      backPhotoInput &&
+      backPhotoInput.files &&
+      backPhotoInput.files[0]
+    ) {
+
+      data.backPhotoDataUrl =
+        await fileToDataUrl_(
+          backPhotoInput.files[0]
+        );
+
+    }
+
+
+    // ===============================
+    // GASへ送信
+    // ===============================
+
     const response =
       await fetch(
         API_URL,
@@ -4383,7 +4437,10 @@ if (
     );
 
 
+    // ===============================
     // 入力欄をクリア
+    // ===============================
+
     document.getElementById(
       'licenseType'
     ).value = '';
@@ -4399,6 +4456,20 @@ if (
     document.getElementById(
       'licenseNote'
     ).value = '';
+
+
+    if (frontPhotoInput) {
+
+      frontPhotoInput.value = '';
+
+    }
+
+
+    if (backPhotoInput) {
+
+      backPhotoInput.value = '';
+
+    }
 
 
   } catch (error) {
