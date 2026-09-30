@@ -2242,6 +2242,50 @@ if (
   ).value =
     gun.seller || '';
 
+    // =================================
+// 登録済み銃写真を表示
+// =================================
+
+const photoSaved =
+  document.getElementById(
+    'gunSettingPhotoSaved'
+  );
+
+const photoLink =
+  document.getElementById(
+    'gunSettingPhotoLink'
+  );
+
+
+if (
+  gun.gunPhotoUrl &&
+  photoSaved &&
+  photoLink
+) {
+
+  photoSaved.style.display =
+    'block';
+
+  photoLink.href =
+    gun.gunPhotoUrl;
+
+} else {
+
+  if (photoSaved) {
+
+    photoSaved.style.display =
+      'none';
+
+  }
+
+  if (photoLink) {
+
+    photoLink.href =
+      '#';
+
+  }
+
+}
 }
 
 function clearGunSettingsForm() {
