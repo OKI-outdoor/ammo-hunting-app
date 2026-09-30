@@ -964,7 +964,7 @@
 
     <button
       class="main-button"
-      onclick="showSettingsSection('guns')">
+      onclick="showPage('gunSettingsPage')">
       🔫 銃砲設定
     </button>
 
@@ -1350,6 +1350,139 @@
     </button>
 
   </div>
+  
+</section>
+
+<!-- ================================= -->
+<!-- 銃砲設定ページ -->
+<!-- ================================= -->
+
+  <section id="gunSettingsPage" class="page">
+
+  <h2>🔫 銃砲設定</h2>
+
+  <label>銃の名称</label>
+  <input
+    type="text"
+    id="gunSettingName"
+    placeholder="例：ハーフライフル"
+  >
+
+  <label>銃所持許可番号</label>
+  <input
+    type="text"
+    id="gunSettingPermitNumber"
+  >
+
+  <label>種類</label>
+  <input
+    type="text"
+    id="gunSettingType"
+    placeholder="例：散弾銃"
+  >
+
+  <label>型式</label>
+  <input
+    type="text"
+    id="gunSettingTypeModel"
+  >
+
+  <label>銃番号</label>
+  <input
+    type="text"
+    id="gunSettingSerialNumber"
+  >
+
+  <label>メーカー名</label>
+  <input
+    type="text"
+    id="gunSettingMaker"
+  >
+
+  <label>モデル名</label>
+  <input
+    type="text"
+    id="gunSettingModel"
+  >
+
+  <label>銃の全長</label>
+  <input
+    type="text"
+    id="gunSettingTotalLength"
+    placeholder="例：110 cm"
+  >
+
+  <label>銃身長</label>
+  <input
+    type="text"
+    id="gunSettingBarrelLength"
+    placeholder="例：60 cm"
+  >
+
+  <label>公称口（番）径</label>
+  <input
+    type="text"
+    id="gunSettingGauge"
+    placeholder="例：12番"
+  >
+
+  <label>弾倉型式</label>
+  <input
+    type="text"
+    id="gunSettingMagazineType"
+  >
+
+  <label>適合実包</label>
+  <input
+    type="text"
+    id="gunSettingAmmo"
+    placeholder="例：12番"
+  >
+
+  <label>鉄腔内腔線割合</label>
+  <input
+    type="text"
+    id="gunSettingRiflingRatio"
+  >
+
+  <label>許可申請日</label>
+  <input
+    type="date"
+    id="gunSettingApplicationDate"
+  >
+
+  <label>許可期限</label>
+  <input
+    type="date"
+    id="gunSettingExpiry"
+  >
+
+  <label>譲受先</label>
+  <input
+    type="text"
+    id="gunSettingSeller"
+  >
+
+  <label>銃写真</label>
+  <input
+    type="file"
+    id="gunSettingPhoto"
+    accept="image/*"
+  >
+
+  <button
+    id="gunSettingSaveButton"
+    type="button"
+  >
+    保存
+  </button>
+
+  <button
+    type="button"
+    onclick="showPage('settingsPage')"
+  >
+    ← 初期設定へ戻る
+  </button>
 
 </section>
   
