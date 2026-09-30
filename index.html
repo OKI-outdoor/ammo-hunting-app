@@ -1208,7 +1208,151 @@
 
 </section>
 
-  <!-- ====================== -->
+<!-- ================================= -->
+<!-- 狩猟免許登録ページ -->
+<!-- ================================= -->
+
+<section id="huntingLicensePage" class="page">
+
+  <div class="card">
+
+    <h2>🪪 狩猟免許登録</h2>
+
+
+    <div class="form-group">
+
+      <label for="licenseType">
+        免許種類
+      </label>
+
+      <select id="licenseType">
+
+        <option value="">
+          選択してください
+        </option>
+
+        <option value="第一種銃猟">
+          第一種銃猟
+        </option>
+
+        <option value="第二種銃猟">
+          第二種銃猟
+        </option>
+
+        <option value="わな猟">
+          わな猟
+        </option>
+
+        <option value="網猟">
+          網猟
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseNumber">
+        免状番号
+      </label>
+
+      <input
+        type="text"
+        id="licenseNumber"
+        placeholder="免状番号を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseExpiry">
+        有効期限
+      </label>
+
+      <input
+        type="date"
+        id="licenseExpiry"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseFrontPhoto">
+        免状写真（表）
+      </label>
+
+      <input
+        type="file"
+        id="licenseFrontPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseBackPhoto">
+        免状写真（裏）
+      </label>
+
+      <input
+        type="file"
+        id="licenseBackPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseNote">
+        備考
+      </label>
+
+      <textarea
+        id="licenseNote"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      id="licenseSaveButton"
+      class="main-button">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('basicSettingsPage')">
+      ← 基本情報へ戻る
+    </button>
+
+  </div>
+
+</section>
+  
+<!-- ====================== -->
 <!-- 下部メニュー -->
 <!-- ====================== -->
 
