@@ -5394,6 +5394,10 @@ if (
       '銃砲情報を保存しました。'
     );
 
+    // 最新データを再取得
+    await loadData();
+
+    renderGunSettings();
 
     // 写真選択だけクリア
     if (photoInput) {
