@@ -958,7 +958,7 @@
 
     <button
       class="main-button"
-      onclick="showSettingsSection('basic')">
+      onclick="showPage('basicSettingsPage')">
       👤 基本情報
     </button>
 
@@ -995,6 +995,150 @@
       </button>
 
     </div>
+
+  </div>
+
+</section>
+
+<!-- ================================= -->
+<!-- 基本情報設定ページ -->
+<!-- ================================= -->
+
+<section id="basicSettingsPage" class="page">
+
+  <div class="card">
+
+    <h2>👤 基本情報</h2>
+
+
+    <div class="form-group">
+
+      <label for="basicName">
+        氏名
+      </label>
+
+      <input
+        type="text"
+        id="basicName"
+        placeholder="氏名を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicBirthDate">
+        生年月日
+      </label>
+
+      <input
+        type="date"
+        id="basicBirthDate"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicAddress">
+        居住地
+      </label>
+
+      <input
+        type="text"
+        id="basicAddress"
+        placeholder="住所を入力"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      銃所持許可
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="basicGunPermitNumber">
+        許可証番号
+      </label>
+
+      <input
+        type="text"
+        id="basicGunPermitNumber"
+        placeholder="許可証番号を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicGunPermitExpiry">
+        有効期限
+      </label>
+
+      <input
+        type="date"
+        id="basicGunPermitExpiry"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicGunPermitPhoto">
+        許可証写真
+      </label>
+
+      <input
+        type="file"
+        id="basicGunPermitPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicNote">
+        備考
+      </label>
+
+      <textarea
+        id="basicNote"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="basicSaveButton">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
 
   </div>
 
