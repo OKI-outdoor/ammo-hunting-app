@@ -2033,7 +2033,214 @@ if (
   );
 
 }
-  
+
+
+  function loadGunSettings() {
+
+  const select =
+    document.getElementById(
+      'gunSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+  const rowNumber =
+    Number(select.value);
+
+
+  // =================================
+  // 「新しい銃砲を登録」の場合
+  // =================================
+
+  if (!rowNumber) {
+
+    clearGunSettingsForm();
+
+    return;
+
+  }
+
+
+  // =================================
+  // 選択された銃を探す
+  // =================================
+
+  const gun =
+    appData.gunSettings.find(
+      function(item) {
+
+        return Number(
+          item.rowNumber
+        ) === rowNumber;
+
+      }
+    );
+
+
+  if (!gun) {
+
+    alert(
+      '銃砲情報が見つかりません。'
+    );
+
+    return;
+
+  }
+
+
+  // =================================
+  // フォームへ表示
+  // =================================
+
+  document.getElementById(
+    'gunSettingName'
+  ).value =
+    gun.gunName || '';
+
+
+  document.getElementById(
+    'gunSettingPermitNumber'
+  ).value =
+    gun.permitNumber || '';
+
+
+  document.getElementById(
+    'gunSettingType'
+  ).value =
+    gun.gunType || '';
+
+
+  document.getElementById(
+    'gunSettingTypeModel'
+  ).value =
+    gun.typeModel || '';
+
+
+  document.getElementById(
+    'gunSettingSerialNumber'
+  ).value =
+    gun.serialNumber || '';
+
+
+  document.getElementById(
+    'gunSettingMaker'
+  ).value =
+    gun.maker || '';
+
+
+  document.getElementById(
+    'gunSettingModel'
+  ).value =
+    gun.model || '';
+
+
+  document.getElementById(
+    'gunSettingTotalLength'
+  ).value =
+    gun.totalLength || '';
+
+
+  document.getElementById(
+    'gunSettingBarrelLength'
+  ).value =
+    gun.barrelLength || '';
+
+
+  document.getElementById(
+    'gunSettingGauge'
+  ).value =
+    gun.gauge ||
+    gun.caliber ||
+    '';
+
+
+  document.getElementById(
+    'gunSettingMagazineType'
+  ).value =
+    gun.magazineType || '';
+
+
+  document.getElementById(
+    'gunSettingAmmo'
+  ).value =
+    gun.ammo || '';
+
+
+  document.getElementById(
+    'gunSettingRiflingRatio'
+  ).value =
+    gun.riflingRatio || '';
+
+
+  document.getElementById(
+    'gunSettingApplicationDate'
+  ).value =
+    gun.applicationDate || '';
+
+
+  document.getElementById(
+    'gunSettingExpiry'
+  ).value =
+    gun.expiry || '';
+
+
+  document.getElementById(
+    'gunSettingSeller'
+  ).value =
+    gun.seller || '';
+
+}
+
+function clearGunSettingsForm() {
+
+  const ids = [
+
+    'gunSettingName',
+    'gunSettingPermitNumber',
+    'gunSettingType',
+    'gunSettingTypeModel',
+    'gunSettingSerialNumber',
+    'gunSettingMaker',
+    'gunSettingModel',
+    'gunSettingTotalLength',
+    'gunSettingBarrelLength',
+    'gunSettingGauge',
+    'gunSettingMagazineType',
+    'gunSettingAmmo',
+    'gunSettingRiflingRatio',
+    'gunSettingApplicationDate',
+    'gunSettingExpiry',
+    'gunSettingSeller'
+
+  ];
+
+
+  ids.forEach(
+    function(id) {
+
+      const element =
+        document.getElementById(id);
+
+      if (element) {
+        element.value = '';
+      }
+
+    }
+  );
+
+
+  const photo =
+    document.getElementById(
+      'gunSettingPhoto'
+    );
+
+  if (photo) {
+    photo.value = '';
+  }
+
+}
   // =================================
   // 全体表示
   // =================================
