@@ -2335,6 +2335,26 @@ function clearGunSettingsForm() {
     photo.value = '';
   }
 
+  const photoSaved =
+  document.getElementById(
+    'gunSettingPhotoSaved'
+  );
+
+const photoLink =
+  document.getElementById(
+    'gunSettingPhotoLink'
+  );
+
+if (photoSaved) {
+  photoSaved.style.display =
+    'none';
+}
+
+if (photoLink) {
+  photoLink.href =
+    '#';
+}
+  
 }
   // =================================
   // 全体表示
