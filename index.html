@@ -1978,6 +1978,63 @@ if (
 }
   
   // =================================
+  // 銃砲設定表示
+  // =================================
+  
+  function renderGunSettings() {
+
+  const select =
+    document.getElementById(
+      'gunSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+  // 一度プルダウンを初期化
+  select.innerHTML =
+    '<option value="">' +
+    '新しい銃砲を登録' +
+    '</option>';
+
+
+  // データがない場合
+  if (
+    !appData.gunSettings ||
+    !Array.isArray(
+      appData.gunSettings
+    )
+  ) {
+    return;
+  }
+
+
+  // 登録済み銃砲を追加
+  appData.gunSettings.forEach(
+    function(gun) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        gun.rowNumber;
+
+      option.textContent =
+        gun.gunName;
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+  
+  // =================================
   // 全体表示
   // =================================
 
