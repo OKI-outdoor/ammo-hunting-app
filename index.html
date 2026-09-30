@@ -5207,6 +5207,13 @@ if (
     action:
       'saveGunSettings',
 
+    rowNumber:
+      Number(
+        document.getElementById(
+          'gunSettingSelect'
+        ).value
+      ) || 0,
+
     gunName:
       document.getElementById(
         'gunSettingName'
