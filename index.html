@@ -3863,6 +3863,25 @@ function getCaptureGPS() {
       'basicSaveButton'
     );
 
+    const photoInput =
+  document.getElementById(
+    'basicGunPermitPhoto'
+  );
+
+let gunPermitPhotoDataUrl = '';
+
+if (
+  photoInput &&
+  photoInput.files &&
+  photoInput.files.length > 0
+) {
+
+  gunPermitPhotoDataUrl =
+    await fileToDataUrl_(
+      photoInput.files[0]
+    );
+
+}
   const data = {
 
     action:
@@ -3894,9 +3913,12 @@ function getCaptureGPS() {
       ).value,
 
     note:
-      document.getElementById(
-        'basicNote'
-      ).value.trim()
+  document.getElementById(
+    'basicNote'
+  ).value.trim(),
+
+    gunPermitPhotoDataUrl:
+      gunPermitPhotoDataUrl
 
   };
 
@@ -3974,6 +3996,38 @@ function getCaptureGPS() {
       '保存';
 
   }
+
+}
+
+  function fileToDataUrl_(file) {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function() {
+          resolve(reader.result);
+        };
+
+
+      reader.onerror =
+        function() {
+          reject(
+            new Error(
+              '写真の読み込みに失敗しました。'
+            )
+          );
+        };
+
+
+      reader.readAsDataURL(file);
+
+    }
+  );
 
 }
 </script>
