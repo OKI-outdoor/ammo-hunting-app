@@ -1333,7 +1333,8 @@
     <button
       type="button"
       id="licenseSaveButton"
-      class="main-button">
+      class="main-button"
+      onclick="saveHuntingLicense()">
       保存
     </button>
 
@@ -3688,6 +3689,7 @@ function updateCaptureSection() {
 
 }
 }
+  
 function clearCaptureInputs() {
 
   const animal =
@@ -4267,6 +4269,159 @@ if (
   );
 
 }
+
+  async function saveHuntingLicense() {
+
+  const button =
+    document.getElementById(
+      'licenseSaveButton'
+    );
+
+
+  const data = {
+
+    action:
+      'saveHuntingLicense',
+
+    licenseType:
+      document.getElementById(
+        'licenseType'
+      ).value,
+
+    licenseNumber:
+      document.getElementById(
+        'licenseNumber'
+      ).value.trim(),
+
+    licenseExpiry:
+      document.getElementById(
+        'licenseExpiry'
+      ).value,
+
+    note:
+      document.getElementById(
+        'licenseNote'
+      ).value.trim()
+
+  };
+
+
+  if (!data.licenseType) {
+
+    alert(
+      '免許種類を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.licenseNumber) {
+
+    alert(
+      '免状番号を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.licenseExpiry) {
+
+    alert(
+      '有効期限を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '狩猟免許を保存しました。'
+    );
+
+
+    // 入力欄をクリア
+    document.getElementById(
+      'licenseType'
+    ).value = '';
+
+    document.getElementById(
+      'licenseNumber'
+    ).value = '';
+
+    document.getElementById(
+      'licenseExpiry'
+    ).value = '';
+
+    document.getElementById(
+      'licenseNote'
+    ).value = '';
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '狩猟免許の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+  
 </script>
 
 </body>
