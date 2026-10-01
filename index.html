@@ -5980,6 +5980,73 @@ function renderAmmoSettings() {
 
 }
 
+// =================================
+// 鳥獣設定一覧表示
+// =================================
+
+function renderAnimalSettings() {
+
+  const select =
+    document.getElementById(
+      'animalSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  const currentValue =
+    select.value;
+
+
+  select.innerHTML =
+    '<option value="">新しい鳥獣を登録</option>';
+
+
+  if (
+    !appData.animalSettings ||
+    !Array.isArray(
+      appData.animalSettings
+    )
+  ) {
+    return;
+  }
+
+
+  appData.animalSettings
+    .forEach(function(animal) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        String(
+          animal.row
+        );
+
+      option.textContent =
+        animal.name;
+
+      select.appendChild(
+        option
+      );
+
+    });
+
+
+  // 選択状態を維持
+  if (currentValue) {
+
+    select.value =
+      currentValue;
+
+  }
+
+}
+
   // =================================
 // 弾種設定読み込み
 // =================================
