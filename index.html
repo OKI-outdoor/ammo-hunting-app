@@ -6248,6 +6248,169 @@ function renderAnimalSettings() {
 
 }
 
+// =================================
+// 初期在庫設定
+// 年度・弾種の選択肢を表示
+// =================================
+
+function renderInitialStockSettings() {
+
+  const fiscalYearSelect =
+    document.getElementById(
+      'initialStockFiscalYear'
+    );
+
+  const ammoSelect =
+    document.getElementById(
+      'initialStockAmmo'
+    );
+
+
+  if (
+    !fiscalYearSelect ||
+    !ammoSelect
+  ) {
+    return;
+  }
+
+
+  // =================================
+  // 年度
+  // =================================
+
+  fiscalYearSelect.innerHTML =
+    '<option value="">年度を選択</option>';
+
+
+  const years = [];
+
+  // APIから取得した年度
+  if (
+    appData.fiscalYears &&
+    Array.isArray(
+      appData.fiscalYears
+    )
+  ) {
+
+    appData.fiscalYears
+      .forEach(function(year) {
+
+        const number =
+          Number(year);
+
+        if (
+          number &&
+          !years.includes(number)
+        ) {
+          years.push(number);
+        }
+
+      });
+
+  }
+
+
+  // 現在年度も必ず候補に入れる
+  const today =
+    new Date();
+
+  let currentFiscalYear =
+    today.getFullYear();
+
+  // 1～3月は前年の年度
+  if (
+    today.getMonth() < 3
+  ) {
+    currentFiscalYear--;
+  }
+
+
+  if (
+    !years.includes(
+      currentFiscalYear
+    )
+  ) {
+    years.push(
+      currentFiscalYear
+    );
+  }
+
+
+  years.sort(
+    function(a, b) {
+      return b - a;
+    }
+  );
+
+
+  years.forEach(
+    function(year) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        String(year);
+
+      option.textContent =
+        year + '年度';
+
+      fiscalYearSelect.appendChild(
+        option
+      );
+
+    }
+  );
+
+
+  // 現在年度を初期選択
+  fiscalYearSelect.value =
+    String(
+      currentFiscalYear
+    );
+
+
+  // =================================
+  // 弾種
+  // =================================
+
+  ammoSelect.innerHTML =
+    '<option value="">弾種を選択</option>';
+
+
+  if (
+    appData.ammoTypes &&
+    Array.isArray(
+      appData.ammoTypes
+    )
+  ) {
+
+    appData.ammoTypes
+      .forEach(function(ammo) {
+
+        const option =
+          document.createElement(
+            'option'
+          );
+
+        option.value =
+          ammo;
+
+        option.textContent =
+          ammo;
+
+        ammoSelect.appendChild(
+          option
+        );
+
+      });
+
+  }
+
+}
+  
   // =================================
 // 鳥獣設定読み込み
 // =================================
