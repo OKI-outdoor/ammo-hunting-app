@@ -5837,6 +5837,170 @@ function renderAmmoSettings() {
   }
 
 }
+
+  // =================================
+// 弾種設定読み込み
+// =================================
+
+function loadAmmoSettings() {
+
+  const select =
+    document.getElementById(
+      'ammoSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  const rowNumber =
+    Number(
+      select.value
+    );
+
+
+  // 「新しい弾種を登録」の場合
+  if (!rowNumber) {
+
+    clearAmmoSettingsForm();
+
+    return;
+
+  }
+
+
+  const ammo =
+    appData.ammoSettings.find(
+      function(item) {
+
+        return Number(
+          item.rowNumber
+        ) === rowNumber;
+
+      }
+    );
+
+
+  if (!ammo) {
+
+    alert(
+      '弾種情報が見つかりません。'
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    'ammoSettingName'
+  ).value =
+    ammo.ammoName || '';
+
+
+  document.getElementById(
+    'ammoSettingMaker'
+  ).value =
+    ammo.maker || '';
+
+
+  document.getElementById(
+    'ammoSettingProductName'
+  ).value =
+    ammo.productName || '';
+
+
+  document.getElementById(
+    'ammoSettingCaliber'
+  ).value =
+    ammo.caliber || '';
+
+
+  document.getElementById(
+    'ammoSettingWeight'
+  ).value =
+    ammo.weight || '';
+
+
+  document.getElementById(
+    'ammoSettingShotSize'
+  ).value =
+    ammo.shotSize || '';
+
+
+  document.getElementById(
+    'ammoSettingMaterial'
+  ).value =
+    ammo.material || '';
+
+
+  document.getElementById(
+    'ammoSettingBoxQuantity'
+  ).value =
+    ammo.boxQuantity || '';
+
+
+  document.getElementById(
+    'ammoSettingPurpose'
+  ).value =
+    ammo.purpose || '';
+
+
+  document.getElementById(
+    'ammoSettingActive'
+  ).checked =
+    ammo.active !== false;
+
+}
+
+  // =================================
+// 弾種設定フォームクリア
+// =================================
+
+function clearAmmoSettingsForm() {
+
+  document.getElementById(
+    'ammoSettingName'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingMaker'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingProductName'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingCaliber'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingWeight'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingShotSize'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingMaterial'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingBoxQuantity'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingPurpose'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingActive'
+  ).checked = true;
+
+}
   
 </script>
 
