@@ -6411,6 +6411,90 @@ function renderInitialStockSettings() {
 
   }
 
+    // =================================
+  // 登録済み初期在庫
+  // =================================
+
+  const initialStockSelect =
+    document.getElementById(
+      'initialStockSelect'
+    );
+
+
+  if (initialStockSelect) {
+
+    initialStockSelect.innerHTML =
+      '<option value="">新しい初期在庫を登録</option>';
+
+
+    if (
+      appData.records &&
+      Array.isArray(
+        appData.records
+      )
+    ) {
+
+      appData.records
+        .forEach(function(record) {
+
+          // 初期在庫だけを対象
+          if (
+            record['区分'] !==
+            '初期在庫'
+          ) {
+            return;
+          }
+
+
+          const recordId =
+            record['記録ID'] || '';
+
+          const fiscalYear =
+            record['年度'] || '';
+
+          const ammo =
+            record['弾種'] || '';
+
+          const quantity =
+            Number(
+              record['数量'] || 0
+            );
+
+
+          if (!recordId) {
+            return;
+          }
+
+
+          const option =
+            document.createElement(
+              'option'
+            );
+
+
+          option.value =
+            recordId;
+
+
+          option.textContent =
+            fiscalYear +
+            '年度 / ' +
+            ammo +
+            ' / ' +
+            quantity +
+            '発';
+
+
+          initialStockSelect
+            .appendChild(
+              option
+            );
+
+        });
+
+    }
+
+  }
 }
   
   // =================================
