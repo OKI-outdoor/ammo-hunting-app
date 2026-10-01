@@ -6473,6 +6473,187 @@ function renderInitialStockSettings() {
   }
 
 }
+
+// =================================
+// 初期在庫を保存
+// =================================
+
+async function saveInitialStockSettings() {
+
+  const button =
+    document.getElementById(
+      'initialStockSaveButton'
+    );
+
+  const date =
+    document.getElementById(
+      'initialStockDate'
+    ).value;
+
+  const ammo =
+    document.getElementById(
+      'initialStockAmmo'
+    ).value;
+
+  const quantity =
+    Number(
+      document.getElementById(
+        'initialStockQuantity'
+      ).value
+    );
+
+  const note =
+    document.getElementById(
+      'initialStockNote'
+    ).value.trim();
+
+
+  // =================================
+  // 入力チェック
+  // =================================
+
+  if (!date) {
+
+    alert(
+      '基準日を入力してください。'
+    );
+
+    return;
+  }
+
+
+  if (!ammo) {
+
+    alert(
+      '弾種を選択してください。'
+    );
+
+    return;
+  }
+
+
+  if (
+    !Number.isFinite(quantity) ||
+    quantity < 0
+  ) {
+
+    alert(
+      '初期在庫数を入力してください。'
+    );
+
+    return;
+  }
+
+
+  // =================================
+  // 送信データ
+  // =================================
+
+  const data = {
+
+    action:
+      'saveInitialStock',
+
+    date:
+      date,
+
+    ammoType:
+      ammo,
+
+    quantity:
+      quantity,
+
+    note:
+      note
+
+  };
+
+
+  try {
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      '保存中…';
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:
+            'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(
+              data
+            )
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTPエラー: ' +
+        response.status
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        result.message ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '初期在庫を保存しました。'
+    );
+
+
+    // 最新データを再取得
+    loadData();
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+    alert(
+      '初期在庫の保存に失敗しました。\n' +
+      error.message
+    );
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
   
   // =================================
 // 鳥獣設定読み込み
