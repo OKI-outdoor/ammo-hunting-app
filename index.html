@@ -6050,6 +6050,111 @@ function renderAnimalSettings() {
 }
 
   // =================================
+// 鳥獣設定読み込み
+// =================================
+
+function loadAnimalSettings() {
+
+  const select =
+    document.getElementById(
+      'animalSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  const rowNumber =
+    Number(
+      select.value
+    );
+
+
+  // 新しい鳥獣を登録
+  if (!rowNumber) {
+
+    clearAnimalSettingsForm();
+
+    return;
+
+  }
+
+
+  const animal =
+    appData.animalSettings.find(
+      function(item) {
+
+        return Number(
+          item.row
+        ) === rowNumber;
+
+      }
+    );
+
+
+  if (!animal) {
+
+    alert(
+      '鳥獣情報が見つかりません。'
+    );
+
+    return;
+
+  }
+
+
+  // 鳥獣名
+  document.getElementById(
+    'animalSettingName'
+  ).value =
+    animal.name || '';
+
+
+  // 単位
+  document.getElementById(
+    'animalSettingUnit'
+  ).value =
+    animal.unit || '頭';
+
+
+  // 使用中
+  document.getElementById(
+    'animalSettingActive'
+  ).checked =
+    animal.active !== false;
+
+}
+
+
+// =================================
+// 鳥獣設定フォームクリア
+// =================================
+
+function clearAnimalSettingsForm() {
+
+  document.getElementById(
+    'animalSettingName'
+  ).value = '';
+
+
+  document.getElementById(
+    'animalSettingUnit'
+  ).value =
+    '頭';
+
+
+  document.getElementById(
+    'animalSettingActive'
+  ).checked =
+    true;
+
+}
+
+  
+  
+
+  // =================================
 // 弾種設定読み込み
 // =================================
 
