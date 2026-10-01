@@ -5954,16 +5954,30 @@ if (
 
 }
 
-  async function saveGunSettings() {
+ async function saveGunSettings() {
     
   const button =
     document.getElementById(
       'gunSettingSaveButton'
     );
 
+  // =================================
+  // 銃写真
+  // =================================
+
   const photoInput =
     document.getElementById(
       'gunSettingPhoto'
+    );
+
+
+  // =================================
+  // 許可証写真
+  // =================================
+
+  const permitPhotoInput =
+    document.getElementById(
+      'gunSettingPermitPhoto'
     );
 
 
@@ -6072,7 +6086,12 @@ if (
         'gunSettingSeller'
       ).value.trim(),
 
+    // 銃本体写真
     gunPhotoDataUrl:
+      '',
+
+    // 許可証写真
+    permitPhotoDataUrl:
       ''
 
   };
@@ -6131,6 +6150,24 @@ if (
 
 
     // =================================
+    // 許可証写真
+    // =================================
+
+    if (
+      permitPhotoInput &&
+      permitPhotoInput.files &&
+      permitPhotoInput.files[0]
+    ) {
+
+      data.permitPhotoDataUrl =
+        await fileToDataUrl_(
+          permitPhotoInput.files[0]
+        );
+
+    }
+
+
+    // =================================
     // GASへ送信
     // =================================
 
@@ -6169,16 +6206,30 @@ if (
       '銃砲情報を保存しました。'
     );
 
+
+    // =================================
     // 最新データを再取得
+    // =================================
+
     loadData(
       result.rowNumber
     );
 
 
-    // 写真選択だけクリア
+    // =================================
+    // ファイル選択だけクリア
+    // =================================
+
     if (photoInput) {
-  
+
       photoInput.value = '';
+
+    }
+
+
+    if (permitPhotoInput) {
+
+      permitPhotoInput.value = '';
 
     }
 
