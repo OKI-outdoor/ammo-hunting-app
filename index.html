@@ -2091,23 +2091,49 @@
       ">
     </div>
 
+    <div
+  style="
+    margin:16px 0 20px;
+    padding:14px;
+    background:#f3f5f4;
+    border-radius:10px;
+    line-height:1.7;
+    font-size:14px;
+  "
+>
+  <strong>初期在庫とは</strong><br>
 
-    <!-- 年度 -->
-    <div class="form-group">
+  アプリを使い始める前から所有している実包を
+  登録するための機能です。<br><br>
 
-      <label for="initialStockFiscalYear">
-        年度
-      </label>
+  すでに「購入」として登録している実包は、
+  二重計上になるため初期在庫には登録しないでください。
+</div>
 
-      <select id="initialStockFiscalYear">
+   <!-- 基準日 -->
+<div class="form-group">
 
-        <option value="">
-          年度を選択
-        </option>
+  <label for="initialStockDate">
+    基準日
+  </label>
 
-      </select>
+  <input
+    type="date"
+    id="initialStockDate"
+  >
 
-    </div>
+  <div
+    style="
+      margin-top:6px;
+      font-size:14px;
+      color:#666;
+      line-height:1.6;
+    "
+  >
+    この日時点ですでに所有している実包を登録します。
+  </div>
+
+</div>
 
 
     <!-- 弾種 -->
