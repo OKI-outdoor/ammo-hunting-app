@@ -6654,6 +6654,91 @@ async function saveInitialStockSettings() {
   }
 
 }
+
+  // =================================
+// 登録済み初期在庫をフォームに読み込む
+// =================================
+
+function loadInitialStockSettings() {
+
+  const select =
+    document.getElementById(
+      'initialStockSelect'
+    );
+
+  const recordId =
+    select.value;
+
+
+  // 「新しい初期在庫を登録」の場合
+  if (!recordId) {
+
+    document.getElementById(
+      'initialStockAmmo'
+    ).value = '';
+
+    document.getElementById(
+      'initialStockQuantity'
+    ).value = '';
+
+    document.getElementById(
+      'initialStockNote'
+    ).value = '';
+
+    return;
+  }
+
+
+  const record =
+    (appData.records || [])
+      .find(function(item) {
+
+        return (
+          item['記録ID'] ===
+          recordId
+        );
+
+      });
+
+
+  if (!record) {
+    return;
+  }
+
+
+  // 基準日
+  const dateValue =
+    String(
+      record['日付'] || ''
+    );
+
+  document.getElementById(
+    'initialStockDate'
+  ).value =
+    dateValue.substring(0, 10);
+
+
+  // 弾種
+  document.getElementById(
+    'initialStockAmmo'
+  ).value =
+    record['弾種'] || '';
+
+
+  // 数量
+  document.getElementById(
+    'initialStockQuantity'
+  ).value =
+    record['数量'] || '';
+
+
+  // 備考
+  document.getElementById(
+    'initialStockNote'
+  ).value =
+    record['備考'] || '';
+
+}
   
   // =================================
 // 鳥獣設定読み込み
