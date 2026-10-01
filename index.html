@@ -2051,6 +2051,157 @@
   </div>
 
 </section>
+
+  <!-- ================================= -->
+<!-- 初期在庫設定ページ -->
+<!-- ================================= -->
+
+<section id="initialStockPage" class="page">
+
+  <div class="card">
+
+    <h2>📋 初期在庫設定</h2>
+
+
+    <!-- 登録済み初期在庫 -->
+    <div class="form-group">
+
+      <label for="initialStockSelect">
+        登録済み初期在庫
+      </label>
+
+      <select
+        id="initialStockSelect"
+        onchange="loadInitialStockSettings()"
+      >
+
+        <option value="">
+          新しい初期在庫を登録
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      style="
+        margin:20px 0;
+        border-top:2px solid #e5e5e5;
+      ">
+    </div>
+
+
+    <!-- 年度 -->
+    <div class="form-group">
+
+      <label for="initialStockFiscalYear">
+        年度
+      </label>
+
+      <select id="initialStockFiscalYear">
+
+        <option value="">
+          年度を選択
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- 弾種 -->
+    <div class="form-group">
+
+      <label for="initialStockAmmo">
+        弾種
+      </label>
+
+      <select id="initialStockAmmo">
+
+        <option value="">
+          弾種を選択
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- 初期在庫数 -->
+    <div class="form-group">
+
+      <label for="initialStockQuantity">
+        初期在庫数
+      </label>
+
+      <input
+        type="number"
+        id="initialStockQuantity"
+        min="0"
+        step="1"
+        placeholder="例：100"
+      >
+
+      <div
+        style="
+          margin-top:6px;
+          font-size:14px;
+          color:#666;
+        "
+      >
+        単位：発
+      </div>
+
+    </div>
+
+
+    <!-- 備考 -->
+    <div class="form-group">
+
+      <label for="initialStockNote">
+        備考
+      </label>
+
+      <textarea
+        id="initialStockNote"
+        rows="3"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <!-- 保存 -->
+    <button
+      type="button"
+      class="main-button"
+      id="initialStockSaveButton"
+      onclick="saveInitialStockSettings()"
+    >
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <!-- 戻る -->
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')"
+    >
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</section>
+  
   
 <!-- ====================== -->
 <!-- 下部メニュー -->
