@@ -6515,9 +6515,14 @@ async function saveInitialStockSettings() {
       'initialStockSelect'
     ).value;
 
-  const date =
+    const date =
     document.getElementById(
       'initialStockDate'
+    ).value;
+
+  const purpose =
+    document.getElementById(
+      'initialStockPurpose'
     ).value;
 
   const ammo =
@@ -6587,8 +6592,11 @@ async function saveInitialStockSettings() {
     recordId:
       recordId,
 
-    date:
+      date:
       date,
+
+    purpose:
+      purpose,
 
     ammoType:
       ammo,
