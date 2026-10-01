@@ -1709,31 +1709,28 @@
 
   </div>
 
-    <!-- =================================
-     弾種設定ページ
-================================= -->
+  </section>
 
-<div
-  id="ammoSettingsPage"
-  class="page"
->
+ <!-- ================================= -->
+<!-- 弾種設定ページ -->
+<!-- ================================= -->
+
+<section id="ammoSettingsPage" class="page">
 
   <div class="card">
 
     <h2>📦 弾種設定</h2>
 
 
-    <!-- 登録済み弾種 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingSelect">
         登録済み弾種
       </label>
 
       <select
         id="ammoSettingSelect"
-        onchange="loadAmmoSettings()"
-      >
+        onchange="loadAmmoSettings()">
 
         <option value="">
           新しい弾種を登録
@@ -1744,10 +1741,17 @@
     </div>
 
 
-    <!-- 弾種 -->
+    <div
+      style="
+        margin:20px 0;
+        border-top:2px solid #e5e5e5;
+      ">
+    </div>
+
+
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingName">
         弾種
       </label>
 
@@ -1760,10 +1764,14 @@
     </div>
 
 
-    <!-- メーカー -->
+    <h3 style="margin-top:28px;">
+      弾薬詳細
+    </h3>
+
+
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingMaker">
         メーカー
       </label>
 
@@ -1776,10 +1784,9 @@
     </div>
 
 
-    <!-- 商品名 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingProductName">
         商品名
       </label>
 
@@ -1792,10 +1799,9 @@
     </div>
 
 
-    <!-- 口径・番径 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingCaliber">
         口径・番径
       </label>
 
@@ -1808,10 +1814,9 @@
     </div>
 
 
-    <!-- 弾頭重量 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingWeight">
         弾頭重量
       </label>
 
@@ -1824,10 +1829,9 @@
     </div>
 
 
-    <!-- 散弾号数 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingShotSize">
         散弾号数
       </label>
 
@@ -1840,10 +1844,9 @@
     </div>
 
 
-    <!-- 材質 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingMaterial">
         材質
       </label>
 
@@ -1856,10 +1859,9 @@
     </div>
 
 
-    <!-- 1箱の入数 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingBoxQuantity">
         1箱の入数
       </label>
 
@@ -1873,10 +1875,9 @@
     </div>
 
 
-    <!-- 用途 -->
     <div class="form-group">
 
-      <label>
+      <label for="ammoSettingPurpose">
         用途
       </label>
 
@@ -1889,8 +1890,11 @@
     </div>
 
 
-    <!-- 使用中 -->
     <div class="form-group">
+
+      <label for="ammoSettingActive">
+        使用状態
+      </label>
 
       <label>
         <input
@@ -1904,29 +1908,30 @@
     </div>
 
 
-    <!-- 保存 -->
+    <div style="height:20px;"></div>
+
+
     <button
       type="button"
       class="main-button"
       id="ammoSettingSaveButton"
-      onclick="saveAmmoSettings()"
-    >
+      onclick="saveAmmoSettings()">
       保存
     </button>
 
 
-    <!-- 戻る -->
+    <div style="height:10px;"></div>
+
+
     <button
       type="button"
-      class="sub-button"
-      onclick="showPage('settingsPage')"
-    >
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
       ← 初期設定へ戻る
     </button>
 
   </div>
 
-</div>
 </section>
   
 <!-- ====================== -->
