@@ -2113,47 +2113,58 @@
 
 
   // =================================
-  // 初期表示
-  // =================================
+// 初期表示
+// =================================
 
-  loadData();
+loadData();
 
 
-  function loadData(
+function loadData(
   selectedGunRow = 0,
   selectedAmmoRow = 0,
   selectedAnimalRow = 0
 ) {
 
-    document.getElementById('status')
-      .textContent =
-      'データ読み込み中…';
+  document.getElementById(
+    'status'
+  ).textContent =
+    'データ読み込み中…';
 
 
-    fetch(API_URL)
+  fetch(API_URL)
 
-      .then(function(response) {
+    .then(function(response) {
 
-        if (!response.ok) {
+      if (!response.ok) {
 
-          throw new Error(
-            'HTTPエラー: ' +
-            response.status
-          );
+        throw new Error(
+          'HTTPエラー: ' +
+          response.status
+        );
 
-        }
+      }
 
-        return response.json();
+      return response.json();
 
-      })
+    })
 
-      .then(function(data) {
+    .then(function(data) {
 
-        appData = data;
+      appData = data;
 
-        renderAll();
 
-        // 銃砲設定で編集中だった銃を再選択
+      // =================================
+      // 各画面を描画
+      // =================================
+
+      renderAll();
+
+
+      // =================================
+      // 銃砲設定
+      // 保存した銃を再選択
+      // =================================
+
       if (selectedGunRow) {
 
         const gunSelect =
@@ -2161,80 +2172,94 @@
             'gunSettingSelect'
           );
 
-      if (gunSelect) {
+        if (gunSelect) {
 
           gunSelect.value =
-            String(selectedGunRow);
+            String(
+              selectedGunRow
+            );
 
           loadGunSettings();
 
-  }
+        }
 
-}
-  // =================================
-// 弾種設定で編集中だった弾種を再選択
-// =================================
+      }
 
-if (selectedAmmoRow) {
 
-  const ammoSelect =
-    document.getElementById(
-      'ammoSettingSelect'
-    );
+      // =================================
+      // 弾種設定
+      // 保存した弾種を再選択
+      // =================================
 
-  if (ammoSelect) {
+      if (selectedAmmoRow) {
 
-    ammoSelect.value =
-      String(selectedAmmoRow);
+        const ammoSelect =
+          document.getElementById(
+            'ammoSettingSelect'
+          );
 
-    loadAmmoSettings();
+        if (ammoSelect) {
 
-  }
+          ammoSelect.value =
+            String(
+              selectedAmmoRow
+            );
 
-}
-        
-        document.getElementById('status')
-          .textContent =
-          '最新データを読み込みました';
+          loadAmmoSettings();
 
-      })
+        }
 
-      .catch(function(error) {
+      }
 
-        console.error(error);
 
-        document.getElementById('status')
-          .textContent =
-          'データ読み込みエラー';
+      // =================================
+      // 鳥獣設定
+      // 保存した鳥獣を再選択
+      // =================================
 
-        alert(
-          'データの読み込みに失敗しました\n' +
-          error.message
-        );
+      if (selectedAnimalRow) {
 
-      });
+        const animalSelect =
+          document.getElementById(
+            'animalSettingSelect'
+          );
 
-  }
+        if (animalSelect) {
 
-// =================================
-// 鳥獣設定で編集中だった鳥獣を再選択
-// =================================
+          animalSelect.value =
+            String(
+              selectedAnimalRow
+            );
 
-if (selectedAnimalRow) {
+          loadAnimalSettings();
 
-  const animalSelect =
-    document.getElementById(
-      'animalSettingSelect'
-    );
+        }
 
-  if (animalSelect) {
+      }
 
-    animalSelect.value =
-      String(selectedAnimalRow);
 
-    loadAnimalSettings();
+      document.getElementById(
+        'status'
+      ).textContent =
+        '最新データを読み込みました';
 
-  }
+    })
+
+    .catch(function(error) {
+
+      console.error(error);
+
+      document.getElementById(
+        'status'
+      ).textContent =
+        'データ読み込みエラー';
+
+      alert(
+        'データの読み込みに失敗しました\n' +
+        error.message
+      );
+
+    });
 
 }
 
