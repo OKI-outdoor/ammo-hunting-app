@@ -1696,6 +1696,46 @@
       保存
     </button>
 
+    <!-- =========================================
+     銃所持許可証写真
+========================================= -->
+
+<div class="form-group">
+
+  <label for="gunSettingPermitPhoto">
+    許可証写真
+  </label>
+
+  <input
+    type="file"
+    id="gunSettingPermitPhoto"
+    accept="image/*"
+    capture="environment"
+  >
+
+</div>
+
+
+<!-- 保存済み許可証写真 -->
+
+<div
+  id="gunSettingPermitPhotoSaved"
+  style="
+    display:none;
+    margin-top:10px;
+  "
+>
+
+  <a
+    id="gunSettingPermitPhotoLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    📄 許可証写真を見る
+  </a>
+
+</div>
 
     <div style="height:10px;"></div>
 
