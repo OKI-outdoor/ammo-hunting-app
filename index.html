@@ -6698,7 +6698,7 @@ async function saveInitialStockSettings() {
 
 }
 
-  // =================================
+// =================================
 // 登録済み初期在庫をフォームに読み込む
 // =================================
 
@@ -6714,7 +6714,11 @@ function loadInitialStockSettings() {
 
 
   // 「新しい初期在庫を登録」の場合
-  if (!recordId) {
+   if (!recordId) {
+
+    document.getElementById(
+      'initialStockPurpose'
+    ).value = '';
 
     document.getElementById(
       'initialStockAmmo'
@@ -6760,6 +6764,11 @@ function loadInitialStockSettings() {
   ).value =
     dateValue.substring(0, 10);
 
+    // 目的
+  document.getElementById(
+    'initialStockPurpose'
+  ).value =
+    record['目的'] || '';
 
   // 弾種
   document.getElementById(
@@ -6783,7 +6792,7 @@ function loadInitialStockSettings() {
 
 }
   
-  // =================================
+// =================================
 // 鳥獣設定読み込み
 // =================================
 
