@@ -2605,6 +2605,8 @@ if (photoLink) {
   
   renderGunSettings();
 
+  renderAmmoSettings();
+
   setToday();
 
 }
@@ -5762,6 +5764,75 @@ if (
 
     button.textContent =
       '保存';
+
+  }
+
+}
+
+  // =================================
+// 弾種設定一覧表示
+// =================================
+
+function renderAmmoSettings() {
+
+  const select =
+    document.getElementById(
+      'ammoSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  // 現在選択中の行番号
+  const currentValue =
+    select.value;
+
+
+  // 一旦クリア
+  select.innerHTML =
+    '<option value="">新しい弾種を登録</option>';
+
+
+  if (
+    !appData.ammoSettings ||
+    !Array.isArray(
+      appData.ammoSettings
+    )
+  ) {
+    return;
+  }
+
+
+  appData.ammoSettings
+    .forEach(function(ammo) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        String(
+          ammo.rowNumber
+        );
+
+      option.textContent =
+        ammo.ammoName;
+
+      select.appendChild(
+        option
+      );
+
+    });
+
+
+  // 以前の選択状態を戻す
+  if (currentValue) {
+
+    select.value =
+      currentValue;
 
   }
 
