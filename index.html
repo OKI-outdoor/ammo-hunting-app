@@ -6095,7 +6095,11 @@ async function saveAmmoSettings() {
 
 
     // 最新データを再取得
-    loadData();
+    // 保存した弾種を再選択する
+    loadData(
+      0,
+    result.rowNumber
+    );
 
 
   } catch (error) {
