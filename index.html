@@ -7617,6 +7617,218 @@ function clearAmmoSettingsForm() {
 
 }
 
+  function updateGunRenewalInfo() {
+
+  const expiryInput =
+    document.getElementById(
+      'gunSettingExpiry'
+    );
+
+  const info =
+    document.getElementById(
+      'gunRenewalInfo'
+    );
+
+  const period =
+    document.getElementById(
+      'gunRenewalPeriod'
+    );
+
+  const message =
+    document.getElementById(
+      'gunRenewalMessage'
+    );
+
+
+  if (
+    !expiryInput ||
+    !info ||
+    !period ||
+    !message
+  ) {
+    return;
+  }
+
+
+  // 許可期限が未入力
+  if (!expiryInput.value) {
+
+    info.style.display = 'none';
+
+    return;
+  }
+
+
+  // =================================
+  // 許可期限
+  // =================================
+
+  const expiry =
+    new Date(
+      expiryInput.value +
+      'T00:00:00'
+    );
+
+
+  // =================================
+  // 更新申請開始日
+  // 許可期限の2か月前
+  // =================================
+
+  const renewalStart =
+    new Date(expiry);
+
+  renewalStart.setMonth(
+    renewalStart.getMonth() - 2
+  );
+
+
+  // =================================
+  // 更新申請終了日
+  // 許可期限の1か月前
+  // =================================
+
+  const renewalEnd =
+    new Date(expiry);
+
+  renewalEnd.setMonth(
+    renewalEnd.getMonth() - 1
+  );
+
+
+  // =================================
+  // 黄色警告開始日
+  // 更新申請開始日の1か月前
+  // =================================
+
+  const warningStart =
+    new Date(renewalStart);
+
+  warningStart.setMonth(
+    warningStart.getMonth() - 1
+  );
+
+
+  // 今日
+  const today =
+    new Date();
+
+  today.setHours(
+    0, 0, 0, 0
+  );
+
+
+  // =================================
+  // 日付表示
+  // =================================
+
+  function formatDate(date) {
+
+    return (
+      date.getFullYear() +
+      '/' +
+      String(
+        date.getMonth() + 1
+      ).padStart(2, '0') +
+      '/' +
+      String(
+        date.getDate()
+      ).padStart(2, '0')
+    );
+
+  }
+
+
+  period.textContent =
+    formatDate(renewalStart) +
+    ' ～ ' +
+    formatDate(renewalEnd);
+
+
+  info.style.display =
+    'block';
+
+
+  // =================================
+  // 状態判定
+  // =================================
+
+  if (today > expiry) {
+
+    // 許可期限超過
+
+    info.style.background =
+      '#ffcccc';
+
+    info.style.border =
+      '2px solid #b00020';
+
+    info.style.color =
+      '#b00020';
+
+    message.textContent =
+      '⚠ 許可期限を過ぎています。';
+
+
+  } else if (
+    today >= renewalStart &&
+    today <= renewalEnd
+  ) {
+
+    // 更新申請期間中
+
+    info.style.background =
+      '#ffd6d6';
+
+    info.style.border =
+      '2px solid #d00000';
+
+    info.style.color =
+      '#b00000';
+
+    message.textContent =
+      '🔴 更新申請期間中です。';
+
+
+  } else if (
+    today >= warningStart &&
+    today < renewalStart
+  ) {
+
+    // 更新申請期間が近い
+
+    info.style.background =
+      '#fff3cd';
+
+    info.style.border =
+      '2px solid #d6a700';
+
+    info.style.color =
+      '#765800';
+
+    message.textContent =
+      '🟡 更新申請期間が近づいています。';
+
+
+  } else {
+
+    // 通常
+
+    info.style.background =
+      '#f5f5f5';
+
+    info.style.border =
+      '1px solid #cccccc';
+
+    info.style.color =
+      '#333333';
+
+    message.textContent =
+      '';
+
+  }
+
+}
 </script>
 
 </body>
