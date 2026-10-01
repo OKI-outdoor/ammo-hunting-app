@@ -7494,6 +7494,23 @@ function getAmmoLedgerGroups_(
 
   return result;
 }
+
+  function testAmmoLedgerGroups() {
+
+  const groups =
+    getAmmoLedgerGroups_(
+      2026
+    );
+
+  console.log(
+    JSON.stringify(
+      groups,
+      null,
+      2
+    )
+  );
+
+}
   
 </script>
 
