@@ -7334,6 +7334,40 @@ function clearAmmoSettingsForm() {
   ).checked = true;
 
 }
+
+  /* =========================================================
+   年度実包等管理帳簿
+========================================================= */
+
+function getAmmoLedgerSheet_(
+  fiscalYear
+) {
+
+  const ss =
+    SpreadsheetApp
+      .getActiveSpreadsheet();
+
+  const sheetName =
+    String(fiscalYear) +
+    '年度_実包等管理帳簿';
+
+  const sheet =
+    ss.getSheetByName(
+      sheetName
+    );
+
+  if (!sheet) {
+
+    throw new Error(
+      '「' +
+      sheetName +
+      '」シートが見つかりません。'
+    );
+
+  }
+
+  return sheet;
+}
   
 </script>
 
