@@ -1709,6 +1709,225 @@
 
   </div>
 
+    <!-- =================================
+     弾種設定ページ
+================================= -->
+
+<div
+  id="ammoSettingsPage"
+  class="page"
+  style="display:none;"
+>
+
+  <div class="card">
+
+    <h2>📦 弾種設定</h2>
+
+
+    <!-- 登録済み弾種 -->
+    <div class="form-group">
+
+      <label>
+        登録済み弾種
+      </label>
+
+      <select
+        id="ammoSettingSelect"
+        onchange="loadAmmoSettings()"
+      >
+
+        <option value="">
+          新しい弾種を登録
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- 弾種 -->
+    <div class="form-group">
+
+      <label>
+        弾種
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingName"
+        placeholder="例：12番散弾"
+      >
+
+    </div>
+
+
+    <!-- メーカー -->
+    <div class="form-group">
+
+      <label>
+        メーカー
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingMaker"
+        placeholder="例：WINCHESTER"
+      >
+
+    </div>
+
+
+    <!-- 商品名 -->
+    <div class="form-group">
+
+      <label>
+        商品名
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingProductName"
+        placeholder="例：スーパーX"
+      >
+
+    </div>
+
+
+    <!-- 口径・番径 -->
+    <div class="form-group">
+
+      <label>
+        口径・番径
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingCaliber"
+        placeholder="例：12番"
+      >
+
+    </div>
+
+
+    <!-- 弾頭重量 -->
+    <div class="form-group">
+
+      <label>
+        弾頭重量
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingWeight"
+        placeholder="例：33g"
+      >
+
+    </div>
+
+
+    <!-- 散弾号数 -->
+    <div class="form-group">
+
+      <label>
+        散弾号数
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingShotSize"
+        placeholder="例：BB、2、3、4号"
+      >
+
+    </div>
+
+
+    <!-- 材質 -->
+    <div class="form-group">
+
+      <label>
+        材質
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingMaterial"
+        placeholder="例：鉛"
+      >
+
+    </div>
+
+
+    <!-- 1箱の入数 -->
+    <div class="form-group">
+
+      <label>
+        1箱の入数
+      </label>
+
+      <input
+        type="number"
+        id="ammoSettingBoxQuantity"
+        min="1"
+        placeholder="例：25"
+      >
+
+    </div>
+
+
+    <!-- 用途 -->
+    <div class="form-group">
+
+      <label>
+        用途
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingPurpose"
+        placeholder="例：狩猟"
+      >
+
+    </div>
+
+
+    <!-- 使用中 -->
+    <div class="form-group">
+
+      <label>
+        <input
+          type="checkbox"
+          id="ammoSettingActive"
+          checked
+        >
+        使用中
+      </label>
+
+    </div>
+
+
+    <!-- 保存 -->
+    <button
+      type="button"
+      class="main-button"
+      id="ammoSettingSaveButton"
+      onclick="saveAmmoSettings()"
+    >
+      保存
+    </button>
+
+
+    <!-- 戻る -->
+    <button
+      type="button"
+      class="sub-button"
+      onclick="showPage('settingsPage')"
+    >
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</div>
 </section>
   
 <!-- ====================== -->
