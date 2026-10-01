@@ -6278,14 +6278,13 @@ function renderAnimalSettings() {
 
 // =================================
 // 初期在庫設定
-// 年度・弾種の選択肢を表示
 // =================================
 
 function renderInitialStockSettings() {
 
-  const fiscalYearSelect =
+  const dateInput =
     document.getElementById(
-      'initialStockFiscalYear'
+      'initialStockDate'
     );
 
   const ammoSelect =
@@ -6293,116 +6292,61 @@ function renderInitialStockSettings() {
       'initialStockAmmo'
     );
 
+  const initialStockSelect =
+    document.getElementById(
+      'initialStockSelect'
+    );
+
 
   if (
-    !fiscalYearSelect ||
-    !ammoSelect
+    !dateInput ||
+    !ammoSelect ||
+    !initialStockSelect
   ) {
     return;
   }
 
 
   // =================================
-  // 年度
+  // 基準日
   // =================================
 
-  fiscalYearSelect.innerHTML =
-    '<option value="">年度を選択</option>';
+  // 日付がまだ入力されていない場合だけ
+  // 今日の日付を設定する
+  if (!dateInput.value) {
 
+    const today =
+      new Date();
 
-  const years = [];
+    const year =
+      today.getFullYear();
 
-  // APIから取得した年度
-  if (
-    appData.fiscalYears &&
-    Array.isArray(
-      appData.fiscalYears
-    )
-  ) {
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(2, '0');
 
-    appData.fiscalYears
-      .forEach(function(year) {
+    const day =
+      String(
+        today.getDate()
+      ).padStart(2, '0');
 
-        const number =
-          Number(year);
-
-        if (
-          number &&
-          !years.includes(number)
-        ) {
-          years.push(number);
-        }
-
-      });
-
+    dateInput.value =
+      year +
+      '-' +
+      month +
+      '-' +
+      day;
   }
-
-
-  // 現在年度も必ず候補に入れる
-  const today =
-    new Date();
-
-  let currentFiscalYear =
-    today.getFullYear();
-
-  // 1～3月は前年の年度
-  if (
-    today.getMonth() < 3
-  ) {
-    currentFiscalYear--;
-  }
-
-
-  if (
-    !years.includes(
-      currentFiscalYear
-    )
-  ) {
-    years.push(
-      currentFiscalYear
-    );
-  }
-
-
-  years.sort(
-    function(a, b) {
-      return b - a;
-    }
-  );
-
-
-  years.forEach(
-    function(year) {
-
-      const option =
-        document.createElement(
-          'option'
-        );
-
-      option.value =
-        String(year);
-
-      option.textContent =
-        year + '年度';
-
-      fiscalYearSelect.appendChild(
-        option
-      );
-
-    }
-  );
-
-
-  // 現在年度を初期選択
-  fiscalYearSelect.value =
-    String(
-      currentFiscalYear
-    );
 
 
   // =================================
   // 弾種
   // =================================
+
+  const currentAmmoValue =
+    ammoSelect.value;
+
 
   ammoSelect.innerHTML =
     '<option value="">弾種を選択</option>';
@@ -6437,90 +6381,97 @@ function renderInitialStockSettings() {
 
   }
 
-    // =================================
+
+  // 選択中の弾種があれば維持
+  if (currentAmmoValue) {
+    ammoSelect.value =
+      currentAmmoValue;
+  }
+
+
+  // =================================
   // 登録済み初期在庫
   // =================================
 
-  const initialStockSelect =
-    document.getElementById(
-      'initialStockSelect'
-    );
+  const currentInitialStock =
+    initialStockSelect.value;
 
 
-  if (initialStockSelect) {
-
-    initialStockSelect.innerHTML =
-      '<option value="">新しい初期在庫を登録</option>';
+  initialStockSelect.innerHTML =
+    '<option value="">新しい初期在庫を登録</option>';
 
 
-    if (
-      appData.records &&
-      Array.isArray(
-        appData.records
-      )
-    ) {
-
+  if (
+    appData.records &&
+    Array.isArray(
       appData.records
-        .forEach(function(record) {
+    )
+  ) {
 
-          // 初期在庫だけを対象
-          if (
-            record['区分'] !==
-            '初期在庫'
-          ) {
-            return;
-          }
+    appData.records
+      .forEach(function(record) {
 
-
-          const recordId =
-            record['記録ID'] || '';
-
-          const fiscalYear =
-            record['年度'] || '';
-
-          const ammo =
-            record['弾種'] || '';
-
-          const quantity =
-            Number(
-              record['数量'] || 0
-            );
+        if (
+          record['区分'] !==
+          '初期在庫'
+        ) {
+          return;
+        }
 
 
-          if (!recordId) {
-            return;
-          }
+        const recordId =
+          record['記録ID'] || '';
+
+        const date =
+          record['日付'] || '';
+
+        const ammo =
+          record['弾種'] || '';
+
+        const quantity =
+          Number(
+            record['数量'] || 0
+          );
 
 
-          const option =
-            document.createElement(
-              'option'
-            );
+        if (!recordId) {
+          return;
+        }
 
 
-          option.value =
-            recordId;
+        const option =
+          document.createElement(
+            'option'
+          );
+
+        option.value =
+          recordId;
+
+        option.textContent =
+          date +
+          ' / ' +
+          ammo +
+          ' / ' +
+          quantity +
+          '発';
 
 
-          option.textContent =
-            fiscalYear +
-            '年度 / ' +
-            ammo +
-            ' / ' +
-            quantity +
-            '発';
+        initialStockSelect
+          .appendChild(
+            option
+          );
 
-
-          initialStockSelect
-            .appendChild(
-              option
-            );
-
-        });
-
-    }
+      });
 
   }
+
+
+  // 選択中の初期在庫があれば維持
+  if (currentInitialStock) {
+    initialStockSelect.value =
+      currentInitialStock;
+  }
+
 }
   
   // =================================
