@@ -978,7 +978,7 @@
 
     <button
       class="main-button"
-      onclick="showSettingsSection('animals')">
+      onclick="showPage('animalSettingsPage')">
       🦌 鳥獣設定
     </button>
 
@@ -1916,6 +1916,124 @@
       class="main-button"
       id="ammoSettingSaveButton"
       onclick="saveAmmoSettings()">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</section>
+
+  <!-- ================================= -->
+<!-- 鳥獣設定ページ -->
+<!-- ================================= -->
+
+<section id="animalSettingsPage" class="page">
+
+  <div class="card">
+
+    <h2>🦌 鳥獣設定</h2>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingSelect">
+        登録済み鳥獣
+      </label>
+
+      <select
+        id="animalSettingSelect"
+        onchange="loadAnimalSettings()">
+
+        <option value="">
+          新しい鳥獣を登録
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      style="
+        margin:20px 0;
+        border-top:2px solid #e5e5e5;
+      ">
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingName">
+        鳥獣名
+      </label>
+
+      <input
+        type="text"
+        id="animalSettingName"
+        placeholder="例：エゾシカ"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingUnit">
+        単位
+      </label>
+
+      <select id="animalSettingUnit">
+
+        <option value="頭">
+          頭
+        </option>
+
+        <option value="羽">
+          羽
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingActive">
+        使用状態
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          id="animalSettingActive"
+          checked
+        >
+        使用中
+      </label>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="animalSettingSaveButton"
+      onclick="saveAnimalSettings()">
       保存
     </button>
 
