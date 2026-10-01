@@ -2001,7 +2001,10 @@
   loadData();
 
 
-  function loadData(selectedGunRow = 0) {
+  function loadData(
+  selectedGunRow = 0,
+  selectedAmmoRow = 0
+    ) {
 
     document.getElementById('status')
       .textContent =
@@ -2049,7 +2052,28 @@
   }
 
 }
+  // =================================
+// 弾種設定で編集中だった弾種を再選択
+// =================================
 
+if (selectedAmmoRow) {
+
+  const ammoSelect =
+    document.getElementById(
+      'ammoSettingSelect'
+    );
+
+  if (ammoSelect) {
+
+    ammoSelect.value =
+      String(selectedAmmoRow);
+
+    loadAmmoSettings();
+
+  }
+
+}
+        
         document.getElementById('status')
           .textContent =
           '最新データを読み込みました';
