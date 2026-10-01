@@ -2121,8 +2121,9 @@
 
   function loadData(
   selectedGunRow = 0,
-  selectedAmmoRow = 0
-    ) {
+  selectedAmmoRow = 0,
+  selectedAnimalRow = 0
+) {
 
     document.getElementById('status')
       .textContent =
@@ -2214,6 +2215,28 @@ if (selectedAmmoRow) {
       });
 
   }
+
+// =================================
+// 鳥獣設定で編集中だった鳥獣を再選択
+// =================================
+
+if (selectedAnimalRow) {
+
+  const animalSelect =
+    document.getElementById(
+      'animalSettingSelect'
+    );
+
+  if (animalSelect) {
+
+    animalSelect.value =
+      String(selectedAnimalRow);
+
+    loadAnimalSettings();
+
+  }
+
+}
 
 
   // =================================
