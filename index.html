@@ -6485,6 +6485,13 @@ async function saveInitialStockSettings() {
       'initialStockSaveButton'
     );
 
+  // 登録済み初期在庫を選択している場合は
+  // 記録IDが入る
+  const recordId =
+    document.getElementById(
+      'initialStockSelect'
+    ).value;
+
   const date =
     document.getElementById(
       'initialStockDate'
@@ -6534,11 +6541,11 @@ async function saveInitialStockSettings() {
 
   if (
     !Number.isFinite(quantity) ||
-    quantity < 0
+    quantity <= 0
   ) {
 
     alert(
-      '初期在庫数を入力してください。'
+      '初期在庫数は1発以上を入力してください。'
     );
 
     return;
@@ -6553,6 +6560,9 @@ async function saveInitialStockSettings() {
 
     action:
       'saveInitialStock',
+
+    recordId:
+      recordId,
 
     date:
       date,
@@ -6624,7 +6634,9 @@ async function saveInitialStockSettings() {
 
 
     alert(
-      '初期在庫を保存しました。'
+      recordId
+        ? '初期在庫を更新しました。'
+        : '初期在庫を保存しました。'
     );
 
 
