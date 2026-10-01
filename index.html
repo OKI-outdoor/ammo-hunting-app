@@ -6126,6 +6126,151 @@ function loadAnimalSettings() {
 
 }
 
+// =================================
+// 鳥獣設定保存
+// =================================
+
+async function saveAnimalSettings() {
+
+  const button =
+    document.getElementById(
+      'animalSettingSaveButton'
+    );
+
+
+  const data = {
+
+    action:
+      'saveAnimalSettings',
+
+    rowNumber:
+      Number(
+        document.getElementById(
+          'animalSettingSelect'
+        ).value
+      ) || 0,
+
+    animalName:
+      document.getElementById(
+        'animalSettingName'
+      ).value.trim(),
+
+    unit:
+      document.getElementById(
+        'animalSettingUnit'
+      ).value,
+
+    active:
+      document.getElementById(
+        'animalSettingActive'
+      ).checked
+
+  };
+
+
+  // =================================
+  // 必須チェック
+  // =================================
+
+  if (!data.animalName) {
+
+    alert(
+      '鳥獣名を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.unit) {
+
+    alert(
+      '単位を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '鳥獣情報を保存しました。'
+    );
+
+
+    // 最新データを再取得
+    loadData(
+      0,
+      0,
+      result.rowNumber
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    alert(
+      '鳥獣情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
 
 // =================================
 // 鳥獣設定フォームクリア
