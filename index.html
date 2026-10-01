@@ -5954,6 +5954,171 @@ function loadAmmoSettings() {
 
 }
 
+// =================================
+// 弾種設定保存
+// =================================
+
+async function saveAmmoSettings() {
+
+  const button =
+    document.getElementById(
+      'ammoSettingSaveButton'
+    );
+
+
+  const data = {
+
+    action:
+      'saveAmmoSettings',
+
+    rowNumber:
+      Number(
+        document.getElementById(
+          'ammoSettingSelect'
+        ).value
+      ) || 0,
+
+    ammoName:
+      document.getElementById(
+        'ammoSettingName'
+      ).value.trim(),
+
+    active:
+      document.getElementById(
+        'ammoSettingActive'
+      ).checked,
+
+    maker:
+      document.getElementById(
+        'ammoSettingMaker'
+      ).value.trim(),
+
+    productName:
+      document.getElementById(
+        'ammoSettingProductName'
+      ).value.trim(),
+
+    caliber:
+      document.getElementById(
+        'ammoSettingCaliber'
+      ).value.trim(),
+
+    weight:
+      document.getElementById(
+        'ammoSettingWeight'
+      ).value.trim(),
+
+    shotSize:
+      document.getElementById(
+        'ammoSettingShotSize'
+      ).value.trim(),
+
+    material:
+      document.getElementById(
+        'ammoSettingMaterial'
+      ).value.trim(),
+
+    boxQuantity:
+      document.getElementById(
+        'ammoSettingBoxQuantity'
+      ).value,
+
+    purpose:
+      document.getElementById(
+        'ammoSettingPurpose'
+      ).value.trim()
+
+  };
+
+
+  // =================================
+  // 必須チェック
+  // =================================
+
+  if (!data.ammoName) {
+
+    alert(
+      '弾種を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '弾種情報を保存しました。'
+    );
+
+
+    // 最新データを再取得
+    loadData();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '弾種情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+  
   // =================================
 // 弾種設定フォームクリア
 // =================================
