@@ -2740,7 +2740,7 @@ if (
 }
 
 
-  function loadGunSettings() {
+ function loadGunSettings() {
 
   const select =
     document.getElementById(
@@ -2896,51 +2896,117 @@ if (
   ).value =
     gun.seller || '';
 
-    // =================================
-// 登録済み銃写真を表示
-// =================================
 
-const photoSaved =
-  document.getElementById(
-    'gunSettingPhotoSaved'
-  );
+  // =================================
+  // 登録済み銃写真を表示
+  // =================================
 
-const photoLink =
-  document.getElementById(
-    'gunSettingPhotoLink'
-  );
+  const photoSaved =
+    document.getElementById(
+      'gunSettingPhotoSaved'
+    );
+
+  const photoLink =
+    document.getElementById(
+      'gunSettingPhotoLink'
+    );
 
 
-if (
-  gun.gunPhotoUrl &&
-  photoSaved &&
-  photoLink
-) {
-
-  photoSaved.style.display =
-    'block';
-
-  photoLink.href =
-    gun.gunPhotoUrl;
-
-} else {
-
-  if (photoSaved) {
+  if (
+    gun.gunPhotoUrl &&
+    photoSaved &&
+    photoLink
+  ) {
 
     photoSaved.style.display =
-      'none';
-
-  }
-
-  if (photoLink) {
+      'block';
 
     photoLink.href =
-      '#';
+      gun.gunPhotoUrl;
+
+  } else {
+
+    if (photoSaved) {
+      photoSaved.style.display =
+        'none';
+    }
+
+    if (photoLink) {
+      photoLink.href =
+        '#';
+    }
 
   }
 
+
+  // =================================
+  // 登録済み許可証写真を表示
+  // =================================
+
+  const permitPhotoSaved =
+    document.getElementById(
+      'gunSettingPermitPhotoSaved'
+    );
+
+  const permitPhotoLink =
+    document.getElementById(
+      'gunSettingPermitPhotoLink'
+    );
+
+
+  if (
+    gun.permitPhotoUrl &&
+    permitPhotoSaved &&
+    permitPhotoLink
+  ) {
+
+    permitPhotoSaved.style.display =
+      'block';
+
+    permitPhotoLink.href =
+      gun.permitPhotoUrl;
+
+  } else {
+
+    if (permitPhotoSaved) {
+      permitPhotoSaved.style.display =
+        'none';
+    }
+
+    if (permitPhotoLink) {
+      permitPhotoLink.href =
+        '#';
+    }
+
+  }
+
+
+  // =================================
+  // ファイル選択欄をクリア
+  // =================================
+
+  const photoInput =
+    document.getElementById(
+      'gunSettingPhoto'
+    );
+
+  if (photoInput) {
+    photoInput.value = '';
+  }
+
+
+  const permitPhotoInput =
+    document.getElementById(
+      'gunSettingPermitPhoto'
+    );
+
+  if (permitPhotoInput) {
+    permitPhotoInput.value = '';
+  }
+
 }
-}
+
+
 
 function clearGunSettingsForm() {
 
@@ -2980,6 +3046,10 @@ function clearGunSettingsForm() {
   );
 
 
+  // =================================
+  // 銃写真の選択をクリア
+  // =================================
+
   const photo =
     document.getElementById(
       'gunSettingPhoto'
@@ -2989,26 +3059,70 @@ function clearGunSettingsForm() {
     photo.value = '';
   }
 
+
+  // =================================
+  // 銃写真リンクを非表示
+  // =================================
+
   const photoSaved =
-  document.getElementById(
-    'gunSettingPhotoSaved'
-  );
+    document.getElementById(
+      'gunSettingPhotoSaved'
+    );
 
-const photoLink =
-  document.getElementById(
-    'gunSettingPhotoLink'
-  );
+  const photoLink =
+    document.getElementById(
+      'gunSettingPhotoLink'
+    );
 
-if (photoSaved) {
-  photoSaved.style.display =
-    'none';
-}
+  if (photoSaved) {
+    photoSaved.style.display =
+      'none';
+  }
 
-if (photoLink) {
-  photoLink.href =
-    '#';
-}
-  
+  if (photoLink) {
+    photoLink.href =
+      '#';
+  }
+
+
+  // =================================
+  // 許可証写真の選択をクリア
+  // =================================
+
+  const permitPhoto =
+    document.getElementById(
+      'gunSettingPermitPhoto'
+    );
+
+  if (permitPhoto) {
+    permitPhoto.value = '';
+  }
+
+
+  // =================================
+  // 許可証写真リンクを非表示
+  // =================================
+
+  const permitPhotoSaved =
+    document.getElementById(
+      'gunSettingPermitPhotoSaved'
+    );
+
+  const permitPhotoLink =
+    document.getElementById(
+      'gunSettingPermitPhotoLink'
+    );
+
+  if (permitPhotoSaved) {
+    permitPhotoSaved.style.display =
+      'none';
+  }
+
+  if (permitPhotoLink) {
+    permitPhotoLink.href =
+      '#';
+  }
+
 }
   // =================================
   // 全体表示
