@@ -1000,10 +1000,43 @@
   </button>
 
 
+  <div
+  style="
+    margin-top:10px;
+    padding-top:12px;
+    border-top:1px solid #ddd;
+  "
+>
+
+  <label
+    for="ledgerPdfEmail"
+    style="
+      display:block;
+      margin-bottom:6px;
+      font-weight:bold;
+    "
+  >
+    送信先メールアドレス
+  </label>
+
+  <input
+    type="email"
+    id="ledgerPdfEmail"
+    placeholder="example@email.com"
+    autocomplete="email"
+    style="
+      width:100%;
+      box-sizing:border-box;
+      padding:12px;
+      margin-bottom:10px;
+      font-size:16px;
+    "
+  >
+
   <button
     type="button"
-    id="shareLedgerPdfButton"
-    onclick="shareAnnualLedgerPdf()"
+    id="sendLedgerPdfEmailButton"
+    onclick="sendAnnualLedgerPdfEmail()"
     style="
       width:100%;
       padding:13px;
@@ -1011,8 +1044,10 @@
       font-weight:bold;
     "
   >
-    📤 共有
+    ✉️ PDFをメール送信
   </button>
+
+</div>
 
 </div>
 
