@@ -2725,21 +2725,82 @@ try {
       'status'
     );
 
+
+  // =================================
   // オフラインの場合
+  // =================================
+
   if (!navigator.onLine) {
 
-    status.textContent =
-      '📴 オフラインモード';
+    const savedData =
+      localStorage.getItem(
+        'ammoHuntingAppData'
+      );
 
-    console.log(
-      'オフラインのため通信を行えません。'
+    const savedAt =
+      localStorage.getItem(
+        'ammoHuntingAppDataSavedAt'
+      );
+
+
+    // 保存データがある場合
+    if (savedData) {
+
+      try {
+
+        appData =
+          JSON.parse(
+            savedData
+          );
+
+
+        // 画面を再表示
+        renderAll();
+
+
+        status.textContent =
+          '📴 オフラインモード';
+
+
+        console.log(
+          '端末に保存したデータを読み込みました。',
+          savedAt
+        );
+
+
+        return;
+
+
+      } catch (loadError) {
+
+        console.error(
+          '保存データの読み込みに失敗しました。',
+          loadError
+        );
+
+      }
+
+    }
+
+
+    // 保存データがない場合
+    status.textContent =
+      '📴 オフライン・保存データなし';
+
+    alert(
+      'オフラインです。\n' +
+      '端末に保存されたデータがありません。'
     );
 
     return;
 
   }
 
-  // オンラインなのにエラーになった場合
+
+  // =================================
+  // オンラインなのに通信エラーの場合
+  // =================================
+
   status.textContent =
     'データ読み込みエラー';
 
