@@ -1,5 +1,5 @@
 const CACHE_NAME =
-  'ammo-hunting-app-v2';
+  'ammo-hunting-app-v3';
 
 const APP_FILES = [
   './',
@@ -53,6 +53,15 @@ self.addEventListener(
     ) {
       return;
     }
+
+    // API通信はキャッシュしない
+if (
+  event.request.url.includes(
+    'ammo-gas-api.kikorinmura.workers.dev'
+  )
+) {
+  return;
+}
 
     event.respondWith(
 
