@@ -8461,6 +8461,179 @@ function clearAmmoSettingsForm() {
   }
 
 }
+
+  async function generateAnnualLedgerPdf() {
+
+  const fiscalYear =
+    document.getElementById(
+      'summaryFiscalYear'
+    ).value;
+
+
+  if (!fiscalYear) {
+
+    alert(
+      '年度を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  const ok =
+    confirm(
+      fiscalYear +
+      '年度の実包等管理帳簿PDFを作成しますか？'
+    );
+
+
+  if (!ok) {
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      'generateLedgerPdfButton'
+    );
+
+
+  const resultArea =
+    document.getElementById(
+      'ledgerPdfResult'
+    );
+
+
+  button.disabled = true;
+
+  button.textContent =
+    '📄 PDFを作成中…';
+
+
+  resultArea.style.display =
+    'none';
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+              action:
+                'generateAmmoLedgerPdf',
+
+              fiscalYear:
+                Number(
+                  fiscalYear
+                )
+            })
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        'PDFの作成に失敗しました。'
+      );
+
+    }
+
+
+    // ===============================
+    // 作成結果表示
+    // ===============================
+
+    document.getElementById(
+      'ledgerPdfInfo'
+    ).innerHTML =
+      '<strong>' +
+      result.fiscalYear +
+      '年度 実包等管理帳簿</strong><br>' +
+      '作成ページ数：' +
+      result.pages +
+      '<br>' +
+      '全弾種残数：' +
+      result.totalBalance +
+      '発';
+
+
+    // ===============================
+    // PDFを開く
+    // ===============================
+
+    const openButton =
+      document.getElementById(
+        'openLedgerPdfButton'
+      );
+
+
+    openButton.onclick =
+      function() {
+
+        window.open(
+          result.fileUrl,
+          '_blank'
+        );
+
+      };
+
+
+    // 後で共有処理でも使用
+    window.latestLedgerPdf =
+      result;
+
+
+    resultArea.style.display =
+      'block';
+
+
+    alert(
+      result.fiscalYear +
+      '年度のPDFを作成しました。'
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      'PDF作成エラー：' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '📄 年度帳簿PDFを作成';
+
+  }
+
+}
   
 </script>
 
