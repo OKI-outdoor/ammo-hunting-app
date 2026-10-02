@@ -1,5 +1,5 @@
 const CACHE_NAME =
-  'ammo-hunting-app-v1';
+  'ammo-hunting-app-v2';
 
 const APP_FILES = [
   './',
