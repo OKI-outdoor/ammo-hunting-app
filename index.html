@@ -946,6 +946,75 @@
         📋 年度帳簿を作成
       </button>
 
+      <div style="margin-top:12px;">
+
+  <button
+    type="button"
+    id="generateLedgerPdfButton"
+    onclick="generateAnnualLedgerPdf()"
+    style="
+      width:100%;
+      padding:14px;
+      font-size:18px;
+      font-weight:bold;
+    "
+  >
+    📄 年度帳簿PDFを作成
+  </button>
+
+</div>
+
+
+<div
+  id="ledgerPdfResult"
+  style="
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    border:1px solid #ccc;
+    border-radius:12px;
+  "
+>
+
+  <div
+    id="ledgerPdfInfo"
+    style="
+      margin-bottom:12px;
+      line-height:1.6;
+    "
+  ></div>
+
+
+  <button
+    type="button"
+    id="openLedgerPdfButton"
+    style="
+      width:100%;
+      padding:13px;
+      margin-bottom:10px;
+      font-size:17px;
+      font-weight:bold;
+    "
+  >
+    📄 PDFを開く
+  </button>
+
+
+  <button
+    type="button"
+    id="shareLedgerPdfButton"
+    style="
+      width:100%;
+      padding:13px;
+      font-size:17px;
+      font-weight:bold;
+    "
+  >
+    📤 共有
+  </button>
+
+</div>
+
     </div>
 
   </div>
