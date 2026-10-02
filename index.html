@@ -9092,18 +9092,74 @@ window.addEventListener(
   }
 );
 
-
 // =================================
-// オフラインになったことを検知
+// 通信復帰チェック
 // =================================
 
-window.addEventListener(
-  'offline',
-  function() {
+let wasOffline =
+  !navigator.onLine;
 
-    console.log(
-      'オフラインになりました。'
-    );
+
+async function checkConnection() {
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'GET',
+          cache: 'no-store'
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        '通信できません'
+      );
+
+    }
+
+
+    // オフラインから復帰した場合
+    if (wasOffline) {
+
+      console.log(
+        '通信が復活しました。'
+      );
+
+
+      const status =
+        document.getElementById(
+          'status'
+        );
+
+
+      if (status) {
+
+        status.textContent =
+          '🔄 最新データを更新中…';
+
+      }
+
+
+      wasOffline =
+        false;
+
+
+      // 最新データを取得
+      loadData();
+
+    }
+
+
+  } catch (error) {
+
+    // 通信できない
+    wasOffline =
+      true;
 
 
     const status =
@@ -9120,6 +9176,14 @@ window.addEventListener(
     }
 
   }
+
+}
+
+
+// 5秒ごとに通信状態を確認
+setInterval(
+  checkConnection,
+  5000
 );
     
 </script>
