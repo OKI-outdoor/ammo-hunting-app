@@ -1003,6 +1003,7 @@
   <button
     type="button"
     id="shareLedgerPdfButton"
+    onclick="shareAnnualLedgerPdf()"
     style="
       width:100%;
       padding:13px;
@@ -8634,7 +8635,84 @@ function clearAmmoSettingsForm() {
   }
 
 }
-  
+
+  async function shareAnnualLedgerPdf() {
+
+  const result =
+    window.latestLedgerPdf;
+
+
+  if (
+    !result ||
+    !result.fileUrl
+  ) {
+
+    alert(
+      '先に年度帳簿PDFを作成してください。'
+    );
+
+    return;
+
+  }
+
+
+  const shareData = {
+
+    title:
+      result.fiscalYear +
+      '年度 実包等管理帳簿',
+
+    text:
+      result.fiscalYear +
+      '年度の実包等管理帳簿PDFです。',
+
+    url:
+      result.fileUrl
+
+  };
+
+
+  // スマホなどで共有機能が使える場合
+  if (navigator.share) {
+
+    try {
+
+      await navigator.share(
+        shareData
+      );
+
+      return;
+
+    } catch (error) {
+
+      // ユーザーが共有画面を閉じた場合
+      if (
+        error.name ===
+        'AbortError'
+      ) {
+
+        return;
+
+      }
+
+      console.error(
+        '共有エラー：',
+        error
+      );
+
+    }
+
+  }
+
+
+  // 共有機能が使えない場合はPDFを開く
+  window.open(
+    result.fileUrl,
+    '_blank'
+  );
+
+}
+ 
 </script>
 
 </body>
