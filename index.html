@@ -2689,19 +2689,37 @@ function loadData(
 
     .catch(function(error) {
 
-      console.error(error);
+  console.error(error);
 
-      document.getElementById(
-        'status'
-      ).textContent =
-        'データ読み込みエラー';
+  const status =
+    document.getElementById(
+      'status'
+    );
 
-      alert(
-        'データの読み込みに失敗しました\n' +
-        error.message
-      );
+  // オフラインの場合
+  if (!navigator.onLine) {
 
-    });
+    status.textContent =
+      '📴 オフラインモード';
+
+    console.log(
+      'オフラインのため通信を行えません。'
+    );
+
+    return;
+
+  }
+
+  // オンラインなのにエラーになった場合
+  status.textContent =
+    'データ読み込みエラー';
+
+  alert(
+    'データの読み込みに失敗しました\n' +
+    error.message
+  );
+
+});
 
 }
 
