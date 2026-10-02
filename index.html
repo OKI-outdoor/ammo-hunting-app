@@ -8671,6 +8671,176 @@ function clearAmmoSettingsForm() {
 
 }
 
+  async function sendAnnualLedgerPdfEmail() {
+
+  const result =
+    window.latestLedgerPdf;
+
+
+  if (
+    !result ||
+    !result.fileId
+  ) {
+
+    alert(
+      '先に年度帳簿PDFを作成してください。'
+    );
+
+    return;
+
+  }
+
+
+  const emailInput =
+    document.getElementById(
+      'ledgerPdfEmail'
+    );
+
+
+  const email =
+    emailInput.value.trim();
+
+
+  if (!email) {
+
+    alert(
+      '送信先メールアドレスを入力してください。'
+    );
+
+    emailInput.focus();
+
+    return;
+
+  }
+
+
+  // 簡単なメールアドレス形式チェック
+  if (
+    !emailInput.checkValidity()
+  ) {
+
+    alert(
+      '正しいメールアドレスを入力してください。'
+    );
+
+    emailInput.focus();
+
+    return;
+
+  }
+
+
+  const ok =
+    confirm(
+      email +
+      '\n\nへPDFをメール送信しますか？'
+    );
+
+
+  if (!ok) {
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      'sendLedgerPdfEmailButton'
+    );
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    '✉️ 送信中…';
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:
+            'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+
+              action:
+                'sendAmmoLedgerPdfEmail',
+
+              fiscalYear:
+                Number(
+                  result.fiscalYear
+                ),
+
+              fileId:
+                result.fileId,
+
+              email:
+                email
+
+            })
+
+        }
+      );
+
+
+    const sendResult =
+      await response.json();
+
+
+    if (!sendResult.success) {
+
+      throw new Error(
+        sendResult.error ||
+        'メール送信に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      'PDFをメール送信しました。\n\n' +
+      '送信先：' +
+      email +
+      '\n' +
+      '添付：' +
+      sendResult.fileName
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      'メール送信エラー：' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '✉️ PDFをメール送信';
+
+  }
+
+}
+
   async function shareAnnualLedgerPdf() {
 
   const result =
