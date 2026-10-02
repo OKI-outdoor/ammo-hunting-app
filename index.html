@@ -2679,6 +2679,35 @@ function loadData(
 
       }
 
+      // =================================
+// 最新データを端末に保存
+// =================================
+
+try {
+
+  localStorage.setItem(
+    'ammoHuntingAppData',
+    JSON.stringify(appData)
+  );
+
+  localStorage.setItem(
+    'ammoHuntingAppDataSavedAt',
+    new Date().toISOString()
+  );
+
+  console.log(
+    '最新データを端末に保存しました。'
+  );
+
+} catch (error) {
+
+  console.error(
+    '端末へのデータ保存に失敗しました。',
+    error
+  );
+
+}
+
 
       document.getElementById(
         'status'
