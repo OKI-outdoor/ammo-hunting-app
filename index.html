@@ -8252,6 +8252,146 @@ function clearAmmoSettingsForm() {
     'block';
 
 }
+
+  async function generateAnnualLedger() {
+
+  const select =
+    document.getElementById(
+      'summaryFiscalYear'
+    );
+
+  const button =
+    document.getElementById(
+      'generateLedgerButton'
+    );
+
+
+  // =================================
+  // 年度確認
+  // =================================
+
+  const fiscalYear =
+    Number(
+      select ? select.value : 0
+    );
+
+
+  if (!fiscalYear) {
+
+    alert(
+      '年度を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  // =================================
+  // 実行確認
+  // =================================
+
+  const confirmed =
+    confirm(
+      fiscalYear +
+      '年度の実包等管理帳簿を作成します。\n\n' +
+      'よろしいですか？'
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '📋 帳簿を作成中…';
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+
+              action:
+                'generateAmmoLedger',
+
+              fiscalYear:
+                fiscalYear
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '年度帳簿の作成に失敗しました。'
+      );
+
+    }
+
+
+    // =================================
+    // 完了
+    // =================================
+
+    alert(
+      fiscalYear +
+      '年度の実包等管理帳簿を作成しました。\n\n' +
+      '作成ページ数：' +
+      (result.pages || 0) +
+      '\n' +
+      '全弾種残数：' +
+      (result.totalBalance || 0) +
+      '発'
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '年度帳簿の作成に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '📋 年度帳簿を作成';
+
+  }
+
+}
   
 </script>
 
