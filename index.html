@@ -9058,6 +9058,70 @@ function clearAmmoSettingsForm() {
     );
 
   }
+
+    // =================================
+// オンライン復帰を検知
+// =================================
+
+window.addEventListener(
+  'online',
+  function() {
+
+    console.log(
+      'インターネット接続が復活しました。'
+    );
+
+
+    const status =
+      document.getElementById(
+        'status'
+      );
+
+
+    if (status) {
+
+      status.textContent =
+        '🔄 最新データを更新中…';
+
+    }
+
+
+    // 最新データを再取得
+    loadData();
+
+  }
+);
+
+
+// =================================
+// オフラインになったことを検知
+// =================================
+
+window.addEventListener(
+  'offline',
+  function() {
+
+    console.log(
+      'オフラインになりました。'
+    );
+
+
+    const status =
+      document.getElementById(
+        'status'
+      );
+
+
+    if (status) {
+
+      status.textContent =
+        '📴 オフラインモード';
+
+    }
+
+  }
+);
+    
 </script>
 
 </body>
