@@ -7865,6 +7865,366 @@ function clearAmmoSettingsForm() {
   }
 
 }
+
+  function renderGunRenewalAlerts() {
+
+  const alertBox =
+    document.getElementById(
+      'gunRenewalAlert'
+    );
+
+  const alertTitle =
+    document.getElementById(
+      'gunRenewalAlertTitle'
+    );
+
+  const alertDetails =
+    document.getElementById(
+      'gunRenewalAlertDetails'
+    );
+
+
+  if (
+    !alertBox ||
+    !alertTitle ||
+    !alertDetails
+  ) {
+    return;
+  }
+
+
+  // いったん非表示
+  alertBox.style.display = 'none';
+  alertDetails.innerHTML = '';
+
+
+  if (
+    !appData ||
+    !Array.isArray(appData.gunSettings)
+  ) {
+    return;
+  }
+
+
+  // =================================
+  // 今日
+  // =================================
+
+  const today = new Date();
+
+  today.setHours(
+    0, 0, 0, 0
+  );
+
+
+  const alerts = [];
+
+
+  // =================================
+  // 登録銃をすべて確認
+  // =================================
+
+  appData.gunSettings.forEach(
+    function(gun) {
+
+      if (!gun.expiry) {
+        return;
+      }
+
+
+      const expiry =
+        new Date(
+          gun.expiry +
+          'T00:00:00'
+        );
+
+
+      // 更新申請開始
+      // 許可期限の2か月前
+      const renewalStart =
+        new Date(expiry);
+
+      renewalStart.setMonth(
+        renewalStart.getMonth() - 2
+      );
+
+
+      // 更新申請終了
+      // 許可期限の1か月前
+      const renewalEnd =
+        new Date(expiry);
+
+      renewalEnd.setMonth(
+        renewalEnd.getMonth() - 1
+      );
+
+
+      // 黄色警告開始
+      // 更新申請開始の1か月前
+      const warningStart =
+        new Date(renewalStart);
+
+      warningStart.setMonth(
+        warningStart.getMonth() - 1
+      );
+
+
+      let level = 0;
+      let status = '';
+
+
+      // =================================
+      // 状態判定
+      // =================================
+
+      if (today > expiry) {
+
+        level = 3;
+        status =
+          '許可期限を過ぎています';
+
+      } else if (
+        today >= renewalStart &&
+        today <= renewalEnd
+      ) {
+
+        level = 2;
+        status =
+          '更新申請期間中です';
+
+      } else if (
+        today >= warningStart &&
+        today < renewalStart
+      ) {
+
+        level = 1;
+        status =
+          '更新申請期間が近づいています';
+
+      }
+
+
+      // 警告対象外
+      if (!level) {
+        return;
+      }
+
+
+      // =================================
+      // 残り日数
+      // =================================
+
+      let daysRemaining = null;
+
+      if (level === 2) {
+
+        daysRemaining =
+          Math.ceil(
+            (
+              renewalEnd.getTime() -
+              today.getTime()
+            ) /
+            86400000
+          );
+
+      }
+
+
+      alerts.push({
+
+        gunName:
+          gun.gunName || '名称未設定',
+
+        expiry:
+          expiry,
+
+        renewalStart:
+          renewalStart,
+
+        renewalEnd:
+          renewalEnd,
+
+        level:
+          level,
+
+        status:
+          status,
+
+        daysRemaining:
+          daysRemaining
+
+      });
+
+    }
+  );
+
+
+  // 警告なし
+  if (alerts.length === 0) {
+
+    alertBox.style.display =
+      'none';
+
+    return;
+
+  }
+
+
+  // =================================
+  // 危険度の高い順に並べる
+  // =================================
+
+  alerts.sort(
+    function(a, b) {
+
+      return b.level - a.level;
+
+    }
+  );
+
+
+  const highestLevel =
+    alerts[0].level;
+
+
+  // =================================
+  // 色設定
+  // =================================
+
+  if (highestLevel >= 2) {
+
+    alertBox.style.background =
+      '#ffd6d6';
+
+    alertBox.style.border =
+      '2px solid #d00000';
+
+    alertBox.style.color =
+      '#b00000';
+
+  } else {
+
+    alertBox.style.background =
+      '#fff3cd';
+
+    alertBox.style.border =
+      '2px solid #d6a700';
+
+    alertBox.style.color =
+      '#765800';
+
+  }
+
+
+  // =================================
+  // タイトル
+  // =================================
+
+  if (highestLevel === 3) {
+
+    alertTitle.textContent =
+      '🔴 銃所持許可の期限を確認してください';
+
+  } else if (highestLevel === 2) {
+
+    alertTitle.textContent =
+      '🔴 銃所持許可の更新申請期間中です';
+
+  } else {
+
+    alertTitle.textContent =
+      '🟡 銃所持許可の更新時期が近づいています';
+
+  }
+
+
+  // =================================
+  // 日付表示
+  // =================================
+
+  function formatDate(date) {
+
+    return (
+      date.getFullYear() +
+      '/' +
+      String(
+        date.getMonth() + 1
+      ).padStart(2, '0') +
+      '/' +
+      String(
+        date.getDate()
+      ).padStart(2, '0')
+    );
+
+  }
+
+
+  // =================================
+  // 詳細表示
+  // =================================
+
+  alertDetails.innerHTML =
+    alerts.map(
+      function(item) {
+
+        let html =
+          '<div style="' +
+          'margin-top:10px;' +
+          'padding-top:10px;' +
+          'border-top:1px solid currentColor;' +
+          '">' +
+
+          '<div>' +
+          '🔫 ' +
+          item.gunName +
+          '</div>' +
+
+          '<div>' +
+          '許可期限：' +
+          formatDate(item.expiry) +
+          '</div>' +
+
+          '<div>' +
+          '更新申請期間：' +
+          formatDate(item.renewalStart) +
+          ' ～ ' +
+          formatDate(item.renewalEnd) +
+          '</div>' +
+
+          '<div>' +
+          item.status +
+          '</div>';
+
+
+        if (
+          item.level === 2 &&
+          item.daysRemaining !== null
+        ) {
+
+          html +=
+            '<div>' +
+            '申請期間終了まで：あと' +
+            item.daysRemaining +
+            '日' +
+            '</div>';
+
+        }
+
+
+        html +=
+          '</div>';
+
+        return html;
+
+      }
+    ).join('');
+
+
+  alertBox.style.display =
+    'block';
+
+}
+  
 </script>
 
 </body>
