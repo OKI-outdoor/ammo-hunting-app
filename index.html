@@ -5344,8 +5344,10 @@ imageToDataUrl(
 
   const record = {
 
-    recordId:
-      'USE-' +
+  action: 'saveRecord',
+
+  recordId:
+    'USE-' +
       Date.now() +
       '-' +
       Math.random()
@@ -5361,9 +5363,7 @@ imageToDataUrl(
     qty: qty,
     
     purpose: purpose,
-
-    purchaseMethod: purchaseMethod,
-
+    
     gun: gun,
 
     place: place,
