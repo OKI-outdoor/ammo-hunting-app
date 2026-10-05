@@ -751,7 +751,10 @@
     捕獲結果
   </label>
 
-  <select id="captureResult">
+  <select
+  id="captureResult"
+  onchange="changeCaptureResult()"
+  >
 
     <option value="">
       選択してください
@@ -5167,6 +5170,44 @@ const gun =
       '購入記録を保存';
 
   });
+
+}
+
+  // =================================
+// 捕獲結果変更
+// =================================
+
+function changeCaptureResult() {
+
+  const result =
+    document.getElementById(
+      'captureResult'
+    ).value;
+
+  const count =
+    document.getElementById(
+      'captureCount'
+    );
+
+
+  if (result === '捕獲なし') {
+
+    count.value = 0;
+
+    count.disabled = true;
+
+  } else {
+
+    count.disabled = false;
+
+    if (
+      result === '捕獲あり' &&
+      Number(count.value) === 0
+    ) {
+      count.value = '';
+    }
+
+  }
 
 }
 
