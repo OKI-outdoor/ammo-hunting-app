@@ -3163,6 +3163,11 @@ if (
   ).value =
     gun.gunName || '';
 
+   document.getElementById(
+  'gunSettingActive'
+  ).checked =
+  gun.active !== false;
+
 
   document.getElementById(
     'gunSettingPermitNumber'
