@@ -5353,36 +5353,134 @@ const captures = [];
 const capturePhotoFile =
   document.getElementById('capturePhoto').files[0];
 
-if (captureAnimal || captureCount > 0 || capturePhotoFile) {
+const captureResult =
+  document.getElementById(
+    'captureResult'
+  ).value;
+
+
+// =================================
+// 捕獲あり
+// =================================
+
+if (captureResult === '捕獲あり') {
 
   if (!captureAnimal) {
-    alert('捕獲鳥獣を選択してください。');
+
+    alert(
+      '捕獲鳥獣を選択してください。'
+    );
+
     button.disabled = false;
-    button.textContent = '使用記録を保存';
+
+    button.textContent =
+      '使用記録を保存';
+
     return;
   }
+
 
   if (captureCount <= 0) {
-    alert('捕獲数を入力してください。');
+
+    alert(
+      '捕獲数を入力してください。'
+    );
+
     button.disabled = false;
-    button.textContent = '使用記録を保存';
+
+    button.textContent =
+      '使用記録を保存';
+
     return;
   }
 
+
   captures.push({
-  animal: captureAnimal,
-  count: captureCount,
-  unit: captureUnit,
 
-  latitude:
-    document.getElementById('captureLatitude').textContent || '',
+    animal:
+      captureAnimal,
 
-  longitude:
-    document.getElementById('captureLongitude').textContent || '',
+    count:
+      captureCount,
 
-  gpsTime:
-    document.getElementById('captureGpsTime').textContent || ''
-});
+    unit:
+      captureUnit,
+
+    result:
+      '捕獲あり',
+
+    latitude:
+      document.getElementById(
+        'captureLatitude'
+      ).textContent || '',
+
+    longitude:
+      document.getElementById(
+        'captureLongitude'
+      ).textContent || '',
+
+    gpsTime:
+      document.getElementById(
+        'captureGpsTime'
+      ).textContent || ''
+
+  });
+
+}
+
+
+// =================================
+// 捕獲なし
+// =================================
+
+if (captureResult === '捕獲なし') {
+
+  if (!captureAnimal) {
+
+    alert(
+      '対象となった鳥獣を選択してください。'
+    );
+
+    button.disabled = false;
+
+    button.textContent =
+      '使用記録を保存';
+
+    return;
+  }
+
+
+  captures.push({
+
+    animal:
+      captureAnimal,
+
+    count:
+      0,
+
+    unit:
+      captureUnit,
+
+    result:
+      '捕獲なし',
+
+    latitude:
+      document.getElementById(
+        'captureLatitude'
+      ).textContent || '',
+
+    longitude:
+      document.getElementById(
+        'captureLongitude'
+      ).textContent || '',
+
+    gpsTime:
+      document.getElementById(
+        'captureGpsTime'
+      ).textContent || ''
+
+  });
+
 }
 
 // 捕獲写真を送信用データに変換
