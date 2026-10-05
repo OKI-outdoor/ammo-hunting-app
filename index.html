@@ -4549,14 +4549,22 @@ if (historyFilter !== 'すべて') {
   
   getAnimalIcon(
   capture['鳥獣名']
-) +
-' ' +
-capture['鳥獣名'] +
-            
-  ' ' +
-  capture['捕獲数'] +
-  capture['単位'] +
-  '</div>' +
+    ) +
+    ' ' +
+    capture['鳥獣名'] +
+
+    ' ' +
+
+    (
+  capture['捕獲結果'] === '捕獲なし'
+    ? '捕獲なし'
+    : (
+        capture['捕獲数'] +
+        capture['単位']
+      )
+    ) +
+
+    '</div>' +
 
   (
     capture['写真URL']
