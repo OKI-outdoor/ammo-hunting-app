@@ -1,5 +1,5 @@
 const CACHE_NAME =
-  'ammo-hunting-app-v4';
+  'ammo-hunting-app-v5';
 
 const APP_FILES = [
   './',
@@ -19,9 +19,11 @@ self.addEventListener(
       caches
         .open(CACHE_NAME)
         .then(cache => {
+
           return cache.addAll(
             APP_FILES
           );
+
         })
     );
 
@@ -94,7 +96,8 @@ self.addEventListener(
 
 
     // =================================
-    // API通信はキャッシュしない
+    // GAS APIはService Workerで
+    // キャッシュしない
     // =================================
 
     if (
@@ -107,11 +110,10 @@ self.addEventListener(
 
 
     // =================================
-    // アプリ本体
+    // index.html / アプリ起動
     //
-    // 1. キャッシュがあれば即表示
-    // 2. 裏で最新版を取得
-    // 3. 次回起動用キャッシュを更新
+    // キャッシュを即表示しながら
+    // 裏で最新版へ更新
     // =================================
 
     event.respondWith(
@@ -122,12 +124,12 @@ self.addEventListener(
         )
         .then(cachedResponse => {
 
-
-          // 裏で最新版を取得
           const networkFetch =
-
             fetch(
-              event.request
+              event.request,
+              {
+                cache: 'no-store'
+              }
             )
               .then(response => {
 
@@ -139,18 +141,20 @@ self.addEventListener(
                   const copy =
                     response.clone();
 
-                  caches
-                    .open(
-                      CACHE_NAME
-                    )
-                    .then(cache => {
+                  event.waitUntil(
 
-                      cache.put(
-                        event.request,
-                        copy
-                      );
+                    caches
+                      .open(CACHE_NAME)
+                      .then(cache => {
 
-                    });
+                        return cache.put(
+                          event.request,
+                          copy
+                        );
+
+                      })
+
+                  );
 
                 }
 
@@ -165,7 +169,7 @@ self.addEventListener(
 
 
           // キャッシュがあれば
-          // 待たずに即表示
+          // 即座にアプリを表示
           if (cachedResponse) {
 
             return cachedResponse;
@@ -173,8 +177,7 @@ self.addEventListener(
           }
 
 
-          // キャッシュがない場合だけ
-          // ネットワークを待つ
+          // 初回だけネットワークから取得
           return networkFetch
             .then(response => {
 
