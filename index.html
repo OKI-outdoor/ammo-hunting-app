@@ -2943,10 +2943,58 @@ try {
 }
 
 
-      document.getElementById(
-        'status'
-      ).textContent =
-        '最新データを読み込みました';
+      // =================================
+// 同期完了表示
+// =================================
+
+document.getElementById(
+  'status'
+).textContent =
+  '最新データを読み込みました';
+
+
+// 同期ボタンを元に戻す
+const syncButton =
+  document.getElementById(
+    'syncButton'
+  );
+
+if (syncButton) {
+
+  syncButton.disabled = false;
+
+  syncButton.textContent =
+    '🔄 同期する';
+
+}
+
+
+// 最終同期日時を表示
+const savedAt =
+  localStorage.getItem(
+    'ammoHuntingAppDataSavedAt'
+  );
+
+const lastSyncTime =
+  document.getElementById(
+    'lastSyncTime'
+  );
+
+if (
+  savedAt &&
+  lastSyncTime
+) {
+
+  const date =
+    new Date(savedAt);
+
+  lastSyncTime.textContent =
+    '最終同期：' +
+    date.toLocaleString(
+      'ja-JP'
+    );
+
+}
 
     })
 
