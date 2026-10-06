@@ -2745,6 +2745,55 @@ function startApp() {
 
 startApp();
 
+  // =================================
+// 手動同期
+// =================================
+
+function manualSync() {
+
+  if (!navigator.onLine) {
+
+    alert(
+      'オフラインのため同期できません。'
+    );
+
+    return;
+  }
+
+
+  const status =
+    document.getElementById(
+      'status'
+    );
+
+  const button =
+    document.getElementById(
+      'syncButton'
+    );
+
+
+  if (status) {
+
+    status.textContent =
+      '🔄 最新データを同期中…';
+
+  }
+
+
+  if (button) {
+
+    button.disabled = true;
+
+    button.textContent =
+      '同期中…';
+
+  }
+
+
+  loadData();
+
+}
+
 
 function loadData(
   selectedGunRow = 0,
