@@ -1,5 +1,5 @@
 const CACHE_NAME =
-  'ammo-hunting-app-v3';
+  'ammo-hunting-app-v4';
 
 const APP_FILES = [
   './',
@@ -7,7 +7,10 @@ const APP_FILES = [
 ];
 
 
-// アプリをスマホに保存
+// =================================
+// インストール
+// =================================
+
 self.addEventListener(
   'install',
   event => {
@@ -28,21 +31,56 @@ self.addEventListener(
 );
 
 
-// 新しいService Workerを有効化
+// =================================
+// 有効化
+// 古いキャッシュを削除
+// =================================
+
 self.addEventListener(
   'activate',
   event => {
 
     event.waitUntil(
-      self.clients.claim()
+
+      caches
+        .keys()
+        .then(keys => {
+
+          return Promise.all(
+
+            keys.map(key => {
+
+              if (
+                key !== CACHE_NAME
+              ) {
+
+                return caches.delete(
+                  key
+                );
+
+              }
+
+            })
+
+          );
+
+        })
+        .then(() => {
+
+          return self.clients.claim();
+
+        })
+
     );
 
   }
 );
 
 
-// 通信できない場合は
-// スマホに保存した画面を使用
+// =================================
+// 通信処理
+// =================================
+
 self.addEventListener(
   'fetch',
   event => {
@@ -54,52 +92,101 @@ self.addEventListener(
       return;
     }
 
+
+    // =================================
     // API通信はキャッシュしない
-if (
-  event.request.url.includes(
-    'ammo-gas-api.kikorinmura.workers.dev'
-  )
-) {
-  return;
-}
+    // =================================
+
+    if (
+      event.request.url.includes(
+        'ammo-gas-api.kikorinmura.workers.dev'
+      )
+    ) {
+      return;
+    }
+
+
+    // =================================
+    // アプリ本体
+    //
+    // 1. キャッシュがあれば即表示
+    // 2. 裏で最新版を取得
+    // 3. 次回起動用キャッシュを更新
+    // =================================
 
     event.respondWith(
 
-      fetch(
-        event.request
-      )
-        .then(response => {
+      caches
+        .match(
+          event.request
+        )
+        .then(cachedResponse => {
 
-          const copy =
-            response.clone();
 
-          caches
-            .open(CACHE_NAME)
-            .then(cache => {
+          // 裏で最新版を取得
+          const networkFetch =
 
-              cache.put(
-                event.request,
-                copy
-              );
-
-            });
-
-          return response;
-
-        })
-        .catch(() => {
-
-          return caches
-            .match(
+            fetch(
               event.request
             )
+              .then(response => {
+
+                if (
+                  response &&
+                  response.ok
+                ) {
+
+                  const copy =
+                    response.clone();
+
+                  caches
+                    .open(
+                      CACHE_NAME
+                    )
+                    .then(cache => {
+
+                      cache.put(
+                        event.request,
+                        copy
+                      );
+
+                    });
+
+                }
+
+                return response;
+
+              })
+              .catch(() => {
+
+                return null;
+
+              });
+
+
+          // キャッシュがあれば
+          // 待たずに即表示
+          if (cachedResponse) {
+
+            return cachedResponse;
+
+          }
+
+
+          // キャッシュがない場合だけ
+          // ネットワークを待つ
+          return networkFetch
             .then(response => {
 
-              return (
-                response ||
-                caches.match(
-                  './index.html'
-                )
+              if (response) {
+
+                return response;
+
+              }
+
+
+              return caches.match(
+                './index.html'
               );
 
             });
