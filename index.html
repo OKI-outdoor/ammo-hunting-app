@@ -2622,7 +2622,8 @@ function startApp() {
 
 
   // =================================
-  // 端末保存データがあれば即表示
+  // 前回データがある場合
+  // GASへ通信せず即表示
   // =================================
 
   if (savedData) {
@@ -2636,22 +2637,38 @@ function startApp() {
 
       renderAll();
 
-      document.getElementById(
-        'status'
-      ).textContent =
-        navigator.onLine
-          ? '端末データを表示中'
-          : '📴 オフラインモード';
+
+      const status =
+        document.getElementById(
+          'status'
+        );
+
+
+      if (!navigator.onLine) {
+
+        status.textContent =
+          '📴 オフラインモード';
+
+      } else {
+
+        status.textContent =
+          '端末保存データを表示';
+
+      }
+
 
       console.log(
-        '端末データを先に表示しました。',
+        '前回データから起動しました。',
         savedAt
       );
+
+
+      return;
 
     } catch (error) {
 
       console.error(
-        '端末データの読み込みに失敗しました。',
+        '前回データの読み込みに失敗しました。',
         error
       );
 
@@ -2661,10 +2678,16 @@ function startApp() {
 
 
   // =================================
-  // オンラインなら最新データを1回取得
+  // 前回データがない場合だけ
+  // GASから最新データを取得
   // =================================
 
   if (navigator.onLine) {
+
+    document.getElementById(
+      'status'
+    ).textContent =
+      '初回データ読み込み中…';
 
     loadData();
 
@@ -2674,17 +2697,13 @@ function startApp() {
 
 
   // =================================
-  // オフライン・保存データなし
+  // オフライン ＋ 前回データなし
   // =================================
 
-  if (!savedData) {
-
-    document.getElementById(
-      'status'
-    ).textContent =
-      '📴 オフライン・保存データなし';
-
-  }
+  document.getElementById(
+    'status'
+  ).textContent =
+    '📴 オフライン・保存データなし';
 
 }
 
