@@ -2604,11 +2604,92 @@
   let appData = null;
 
 
-  // =================================
+// =================================
 // 初期表示
 // =================================
 
-loadData();
+function startApp() {
+
+  const savedData =
+    localStorage.getItem(
+      'ammoHuntingAppData'
+    );
+
+  const savedAt =
+    localStorage.getItem(
+      'ammoHuntingAppDataSavedAt'
+    );
+
+
+  // =================================
+  // 端末保存データがあれば即表示
+  // =================================
+
+  if (savedData) {
+
+    try {
+
+      appData =
+        JSON.parse(
+          savedData
+        );
+
+      renderAll();
+
+      document.getElementById(
+        'status'
+      ).textContent =
+        navigator.onLine
+          ? '端末データを表示中'
+          : '📴 オフラインモード';
+
+      console.log(
+        '端末データを先に表示しました。',
+        savedAt
+      );
+
+    } catch (error) {
+
+      console.error(
+        '端末データの読み込みに失敗しました。',
+        error
+      );
+
+    }
+
+  }
+
+
+  // =================================
+  // オンラインなら最新データを1回取得
+  // =================================
+
+  if (navigator.onLine) {
+
+    loadData();
+
+    return;
+
+  }
+
+
+  // =================================
+  // オフライン・保存データなし
+  // =================================
+
+  if (!savedData) {
+
+    document.getElementById(
+      'status'
+    ).textContent =
+      '📴 オフライン・保存データなし';
+
+  }
+
+}
+
+
+startApp();
 
 
 function loadData(
