@@ -5559,6 +5559,11 @@ function saveUse() {
       ).value || 0
     );
 
+  const purchaseMethod =
+  document.getElementById(
+    'usePurchaseMethod'
+  ).value;
+
 
   const purpose =
     document.getElementById(
@@ -5617,6 +5622,16 @@ function saveUse() {
     return;
 
   }
+
+  if (!purchaseMethod) {
+
+  alert(
+    '譲受区分を選択してください。'
+  );
+
+  return;
+
+}
 
 
   if (!gun) {
