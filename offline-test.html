@@ -1,0 +1,9563 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color"
+        content="#1f6f43">
+
+  <title>実包・狩猟管理</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0 0 80px 0;
+      font-family: -apple-system,
+                   BlinkMacSystemFont,
+                   "Helvetica Neue",
+                   sans-serif;
+      background: #f3f5f4;
+      color: #222;
+    }
+
+
+    /* ヘッダー */
+
+    header {
+  background: #1f6f43;
+  color: white;
+  padding: 18px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+    header h1 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+
+    /* メイン */
+
+    main {
+      padding: 14px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+
+    /* カード */
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.07);
+    }
+
+
+    .card h2 {
+      margin: 0 0 16px 0;
+      font-size: 19px;
+    }
+
+
+    /* 在庫 */
+
+    .stock-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .stock-item:last-child {
+      border-bottom: none;
+    }
+
+    .stock-name {
+      font-size: 16px;
+    }
+
+    .stock-number {
+      font-size: 21px;
+      font-weight: bold;
+      color: #1f6f43;
+    }
+
+
+    /* ボタン */
+
+    button {
+      width: 100%;
+      min-height: 52px;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .main-button {
+      background: #1f6f43;
+      color: white;
+    }
+
+    .main-button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    .secondary-button {
+      background: #e8eee9;
+      color: #1f6f43;
+    }
+
+
+    /* 入力 */
+
+    label {
+      display: block;
+      margin-top: 16px;
+      margin-bottom: 7px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 50px;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: white;
+      font-size: 17px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+
+    /* 2列 */
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+
+    /* 金額 */
+
+    .total-box {
+      background: #f1f7f3;
+      border-radius: 10px;
+      padding: 14px;
+      margin-top: 16px;
+    }
+
+    .total-label {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .total-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f6f43;
+      margin-top: 4px;
+    }
+
+
+    /* ステータス */
+
+    #status {
+      text-align: center;
+      color: #666;
+      font-size: 13px;
+      margin: 8px 0 14px;
+    }
+
+
+    /* 画面切替 */
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+
+  /* 下部メニュー */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  border-top: 1px solid #ddd;
+  display: grid;
+
+  /* 5ボタン対応 */
+  grid-template-columns: repeat(5, 1fr);
+
+  z-index: 20;
+}
+
+.bottom-nav button {
+  min-height: 64px;
+  border-radius: 0;
+  background: white;
+  color: #666;
+
+  /* 5個でも見やすいサイズ */
+  font-size: 12px;
+
+  padding: 4px 2px;
+}
+
+.bottom-nav button.active {
+  color: #1f6f43;
+  font-weight: bold;
+}
+
+
+    .hidden {
+      display: none;
+    }
+
+    #buyReceipt {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+    
+  </style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+  <h1>実包・狩猟管理</h1>
+
+</header>
+
+
+<main>
+
+
+  <div id="status">
+    データ読み込み中…
+  </div>
+
+  <div
+  style="
+    text-align:center;
+    margin:10px 0 20px;
+  "
+>
+  <button
+    type="button"
+    id="syncButton"
+    onclick="manualSync()"
+    style="
+      padding:10px 20px;
+      font-size:16px;
+      border-radius:10px;
+      border:1px solid #ccc;
+      background:white;
+      cursor:pointer;
+    "
+  >
+    🔄 同期する
+  </button>
+
+  <div
+    id="lastSyncTime"
+    style="
+      margin-top:6px;
+      font-size:13px;
+      color:#666;
+    "
+  >
+  </div>
+</div>
+
+
+  <!-- ====================== -->
+  <!-- ホーム -->
+  <!-- ====================== -->
+
+  <section
+    id="homePage"
+    class="page active"
+  >
+
+    <div class="card">
+
+      <h2>現在庫</h2>
+
+      <div id="stock">
+        読み込み中…
+      </div>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>記録</h2>
+
+      <button
+        class="main-button"
+        onclick="showPage('buyPage')"
+      >
+        ＋ 購入を記録
+      </button>
+
+      <div style="height:10px;"></div>
+
+      <button
+        class="secondary-button"
+        onclick="showPage('usePage')"
+      >
+        − 使用を記録
+      </button>
+
+    </div>
+
+    <!-- =========================================
+     銃所持許可 更新アラート
+========================================= -->
+
+<div
+  id="gunRenewalAlert"
+  style="
+    display:none;
+    margin:12px 0 18px 0;
+    padding:14px;
+    border-radius:12px;
+    font-weight:bold;
+  "
+>
+  <div
+    id="gunRenewalAlertTitle"
+    style="
+      font-size:18px;
+      margin-bottom:6px;
+    "
+  >
+  </div>
+
+  <div
+    id="gunRenewalAlertDetails"
+    style="
+      font-size:15px;
+      line-height:1.6;
+    "
+  >
+  </div>
+</div>
+
+
+    <div class="card">
+
+      <h2>登録情報</h2>
+
+      <p>
+        弾種：
+        <strong id="ammoCount">-</strong>
+      </p>
+
+      <p>
+        銃砲：
+        <strong id="gunCount">-</strong>
+      </p>
+
+      <p>
+        鳥獣：
+        <strong id="animalCount">-</strong>
+      </p>
+
+       </div>
+
+
+    <div style="margin-top:20px;">
+
+      <button
+        class="main-button"
+        onclick="showPage('settingsPage')">
+        ⚙️ 初期設定
+      </button>
+
+    </div>
+
+
+  </section>
+
+  <!-- ====================== -->
+  <!-- 購入 -->
+  <!-- ====================== -->
+
+  <section
+    id="buyPage"
+    class="page"
+  >
+
+    <div class="card">
+
+      <h2>購入記録</h2>
+
+
+      <label for="buyDate">
+        日付
+      </label>
+
+      <input
+        type="date"
+        id="buyDate"
+      >
+
+
+      <label for="buyType">
+        弾種
+      </label>
+
+      <select id="buyType">
+
+        <option value="">
+          選択してください
+        </option>
+
+      </select>
+
+
+      <label for="buyQty">
+        数量（発）
+      </label>
+
+      <input
+        type="number"
+        id="buyQty"
+        inputmode="numeric"
+        min="1"
+        placeholder="例：50"
+      >
+
+<div class="form-group">
+
+  <label for="buyPurchaseMethod">
+    譲受理由
+  </label>
+
+  <select id="buyPurchaseMethod">
+
+    <option value="">
+      選択してください
+    </option>
+
+    <option value="許可">
+      許可
+    </option>
+
+    <option value="無許可">
+      無許可
+    </option>
+
+    <option value="有害駆除">
+      有害駆除
+    </option>
+
+  </select>
+
+</div>
+ <div class="form-group">
+
+  <label for="buyPurpose">
+    目的
+  </label>
+
+  <select id="buyPurpose">
+
+    <option value="狩猟">
+      狩猟
+    </option>
+
+    <option value="標的射撃">
+      標的射撃
+    </option>
+
+    <option value="有害鳥獣捕獲">
+      有害鳥獣捕獲
+    </option>
+
+  </select>
+
+</div>
+
+
+
+      <label for="buyGun">
+        使用銃砲
+      </label>
+
+      <select id="buyGun">
+
+        <option value="">
+          選択してください
+        </option>
+
+      </select>
+
+
+      <label for="buyPlace">
+        入手先・場所
+      </label>
+
+      <input
+        type="text"
+        id="buyPlace"
+        placeholder="例：小宮銃砲火薬店"
+      >
+
+
+      <div class="two-column">
+
+        <div>
+
+          <label for="buyUnitPrice">
+            単価（円）
+          </label>
+
+          <input
+            type="number"
+            id="buyUnitPrice"
+            inputmode="numeric"
+            min="0"
+            placeholder="例：500"
+          >
+
+        </div>
+
+
+        <div>
+
+          <div class="total-box">
+
+            <div class="total-label">
+              金額
+            </div>
+
+            <div
+              id="buyTotal"
+              class="total-value"
+            >
+              0円
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <label for="buyNote">
+        備考
+      </label>
+
+      <textarea
+        id="buyNote"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+      <label for="buyReceipt">
+  レシート
+</label>
+
+<input
+  type="file"
+  id="buyReceipt"
+  accept="image/*"
+  capture="environment"
+>
+
+<div
+  id="buyReceiptPreview"
+  style="
+    margin-top:10px;
+    display:none;
+  "
+>
+  <img
+    id="buyReceiptImage"
+    style="
+      width:100%;
+      max-height:300px;
+      object-fit:contain;
+      border-radius:8px;
+      border:1px solid #ddd;
+    "
+  >
+</div>
+      
+
+
+      <div style="height:20px;"></div>
+
+
+      <button
+        id="buySaveButton"
+        class="main-button"
+        onclick="saveBuy()"
+      >
+        購入記録を保存
+      </button>
+
+
+      <div style="height:10px;"></div>
+
+
+      <button
+        class="secondary-button"
+        onclick="showPage('homePage')"
+      >
+        キャンセル
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- ====================== -->
+  <!-- 使用 -->
+  <!-- ====================== -->
+
+  <section
+    id="usePage"
+    class="page"
+  >
+
+    <div class="card">
+
+      <h2>使用記録</h2>
+
+
+      <label for="useDate">
+        日付
+      </label>
+
+      <input
+        type="date"
+        id="useDate"
+      >
+
+
+      <label for="useType">
+        弾種
+      </label>
+
+      <select id="useType">
+
+        <option value="">
+          選択してください
+        </option>
+
+      </select>
+
+
+      <label for="useQty">
+        数量（発）
+      </label>
+
+      <input
+        type="number"
+        id="useQty"
+        inputmode="numeric"
+        min="1"
+        placeholder="例：5"
+      >
+
+      <div class="form-group">
+
+  <label for="usePurchaseMethod">
+    譲受理由
+  </label>
+
+  <select id="usePurchaseMethod">
+
+    <option value="">
+      選択してください
+    </option>
+
+    <option value="許可">
+      許可
+    </option>
+
+    <option value="無許可">
+      無許可
+    </option>
+
+    <option value="有害駆除">
+      有害駆除
+    </option>
+
+  </select>
+
+</div>
+
+
+      <label for="usePurpose">
+        目的
+      </label>
+
+      <select id="usePurpose" onchange="updateCaptureSection()">
+
+        <option value="狩猟">
+          狩猟
+        </option>
+
+        <option value="標的射撃">
+          標的射撃
+        </option>
+
+        <option value="有害鳥獣捕獲">
+          有害鳥獣捕獲
+        </option>
+
+      </select>
+
+
+      <label for="useGun">
+        使用銃砲
+      </label>
+
+      <select id="useGun">
+
+        <option value="">
+          選択してください
+        </option>
+
+      </select>
+
+
+      <label for="usePlace">
+        使用場所
+      </label>
+
+      <input
+        type="text"
+        id="usePlace"
+        placeholder="例：射撃場・猟場"
+      >
+
+
+      <label for="useNote">
+        備考
+      </label>
+
+      <textarea
+        id="useNote"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+<!-- ====================== -->
+<!-- 捕獲情報 -->
+<!-- ====================== -->
+
+<div id="captureSection"
+  style="
+    margin-top:25px;
+    padding-top:20px;
+    border-top:2px solid #e5e5e5;
+  "
+>
+
+  <h3>
+    捕獲情報
+  </h3>
+
+    <label for="captureResult">
+    捕獲結果
+  </label>
+
+  <select
+  id="captureResult"
+  onchange="changeCaptureResult()"
+  >
+
+    <option value="">
+      選択してください
+    </option>
+
+    <option value="捕獲あり">
+      捕獲あり
+    </option>
+
+    <option value="捕獲なし">
+      捕獲なし（0頭）
+    </option>
+
+  </select>
+
+
+  <label for="captureAnimal">
+    鳥獣名
+  </label>
+
+  <select id="captureAnimal">
+
+    <option value="">
+      選択してください
+    </option>
+
+  </select>
+
+
+  <label for="captureCount">
+    捕獲数
+  </label>
+
+  <input
+    type="number"
+    id="captureCount"
+    inputmode="numeric"
+    min="1"
+    placeholder="例：1"
+  >
+
+
+  <!-- GPS -->
+
+  <label>
+    捕獲場所
+  </label>
+
+  <button
+    type="button"
+    id="gpsButton"
+    class="secondary-button"
+    onclick="getCaptureGPS()"
+  >
+    📍 現在地を取得
+  </button>
+
+
+  <div
+    id="gpsStatus"
+    style="
+      margin-top:10px;
+      padding:10px;
+      background:#f3f5f4;
+      border-radius:8px;
+      font-size:14px;
+      display:none;
+    "
+  >
+
+    <div>
+      緯度：
+      <span id="captureLatitude"></span>
+    </div>
+
+    <div>
+      経度：
+      <span id="captureLongitude"></span>
+    </div>
+
+    <div>
+      GPS取得日時：
+      <span id="captureGpsTime"></span>
+    </div>
+
+  </div>
+
+
+  <!-- 写真 -->
+
+  <label for="capturePhoto">
+    捕獲写真
+  </label>
+
+  <input
+    type="file"
+    id="capturePhoto"
+    accept="image/*"
+    capture="environment"
+  >
+
+
+  <div
+    id="capturePhotoPreview"
+    style="
+      margin-top:10px;
+      display:none;
+    "
+  >
+
+    <img
+      id="capturePhotoImage"
+      style="
+        width:100%;
+        max-height:300px;
+        object-fit:contain;
+        border-radius:8px;
+        border:1px solid #ddd;
+      "
+    >
+
+  </div>
+
+</div>
+
+      <div style="height:20px;"></div>
+
+
+      <button
+        id="useSaveButton"
+        class="main-button"
+        onclick="saveUse()"
+      >
+        使用記録を保存
+      </button>
+
+
+      <div style="height:10px;"></div>
+
+
+      <button
+        class="secondary-button"
+        onclick="showPage('homePage')"
+      >
+        キャンセル
+      </button>
+
+    </div>
+    
+  </section>
+  
+</main>
+
+
+
+
+<!-- ====================== -->
+<!-- 集計画面 -->
+<!-- ====================== -->
+
+<section id="summaryPage" class="page">
+
+  <div class="card">
+
+    <h2>
+      📊 年度集計
+    </h2>
+
+    <div class="form-group">
+
+      <label for="summaryFiscalYear">
+        年度
+      </label>
+
+      <select id="summaryFiscalYear">
+        <option value="">
+          年度を選択してください
+        </option>
+      </select>
+
+    </div>
+
+    <div id="summaryContent">
+
+      <p>
+        年度を選択すると集計結果を表示します。
+      </p>
+
+    </div>
+
+    <!-- =================================
+         年度帳簿作成
+    ================================= -->
+
+    <div
+      style="
+        margin-top:20px;
+      "
+    >
+
+      <button
+        type="button"
+        id="generateLedgerButton"
+        onclick="generateAnnualLedger()"
+        style="
+          width:100%;
+          padding:14px;
+          font-size:18px;
+          font-weight:bold;
+        "
+      >
+        📋 年度帳簿を作成
+      </button>
+
+      <div style="margin-top:12px;">
+
+  <button
+    type="button"
+    id="generateLedgerPdfButton"
+    onclick="generateAnnualLedgerPdf()"
+    style="
+      width:100%;
+      padding:14px;
+      font-size:18px;
+      font-weight:bold;
+    "
+  >
+    📄 年度帳簿PDFを作成
+  </button>
+
+</div>
+
+
+<div
+  id="ledgerPdfResult"
+  style="
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    border:1px solid #ccc;
+    border-radius:12px;
+  "
+>
+
+  <div
+    id="ledgerPdfInfo"
+    style="
+      margin-bottom:12px;
+      line-height:1.6;
+    "
+  ></div>
+
+
+  <button
+    type="button"
+    id="openLedgerPdfButton"
+    style="
+      width:100%;
+      padding:13px;
+      margin-bottom:10px;
+      font-size:17px;
+      font-weight:bold;
+    "
+  >
+    📄 PDFを開く
+  </button>
+
+
+  <div
+  style="
+    margin-top:10px;
+    padding-top:12px;
+    border-top:1px solid #ddd;
+  "
+>
+
+  <label
+    for="ledgerPdfEmail"
+    style="
+      display:block;
+      margin-bottom:6px;
+      font-weight:bold;
+    "
+  >
+    送信先メールアドレス
+  </label>
+
+  <input
+    type="email"
+    id="ledgerPdfEmail"
+    placeholder="example@email.com"
+    autocomplete="email"
+    style="
+      width:100%;
+      box-sizing:border-box;
+      padding:12px;
+      margin-bottom:10px;
+      font-size:16px;
+    "
+  >
+
+  <button
+    type="button"
+    id="sendLedgerPdfEmailButton"
+    onclick="sendAnnualLedgerPdfEmail()"
+    style="
+      width:100%;
+      padding:13px;
+      font-size:17px;
+      font-weight:bold;
+    "
+  >
+    ✉️ PDFをメール送信
+  </button>
+
+</div>
+
+</div>
+
+    </div>
+
+  </div>
+
+</section>
+  
+<!-- ====================== -->
+<!-- 履歴画面 -->
+<!-- ====================== -->
+
+<section id="historyPage" class="page">
+
+  <div class="card">
+
+    <h2>
+      📋 履歴
+    </h2>
+
+    <div
+  id="historyFilter"
+  style="
+    display:flex;
+    gap:8px;
+    margin-bottom:15px;
+  "
+>
+
+  <button
+    type="button"
+    onclick="setHistoryFilter('すべて')"
+  >
+    すべて
+  </button>
+
+  <button
+    type="button"
+    onclick="setHistoryFilter('購入')"
+  >
+    購入
+  </button>
+
+  <button
+    type="button"
+    onclick="setHistoryFilter('使用')"
+  >
+    使用
+  </button>
+
+</div>
+    <div id="historyList">
+
+      <p>
+        履歴をここに表示します。
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================================= -->
+<!-- 初期設定ページ -->
+<!-- ================================= -->
+
+<section id="settingsPage" class="page">
+
+  <div class="card">
+
+    <h2>⚙️ 初期設定</h2>
+
+    <button
+      class="main-button"
+      onclick="showPage('basicSettingsPage')">
+      👤 基本情報
+    </button>
+
+    <button
+      class="main-button"
+      onclick="showPage('gunSettingsPage')">
+      🔫 銃砲設定
+    </button>
+
+    <button
+      class="main-button"
+      onclick="showPage('ammoSettingsPage')">
+      📦 弾種設定
+    </button>
+
+    <button
+      class="main-button"
+      onclick="showPage('animalSettingsPage')">
+      🦌 鳥獣設定
+    </button>
+
+    <button
+        class="main-button"
+      onclick="showPage('initialStockPage')">
+      📋 初期在庫設定
+    </button>
+
+    <div style="margin-top:24px;">
+
+      <button
+        class="main-button"
+        onclick="showPage('homePage')">
+        ← ホームへ戻る
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ================================= -->
+<!-- 基本情報設定ページ -->
+<!-- ================================= -->
+
+<section id="basicSettingsPage" class="page">
+
+  <div class="card">
+
+    <h2>👤 基本情報</h2>
+
+
+    <div class="form-group">
+
+      <label for="basicName">
+        氏名
+      </label>
+
+      <input
+        type="text"
+        id="basicName"
+        placeholder="氏名を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicBirthDate">
+        生年月日
+      </label>
+
+      <input
+        type="date"
+        id="basicBirthDate"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicAddress">
+        居住地
+      </label>
+
+      <input
+        type="text"
+        id="basicAddress"
+        placeholder="住所を入力"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      銃所持許可
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="basicGunPermitNumber">
+        許可証番号
+      </label>
+
+      <input
+        type="text"
+        id="basicGunPermitNumber"
+        placeholder="許可証番号を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicGunPermitExpiry">
+        有効期限
+      </label>
+
+      <input
+        type="date"
+        id="basicGunPermitExpiry"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicGunPermitPhoto">
+        許可証写真
+      </label>
+
+      <input
+        type="file"
+        id="basicGunPermitPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+      <div
+  id="basicGunPermitPhotoSaved"
+  style="
+    display:none;
+    margin-top:10px;
+    padding:12px;
+    background:#f3f5f4;
+    border-radius:8px;
+  "
+>
+
+  <div>
+    📷 許可証写真：登録済み
+  </div>
+
+  <a
+    id="basicGunPermitPhotoLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="
+      display:inline-block;
+      margin-top:8px;
+    "
+  >
+    写真を見る
+  </a>
+
+</div>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="basicNote">
+        備考
+      </label>
+
+      <textarea
+        id="basicNote"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+    </div>
+
+    <!-- ================================= -->
+<!-- 狩猟免許 -->
+<!-- ================================= -->
+
+<div
+  style="
+    margin-top:30px;
+    padding-top:20px;
+    border-top:2px solid #e5e5e5;
+  "
+>
+
+  <h3>
+    🪪 狩猟免許
+  </h3>
+
+
+  <div id="huntingLicenseList">
+
+    <p style="color:#666;">
+      登録されている狩猟免許はありません。
+    </p>
+
+  </div>
+
+
+  <button
+    type="button"
+    class="secondary-button"
+    onclick="showPage('huntingLicensePage')">
+    ＋ 狩猟免許を追加
+  </button>
+
+  </div>
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="basicSaveButton"
+      onclick="saveBasicSettings()">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</section>
+
+<!-- ================================= -->
+<!-- 狩猟免許登録ページ -->
+<!-- ================================= -->
+
+<section id="huntingLicensePage" class="page">
+
+  <div class="card">
+
+    <h2>🪪 狩猟免許登録</h2>
+
+
+    <div class="form-group">
+
+      <label for="licenseType">
+        免許種類
+      </label>
+
+      <select id="licenseType">
+
+        <option value="">
+          選択してください
+        </option>
+
+        <option value="第一種銃猟">
+          第一種銃猟
+        </option>
+
+        <option value="第二種銃猟">
+          第二種銃猟
+        </option>
+
+        <option value="わな猟">
+          わな猟
+        </option>
+
+        <option value="網猟">
+          網猟
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseNumber">
+        免状番号
+      </label>
+
+      <input
+        type="text"
+        id="licenseNumber"
+        placeholder="免状番号を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseExpiry">
+        有効期限
+      </label>
+
+      <input
+        type="date"
+        id="licenseExpiry"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseFrontPhoto">
+        免状写真（表）
+      </label>
+
+      <input
+        type="file"
+        id="licenseFrontPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseBackPhoto">
+        免状写真（裏）
+      </label>
+
+      <input
+        type="file"
+        id="licenseBackPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="licenseNote">
+        備考
+      </label>
+
+      <textarea
+        id="licenseNote"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="licenseSaveButton"
+      onclick="saveHuntingLicense()">
+      保存
+    </button>  
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('basicSettingsPage')">
+      ← 基本情報へ戻る
+    </button>
+
+  </div>
+  
+</section>
+
+<!-- ================================= -->
+<!-- 銃砲設定ページ -->
+<!-- ================================= -->
+
+  <section id="gunSettingsPage" class="page">
+
+  <div class="card">
+
+    <h2>🔫 銃砲設定</h2>
+
+    <div class="form-group">
+
+  <label for="gunSettingSelect">
+    登録済み銃砲
+  </label>
+
+  <select
+    id="gunSettingSelect"
+    onchange="loadGunSettings()">
+
+    <option value="">
+      新しい銃砲を登録
+    </option>
+
+  </select>
+
+</div>
+
+<div
+  style="
+    margin:20px 0;
+    border-top:2px solid #e5e5e5;
+  ">
+</div>
+
+    <div class="form-group">
+
+      <label for="gunSettingName">
+        銃の名称
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingName"
+        placeholder="例：ハーフライフル"
+      >
+
+    </div>
+
+        <div class="form-group">
+
+      <label
+        style="
+          display:flex;
+          align-items:center;
+          gap:10px;
+          cursor:pointer;
+        "
+      >
+
+        <input
+          type="checkbox"
+          id="gunSettingActive"
+          checked
+          style="
+            width:22px;
+            height:22px;
+          "
+        >
+
+        使用中
+
+      </label>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingPermitNumber">
+        銃所持許可番号
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingPermitNumber"
+        placeholder="許可番号を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingType">
+        種類
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingType"
+        placeholder="例：散弾銃"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingTypeModel">
+        型式
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingTypeModel"
+        placeholder="型式を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingSerialNumber">
+        銃番号
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingSerialNumber"
+        placeholder="銃番号を入力"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      銃砲詳細
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingMaker">
+        メーカー名
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingMaker"
+        placeholder="メーカー名を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingModel">
+        モデル名
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingModel"
+        placeholder="モデル名を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingTotalLength">
+        銃の全長
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingTotalLength"
+        placeholder="例：110 cm"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingBarrelLength">
+        銃身長
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingBarrelLength"
+        placeholder="例：60 cm"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingGauge">
+        公称口（番）径
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingGauge"
+        placeholder="例：12番"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingMagazineType">
+        弾倉型式
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingMagazineType"
+        placeholder="弾倉型式を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingAmmo">
+        適合実包
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingAmmo"
+        placeholder="例：12番"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingRiflingRatio">
+        鉄腔内腔線割合
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingRiflingRatio"
+        placeholder="割合を入力"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      許可情報
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingApplicationDate">
+        許可申請日
+      </label>
+
+      <input
+        type="date"
+        id="gunSettingApplicationDate"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingExpiry">
+        許可期限
+      </label>
+
+      <input
+        type="date"
+        id="gunSettingExpiry"
+        onchange="updateGunRenewalInfo()"
+      >
+
+    </div>
+
+    <!-- =========================================
+     更新申請期間
+========================================= -->
+
+<div
+  id="gunRenewalInfo"
+  style="
+    display:none;
+    margin-top:10px;
+    margin-bottom:16px;
+    padding:14px;
+    border-radius:10px;
+    font-weight:bold;
+  "
+>
+  <div>
+    更新申請期間
+  </div>
+
+  <div
+    id="gunRenewalPeriod"
+    style="
+      margin-top:6px;
+      font-size:18px;
+    "
+  >
+  </div>
+
+  <div
+    id="gunRenewalMessage"
+    style="
+      margin-top:6px;
+    "
+  >
+  </div>
+</div>
+
+    <div class="form-group">
+
+      <label for="gunSettingSeller">
+        譲受先
+      </label>
+
+      <input
+        type="text"
+        id="gunSettingSeller"
+        placeholder="譲受先を入力"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="gunSettingPhoto">
+        銃写真
+      </label>
+
+      <input
+        type="file"
+        id="gunSettingPhoto"
+        accept="image/*"
+        capture="environment"
+      >
+
+    </div>
+
+    <div
+  id="gunSettingPhotoSaved"
+  style="
+    display:none;
+    margin-top:10px;
+    padding:12px;
+    background:#f3f5f4;
+    border-radius:10px;
+  "
+>
+
+  <div>
+    📷 銃写真：登録済み
+  </div>
+
+  <a
+    id="gunSettingPhotoLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="
+      display:inline-block;
+      margin-top:6px;
+      font-weight:bold;
+    "
+  >
+    写真を見る
+  </a>
+
+</div>
+
+    <!-- =========================================
+     銃所持許可証写真
+========================================= -->
+
+<div class="form-group">
+
+  <label for="gunSettingPermitPhoto">
+    許可証写真
+  </label>
+
+  <input
+    type="file"
+    id="gunSettingPermitPhoto"
+    accept="image/*"
+    capture="environment"
+  >
+
+</div>
+
+
+<!-- 保存済み許可証写真 -->
+
+<div
+  id="gunSettingPermitPhotoSaved"
+  style="
+    display:none;
+    margin-top:10px;
+  "
+>
+
+  <a
+    id="gunSettingPermitPhotoLink"
+    href="#"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    📄 許可証写真を見る
+  </a>
+
+</div>
+    
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="gunSettingSaveButton"
+      onclick="saveGunSettings()">
+      保存
+    </button>
+
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+  </section>
+
+ <!-- ================================= -->
+<!-- 弾種設定ページ -->
+<!-- ================================= -->
+
+<section id="ammoSettingsPage" class="page">
+
+  <div class="card">
+
+    <h2>📦 弾種設定</h2>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingSelect">
+        登録済み弾種
+      </label>
+
+      <select
+        id="ammoSettingSelect"
+        onchange="loadAmmoSettings()">
+
+        <option value="">
+          新しい弾種を登録
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      style="
+        margin:20px 0;
+        border-top:2px solid #e5e5e5;
+      ">
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingName">
+        弾種
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingName"
+        placeholder="例：12番散弾"
+      >
+
+    </div>
+
+
+    <h3 style="margin-top:28px;">
+      弾薬詳細
+    </h3>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingMaker">
+        メーカー
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingMaker"
+        placeholder="例：WINCHESTER"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingProductName">
+        商品名
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingProductName"
+        placeholder="例：スーパーX"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingCaliber">
+        口径・番径
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingCaliber"
+        placeholder="例：12番"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingWeight">
+        弾頭重量
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingWeight"
+        placeholder="例：33g"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingShotSize">
+        散弾号数
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingShotSize"
+        placeholder="例：BB、2、3、4号"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingMaterial">
+        材質
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingMaterial"
+        placeholder="例：鉛"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingBoxQuantity">
+        1箱の入数
+      </label>
+
+      <input
+        type="number"
+        id="ammoSettingBoxQuantity"
+        min="1"
+        placeholder="例：25"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingPurpose">
+        用途
+      </label>
+
+      <input
+        type="text"
+        id="ammoSettingPurpose"
+        placeholder="例：狩猟"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="ammoSettingActive">
+        使用状態
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          id="ammoSettingActive"
+          checked
+        >
+        使用中
+      </label>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="ammoSettingSaveButton"
+      onclick="saveAmmoSettings()">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</section>
+
+  <!-- ================================= -->
+<!-- 鳥獣設定ページ -->
+<!-- ================================= -->
+
+<section id="animalSettingsPage" class="page">
+
+  <div class="card">
+
+    <h2>🦌 鳥獣設定</h2>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingSelect">
+        登録済み鳥獣
+      </label>
+
+      <select
+        id="animalSettingSelect"
+        onchange="loadAnimalSettings()">
+
+        <option value="">
+          新しい鳥獣を登録
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      style="
+        margin:20px 0;
+        border-top:2px solid #e5e5e5;
+      ">
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingName">
+        鳥獣名
+      </label>
+
+      <input
+        type="text"
+        id="animalSettingName"
+        placeholder="例：エゾシカ"
+      >
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingUnit">
+        単位
+      </label>
+
+      <select id="animalSettingUnit">
+
+        <option value="頭">
+          頭
+        </option>
+
+        <option value="羽">
+          羽
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label for="animalSettingActive">
+        使用状態
+      </label>
+
+      <label>
+        <input
+          type="checkbox"
+          id="animalSettingActive"
+          checked
+        >
+        使用中
+      </label>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <button
+      type="button"
+      class="main-button"
+      id="animalSettingSaveButton"
+      onclick="saveAnimalSettings()">
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')">
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</section>
+
+<!-- ================================= -->
+<!-- 初期在庫設定ページ -->
+<!-- ================================= -->
+
+<section id="initialStockPage" class="page">
+
+  <div class="card">
+
+    <h2>📋 初期在庫設定</h2>
+
+
+    <!-- 登録済み初期在庫 -->
+    <div class="form-group">
+
+      <label for="initialStockSelect">
+        登録済み初期在庫
+      </label>
+
+      <select
+        id="initialStockSelect"
+        onchange="loadInitialStockSettings()"
+      >
+
+        <option value="">
+          新しい初期在庫を登録
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div
+      style="
+        margin:20px 0;
+        border-top:2px solid #e5e5e5;
+      ">
+    </div>
+
+    <div
+  style="
+    margin:16px 0 20px;
+    padding:14px;
+    background:#f3f5f4;
+    border-radius:10px;
+    line-height:1.7;
+    font-size:14px;
+  "
+>
+  <strong>初期在庫とは</strong><br>
+
+  アプリを使い始める前から所有している実包を
+  登録するための機能です。<br><br>
+
+  すでに「購入」として登録している実包は、
+  二重計上になるため初期在庫には登録しないでください。
+</div>
+
+   <!-- 基準日 -->
+<div class="form-group">
+
+  <label for="initialStockDate">
+    基準日
+  </label>
+
+  <input
+    type="date"
+    id="initialStockDate"
+  >
+
+  <div
+    style="
+      margin-top:6px;
+      font-size:14px;
+      color:#666;
+      line-height:1.6;
+    "
+  >
+    この日時点ですでに所有している実包を登録します。
+  </div>
+
+</div>
+
+    <div class="form-group">
+  <label for="initialStockPurpose">
+    目的
+  </label>
+
+  <select id="initialStockPurpose">
+    <option value="">
+      選択してください
+    </option>
+
+    <option value="狩猟">
+      狩猟
+    </option>
+
+    <option value="有害鳥獣捕獲">
+      有害鳥獣捕獲
+    </option>
+
+    <option value="標的射撃">
+      標的射撃
+    </option>
+  </select>
+</div>
+
+    <!-- 弾種 -->
+    <div class="form-group">
+
+      <label for="initialStockAmmo">
+        弾種
+      </label>
+
+      <select id="initialStockAmmo">
+
+        <option value="">
+          弾種を選択
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- 初期在庫数 -->
+    <div class="form-group">
+
+      <label for="initialStockQuantity">
+        初期在庫数
+      </label>
+
+      <input
+        type="number"
+        id="initialStockQuantity"
+        min="0"
+        step="1"
+        placeholder="例：100"
+      >
+
+      <div
+        style="
+          margin-top:6px;
+          font-size:14px;
+          color:#666;
+        "
+      >
+        単位：発
+      </div>
+
+    </div>
+
+
+    <!-- 備考 -->
+    <div class="form-group">
+
+      <label for="initialStockNote">
+        備考
+      </label>
+
+      <textarea
+        id="initialStockNote"
+        rows="3"
+        placeholder="必要に応じて入力"
+      ></textarea>
+
+    </div>
+
+
+    <div style="height:20px;"></div>
+
+
+    <!-- 保存 -->
+    <button
+      type="button"
+      class="main-button"
+      id="initialStockSaveButton"
+      onclick="saveInitialStockSettings()"
+    >
+      保存
+    </button>
+
+
+    <div style="height:10px;"></div>
+
+
+    <!-- 戻る -->
+    <button
+      type="button"
+      class="secondary-button"
+      onclick="showPage('settingsPage')"
+    >
+      ← 初期設定へ戻る
+    </button>
+
+  </div>
+
+</section>
+  
+  
+<!-- ====================== -->
+<!-- 下部メニュー -->
+<!-- ====================== -->
+
+<nav class="bottom-nav">
+
+  <button
+    id="homeTab"
+    class="active"
+    onclick="showPage('homePage')"
+  >
+    🏠<br>
+    ホーム
+  </button>
+
+
+  <button
+    onclick="showPage('buyPage')"
+  >
+    ＋<br>
+    購入
+  </button>
+
+  <button
+  onclick="showPage('usePage')"
+>
+  🎯<br>
+  使用
+</button>
+
+  <button
+  onclick="showPage('historyPage')"
+>
+  📋<br>
+  履歴
+</button>
+
+  <button
+  onclick="showPage('summaryPage')"
+>
+  📊<br>
+  集計
+</button>
+  
+</nav>
+  
+<script>
+
+
+  // =================================
+  // API
+  // =================================
+
+  const API_URL =
+    'https://ammo-gas-api.kikorinmura.workers.dev/?api=data';
+
+
+  let appData = null;
+
+  let historyFilter = 'すべて';
+
+
+// =================================
+// 初期表示
+// =================================
+
+function startApp() {
+
+  const savedData =
+    localStorage.getItem(
+      'ammoHuntingAppData'
+    );
+
+  const savedAt =
+    localStorage.getItem(
+      'ammoHuntingAppDataSavedAt'
+    );
+
+
+  // =================================
+  // 前回データがある場合
+  // GASへ通信せず即表示
+  // =================================
+
+  if (savedData) {
+
+    try {
+
+      appData =
+        JSON.parse(
+          savedData
+        );
+
+      renderAll();
+
+
+      const status =
+        document.getElementById(
+          'status'
+        );
+
+
+      if (!navigator.onLine) {
+
+        status.textContent =
+          '📴 オフラインモード';
+
+      } else {
+
+        status.textContent =
+          '端末保存データを表示';
+
+      }
+
+
+      console.log(
+        '前回データから起動しました。',
+        savedAt
+      );
+
+
+      return;
+
+    } catch (error) {
+
+      console.error(
+        '前回データの読み込みに失敗しました。',
+        error
+      );
+
+    }
+
+  }
+
+
+  // =================================
+  // 前回データがない場合だけ
+  // GASから最新データを取得
+  // =================================
+
+  if (navigator.onLine) {
+
+    document.getElementById(
+      'status'
+    ).textContent =
+      '初回データ読み込み中…';
+
+    loadData();
+
+    return;
+
+  }
+
+
+  // =================================
+  // オフライン ＋ 前回データなし
+  // =================================
+
+  document.getElementById(
+    'status'
+  ).textContent =
+    '📴 オフライン・保存データなし';
+
+}
+
+
+startApp();
+
+  // =================================
+// 手動同期
+// =================================
+
+function manualSync() {
+
+  if (!navigator.onLine) {
+
+    alert(
+      'オフラインのため同期できません。'
+    );
+
+    return;
+  }
+
+
+  const status =
+    document.getElementById(
+      'status'
+    );
+
+  const button =
+    document.getElementById(
+      'syncButton'
+    );
+
+
+  if (status) {
+
+    status.textContent =
+      '🔄 最新データを同期中…';
+
+  }
+
+
+  if (button) {
+
+    button.disabled = true;
+
+    button.textContent =
+      '同期中…';
+
+  }
+
+
+  loadData();
+
+}
+
+
+function loadData(
+  selectedGunRow = 0,
+  selectedAmmoRow = 0,
+  selectedAnimalRow = 0
+) {
+
+  document.getElementById(
+    'status'
+  ).textContent =
+    'データ読み込み中…';
+
+
+  fetch(API_URL)
+
+    .then(function(response) {
+
+      if (!response.ok) {
+
+        throw new Error(
+          'HTTPエラー: ' +
+          response.status
+        );
+
+      }
+
+      return response.json();
+
+    })
+
+    .then(function(data) {
+
+      appData = data;
+
+
+      // =================================
+      // 各画面を描画
+      // =================================
+
+      renderAll();
+
+
+      // =================================
+      // 銃砲設定
+      // 保存した銃を再選択
+      // =================================
+
+      if (selectedGunRow) {
+
+        const gunSelect =
+          document.getElementById(
+            'gunSettingSelect'
+          );
+
+        if (gunSelect) {
+
+          gunSelect.value =
+            String(
+              selectedGunRow
+            );
+
+          loadGunSettings();
+
+        }
+
+      }
+
+
+      // =================================
+      // 弾種設定
+      // 保存した弾種を再選択
+      // =================================
+
+      if (selectedAmmoRow) {
+
+        const ammoSelect =
+          document.getElementById(
+            'ammoSettingSelect'
+          );
+
+        if (ammoSelect) {
+
+          ammoSelect.value =
+            String(
+              selectedAmmoRow
+            );
+
+          loadAmmoSettings();
+
+        }
+
+      }
+
+
+      // =================================
+      // 鳥獣設定
+      // 保存した鳥獣を再選択
+      // =================================
+
+      if (selectedAnimalRow) {
+
+        const animalSelect =
+          document.getElementById(
+            'animalSettingSelect'
+          );
+
+        if (animalSelect) {
+
+          animalSelect.value =
+            String(
+              selectedAnimalRow
+            );
+
+          loadAnimalSettings();
+
+        }
+
+      }
+
+      // =================================
+// 最新データを端末に保存
+// =================================
+
+try {
+
+  localStorage.setItem(
+    'ammoHuntingAppData',
+    JSON.stringify(appData)
+  );
+
+  localStorage.setItem(
+    'ammoHuntingAppDataSavedAt',
+    new Date().toISOString()
+  );
+
+  console.log(
+    '最新データを端末に保存しました。'
+  );
+
+} catch (error) {
+
+  console.error(
+    '端末へのデータ保存に失敗しました。',
+    error
+  );
+
+}
+
+
+      // =================================
+// 同期完了表示
+// =================================
+
+document.getElementById(
+  'status'
+).textContent =
+  '最新データを読み込みました';
+
+
+// 同期ボタンを元に戻す
+const syncButton =
+  document.getElementById(
+    'syncButton'
+  );
+
+if (syncButton) {
+
+  syncButton.disabled = false;
+
+  syncButton.textContent =
+    '🔄 同期する';
+
+}
+
+
+// 最終同期日時を表示
+const savedAt =
+  localStorage.getItem(
+    'ammoHuntingAppDataSavedAt'
+  );
+
+const lastSyncTime =
+  document.getElementById(
+    'lastSyncTime'
+  );
+
+if (
+  savedAt &&
+  lastSyncTime
+) {
+
+  const date =
+    new Date(savedAt);
+
+  lastSyncTime.textContent =
+    '最終同期：' +
+    date.toLocaleString(
+      'ja-JP'
+    );
+
+}
+
+    })
+
+    .catch(function(error) {
+
+  console.error(error);
+
+  const status =
+    document.getElementById(
+      'status'
+    );
+
+
+  // =================================
+  // オフラインの場合
+  // =================================
+
+  if (!navigator.onLine) {
+
+    const savedData =
+      localStorage.getItem(
+        'ammoHuntingAppData'
+      );
+
+    const savedAt =
+      localStorage.getItem(
+        'ammoHuntingAppDataSavedAt'
+      );
+
+
+    // 保存データがある場合
+    if (savedData) {
+
+      try {
+
+        appData =
+          JSON.parse(
+            savedData
+          );
+
+
+        // 画面を再表示
+        renderAll();
+
+
+        status.textContent =
+          '📴 オフラインモード';
+
+
+        console.log(
+          '端末に保存したデータを読み込みました。',
+          savedAt
+        );
+
+
+        return;
+
+
+      } catch (loadError) {
+
+        console.error(
+          '保存データの読み込みに失敗しました。',
+          loadError
+        );
+
+      }
+
+    }
+
+
+    // 保存データがない場合
+    status.textContent =
+      '📴 オフライン・保存データなし';
+
+    alert(
+      'オフラインです。\n' +
+      '端末に保存されたデータがありません。'
+    );
+
+    return;
+
+  }
+
+
+  // =================================
+  // オンラインなのに通信エラーの場合
+  // =================================
+
+  status.textContent =
+    'データ読み込みエラー';
+
+  alert(
+    'データの読み込みに失敗しました\n' +
+    error.message
+  );
+
+});
+
+}
+
+
+  // =================================
+  // 基本情報
+  // =================================
+  
+  function renderBasicSettings() {
+
+  if (
+    !appData ||
+    !appData.basicSettings
+  ) {
+    return;
+  }
+
+
+  const data =
+    appData.basicSettings;
+
+
+  document.getElementById(
+    'basicName'
+  ).value =
+    data.name || '';
+
+
+  document.getElementById(
+    'basicBirthDate'
+  ).value =
+    data.birthDate || '';
+
+
+  document.getElementById(
+    'basicAddress'
+  ).value =
+    data.address || '';
+
+
+  document.getElementById(
+    'basicGunPermitNumber'
+  ).value =
+    data.gunPermitNumber || '';
+
+
+  document.getElementById(
+    'basicGunPermitExpiry'
+  ).value =
+    data.gunPermitExpiry || '';
+
+
+  document.getElementById(
+    'basicNote'
+  ).value =
+    data.note || '';
+
+  const photoBox =
+  document.getElementById(
+    'basicGunPermitPhotoSaved'
+  );
+
+const photoLink =
+  document.getElementById(
+    'basicGunPermitPhotoLink'
+  );
+
+
+if (
+  data.gunPermitPhotoUrl
+) {
+
+  photoBox.style.display =
+    'block';
+
+  photoLink.href =
+    data.gunPermitPhotoUrl;
+
+} else {
+
+  photoBox.style.display =
+    'none';
+
+  photoLink.href =
+    '#';
+
+}
+}
+
+  // =================================
+  // 狩猟免許情報
+  // =================================
+
+  function renderHuntingLicenses() {
+
+  const container =
+    document.getElementById(
+      'huntingLicenseList'
+    );
+
+  if (!container) {
+    return;
+  }
+
+
+  const licenses =
+    appData &&
+    Array.isArray(
+      appData.huntingLicenses
+    )
+      ? appData.huntingLicenses
+      : [];
+
+
+  if (licenses.length === 0) {
+
+    container.innerHTML =
+      '<p>登録されている狩猟免許はありません。</p>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    licenses.map(license => {
+
+      const frontPhoto =
+        license.frontPhotoUrl
+          ? `
+            <a
+              href="${license.frontPhotoUrl}"
+              target="_blank"
+            >
+              📷 表写真
+            </a>
+          `
+          : '';
+
+      const backPhoto =
+        license.backPhotoUrl
+          ? `
+            <a
+              href="${license.backPhotoUrl}"
+              target="_blank"
+            >
+              📷 裏写真
+            </a>
+          `
+          : '';
+
+
+      return `
+        <div class="card">
+
+          <strong>
+            ${license.licenseType || ''}
+          </strong>
+
+          <div>
+            免状番号：
+            ${license.licenseNumber || ''}
+          </div>
+
+          <div>
+            有効期限：
+            ${license.licenseExpiry || ''}
+          </div>
+
+          <div>
+            ${frontPhoto}
+            ${backPhoto}
+          </div>
+
+        </div>
+      `;
+
+    }).join('');
+
+}
+  
+  // =================================
+  // 銃砲設定表示
+  // =================================
+  
+  function renderGunSettings() {
+
+  const select =
+    document.getElementById(
+      'gunSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+  // 一度プルダウンを初期化
+  select.innerHTML =
+    '<option value="">' +
+    '新しい銃砲を登録' +
+    '</option>';
+
+
+  // データがない場合
+  if (
+    !appData.gunSettings ||
+    !Array.isArray(
+      appData.gunSettings
+    )
+  ) {
+    return;
+  }
+
+
+  // 登録済み銃砲を追加
+  appData.gunSettings.forEach(
+    function(gun) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        gun.rowNumber;
+
+      option.textContent =
+        gun.gunName;
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+ function loadGunSettings() {
+
+  const select =
+    document.getElementById(
+      'gunSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+  const rowNumber =
+    Number(select.value);
+
+
+  // =================================
+  // 「新しい銃砲を登録」の場合
+  // =================================
+
+  if (!rowNumber) {
+
+    clearGunSettingsForm();
+
+    return;
+
+  }
+
+
+  // =================================
+  // 選択された銃を探す
+  // =================================
+
+  const gun =
+    appData.gunSettings.find(
+      function(item) {
+
+        return Number(
+          item.rowNumber
+        ) === rowNumber;
+
+      }
+    );
+
+
+  if (!gun) {
+
+    alert(
+      '銃砲情報が見つかりません。'
+    );
+
+    return;
+
+  }
+
+
+  // =================================
+  // フォームへ表示
+  // =================================
+
+  document.getElementById(
+    'gunSettingName'
+  ).value =
+    gun.gunName || '';
+
+   document.getElementById(
+  'gunSettingActive'
+  ).checked =
+  gun.active !== false;
+
+
+  document.getElementById(
+    'gunSettingPermitNumber'
+  ).value =
+    gun.permitNumber || '';
+
+
+  document.getElementById(
+    'gunSettingType'
+  ).value =
+    gun.gunType || '';
+
+
+  document.getElementById(
+    'gunSettingTypeModel'
+  ).value =
+    gun.typeModel || '';
+
+
+  document.getElementById(
+    'gunSettingSerialNumber'
+  ).value =
+    gun.serialNumber || '';
+
+
+  document.getElementById(
+    'gunSettingMaker'
+  ).value =
+    gun.maker || '';
+
+
+  document.getElementById(
+    'gunSettingModel'
+  ).value =
+    gun.model || '';
+
+
+  document.getElementById(
+    'gunSettingTotalLength'
+  ).value =
+    gun.totalLength || '';
+
+
+  document.getElementById(
+    'gunSettingBarrelLength'
+  ).value =
+    gun.barrelLength || '';
+
+
+  document.getElementById(
+    'gunSettingGauge'
+  ).value =
+    gun.gauge ||
+    gun.caliber ||
+    '';
+
+
+  document.getElementById(
+    'gunSettingMagazineType'
+  ).value =
+    gun.magazineType || '';
+
+
+  document.getElementById(
+    'gunSettingAmmo'
+  ).value =
+    gun.ammo || '';
+
+
+  document.getElementById(
+    'gunSettingRiflingRatio'
+  ).value =
+    gun.riflingRatio || '';
+
+
+  document.getElementById(
+    'gunSettingApplicationDate'
+  ).value =
+    gun.applicationDate || '';
+
+
+  document.getElementById(
+    'gunSettingExpiry'
+  ).value =
+    gun.expiry || '';
+
+   // 更新申請期間を再計算・表示
+    updateGunRenewalInfo();
+
+  document.getElementById(
+    'gunSettingSeller'
+  ).value =
+    gun.seller || '';
+
+
+  // =================================
+  // 登録済み銃写真を表示
+  // =================================
+
+  const photoSaved =
+    document.getElementById(
+      'gunSettingPhotoSaved'
+    );
+
+  const photoLink =
+    document.getElementById(
+      'gunSettingPhotoLink'
+    );
+
+
+  if (
+    gun.gunPhotoUrl &&
+    photoSaved &&
+    photoLink
+  ) {
+
+    photoSaved.style.display =
+      'block';
+
+    photoLink.href =
+      gun.gunPhotoUrl;
+
+  } else {
+
+    if (photoSaved) {
+      photoSaved.style.display =
+        'none';
+    }
+
+    if (photoLink) {
+      photoLink.href =
+        '#';
+    }
+
+  }
+
+
+  // =================================
+  // 登録済み許可証写真を表示
+  // =================================
+
+  const permitPhotoSaved =
+    document.getElementById(
+      'gunSettingPermitPhotoSaved'
+    );
+
+  const permitPhotoLink =
+    document.getElementById(
+      'gunSettingPermitPhotoLink'
+    );
+
+
+  if (
+    gun.permitPhotoUrl &&
+    permitPhotoSaved &&
+    permitPhotoLink
+  ) {
+
+    permitPhotoSaved.style.display =
+      'block';
+
+    permitPhotoLink.href =
+      gun.permitPhotoUrl;
+
+  } else {
+
+    if (permitPhotoSaved) {
+      permitPhotoSaved.style.display =
+        'none';
+    }
+
+    if (permitPhotoLink) {
+      permitPhotoLink.href =
+        '#';
+    }
+
+  }
+
+
+  // =================================
+  // ファイル選択欄をクリア
+  // =================================
+
+  const photoInput =
+    document.getElementById(
+      'gunSettingPhoto'
+    );
+
+  if (photoInput) {
+    photoInput.value = '';
+  }
+
+
+  const permitPhotoInput =
+    document.getElementById(
+      'gunSettingPermitPhoto'
+    );
+
+  if (permitPhotoInput) {
+    permitPhotoInput.value = '';
+  }
+
+}
+
+
+
+function clearGunSettingsForm() {
+
+  const ids = [
+
+    'gunSettingName',
+    'gunSettingPermitNumber',
+    'gunSettingType',
+    'gunSettingTypeModel',
+    'gunSettingSerialNumber',
+    'gunSettingMaker',
+    'gunSettingModel',
+    'gunSettingTotalLength',
+    'gunSettingBarrelLength',
+    'gunSettingGauge',
+    'gunSettingMagazineType',
+    'gunSettingAmmo',
+    'gunSettingRiflingRatio',
+    'gunSettingApplicationDate',
+    'gunSettingExpiry',
+    'gunSettingSeller'
+
+  ];
+
+
+  ids.forEach(
+    function(id) {
+
+      const element =
+        document.getElementById(id);
+
+      if (element) {
+        element.value = '';
+      }
+
+    }
+  );
+
+    // =================================
+  // 使用中をONに戻す
+  // =================================
+
+  const active =
+    document.getElementById(
+      'gunSettingActive'
+    );
+
+  if (active) {
+    active.checked = true;
+  }
+
+
+  // =================================
+  // 銃写真の選択をクリア
+  // =================================
+
+  const photo =
+    document.getElementById(
+      'gunSettingPhoto'
+    );
+
+  if (photo) {
+    photo.value = '';
+  }
+
+
+  // =================================
+  // 銃写真リンクを非表示
+  // =================================
+
+  const photoSaved =
+    document.getElementById(
+      'gunSettingPhotoSaved'
+    );
+
+  const photoLink =
+    document.getElementById(
+      'gunSettingPhotoLink'
+    );
+
+  if (photoSaved) {
+    photoSaved.style.display =
+      'none';
+  }
+
+  if (photoLink) {
+    photoLink.href =
+      '#';
+  }
+
+
+  // =================================
+  // 許可証写真の選択をクリア
+  // =================================
+
+  const permitPhoto =
+    document.getElementById(
+      'gunSettingPermitPhoto'
+    );
+
+  if (permitPhoto) {
+    permitPhoto.value = '';
+  }
+
+
+  // =================================
+  // 許可証写真リンクを非表示
+  // =================================
+
+  const permitPhotoSaved =
+    document.getElementById(
+      'gunSettingPermitPhotoSaved'
+    );
+
+  const permitPhotoLink =
+    document.getElementById(
+      'gunSettingPermitPhotoLink'
+    );
+
+  if (permitPhotoSaved) {
+    permitPhotoSaved.style.display =
+      'none';
+  }
+
+  if (permitPhotoLink) {
+    permitPhotoLink.href =
+      '#';
+  }
+
+}
+  // =================================
+  // 全体表示
+  // =================================
+
+  function renderAll() {
+
+  renderStock();
+
+  renderAmmoTypes();
+
+  renderGuns();
+
+  renderAnimalsForUse();
+
+  renderCounts();
+
+  renderHistory();
+
+  renderFiscalYears();
+
+  renderBasicSettings();
+    
+  renderHuntingLicenses();
+  
+  renderGunSettings();
+
+  renderGunRenewalAlerts();
+
+  renderAmmoSettings();
+
+  renderAnimalSettings();
+
+  renderInitialStockSettings();
+
+  setToday();
+
+}
+
+
+  // =================================
+  // 動物アイコン
+  // =================================
+  
+function getAnimalIcon(animalName) {
+
+  const name =
+    String(animalName || '');
+
+  if (name.includes('エゾシカ')) {
+    return '🦌';
+  }
+
+  if (
+    name.includes('カモ') ||
+    name.includes('鴨')
+  ) {
+    return '🦆';
+  }
+
+  if (
+    name.includes('ヒグマ') ||
+    name.includes('クマ')
+  ) {
+    return '🐻';
+  }
+
+  if (
+    name.includes('キツネ') ||
+    name.includes('狐')
+  ) {
+    return '🦊';
+  }
+
+  if (
+    name.includes('イノシシ') ||
+    name.includes('猪')
+  ) {
+    return '🐗';
+  }
+
+  return '🐾';
+}
+
+  // =================================
+  // 履歴
+  // =================================
+
+function renderFiscalYears() {
+
+  const select =
+    document.getElementById('summaryFiscalYear');
+
+  if (!select) {
+    return;
+  }
+
+  select.innerHTML = '';
+
+
+  if (
+    !appData ||
+    !appData.fiscalYears ||
+    appData.fiscalYears.length === 0
+  ) {
+
+    const option =
+      document.createElement('option');
+
+    option.value = '';
+    option.textContent = '年度データなし';
+
+    select.appendChild(option);
+
+    return;
+  }
+
+
+  appData.fiscalYears.forEach(
+    function(year) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = year;
+      option.textContent =
+        year + '年度';
+
+      select.appendChild(option);
+
+    }
+  );
+
+
+  // 最新年度を初期選択
+select.value =
+  appData.fiscalYears[0];
+
+// 年度を変更したとき
+select.onchange =
+  function() {
+    renderFiscalSummary();
+  };
+
+// 初期表示
+renderFiscalSummary();
+
+}
+
+  function renderFiscalSummary() {
+
+  const select =
+    document.getElementById(
+      'summaryFiscalYear'
+    );
+
+  const content =
+    document.getElementById(
+      'summaryContent'
+    );
+
+  if (
+    !select ||
+    !content ||
+    !appData ||
+    !appData.records
+  ) {
+    return;
+  }
+
+
+  const year =
+    Number(select.value);
+
+  if (!year) {
+
+    content.innerHTML =
+      '<p>年度を選択してください。</p>';
+
+    return;
+  }
+
+
+  let purchases = 0;
+  let uses = 0;
+  let purchaseTotal = 0;
+  let openingStock = 0;
+  let initialStock = 0;
+
+
+  appData.records.forEach(
+    function(record) {
+
+      const recordYear =
+        Number(
+          record['年度'] || 0
+        );
+
+      const kind =
+        String(
+          record['区分'] || ''
+        );
+
+      const qty =
+        Number(
+          record['数量'] || 0
+        );
+
+      const amount =
+        Number(
+          record['金額'] || 0
+        );
+
+
+      // 過去年度 → 期首在庫
+      if (recordYear < year) {
+
+        if (
+          kind === '初期在庫' ||
+          kind === '購入'
+        ) {
+          openingStock += qty;
+        }
+
+        if (kind === '使用') {
+          openingStock -= qty;
+        }
+
+      }
+
+
+      // 選択年度
+      if (recordYear === year) {
+
+        if (kind === '初期在庫') {
+          initialStock += qty;
+        }
+
+        if (kind === '購入') {
+          purchases += qty;
+          purchaseTotal += amount;
+        }
+
+        if (kind === '使用') {
+          uses += qty;
+        }
+
+      }
+
+    }
+  );
+
+
+  const closingStock =
+    openingStock +
+    initialStock +
+    purchases -
+    uses;
+
+    const ammoSummary = {};
+
+appData.records.forEach(
+  function(record) {
+
+    const recordYear =
+      Number(
+        record['年度'] || 0
+      );
+
+    const type =
+      String(
+        record['弾種'] || ''
+      );
+
+    const kind =
+      String(
+        record['区分'] || ''
+      );
+
+    const qty =
+      Number(
+        record['数量'] || 0
+      );
+
+
+    if (!type) {
+      return;
+    }
+
+
+    if (!ammoSummary[type]) {
+
+      ammoSummary[type] = {
+        opening: 0,
+        purchase: 0,
+        use: 0,
+        closing: 0
+      };
+
+    }
+
+
+    // 前年度までの在庫
+    if (recordYear < year) {
+
+      if (
+        kind === '初期在庫' ||
+        kind === '購入'
+      ) {
+        ammoSummary[type].opening += qty;
+      }
+
+      if (kind === '使用') {
+        ammoSummary[type].opening -= qty;
+      }
+
+    }
+
+
+    // 選択年度
+    if (recordYear === year) {
+
+      if (
+        kind === '初期在庫' ||
+        kind === '購入'
+      ) {
+
+        ammoSummary[type].purchase += qty;
+
+      }
+
+      if (kind === '使用') {
+
+        ammoSummary[type].use += qty;
+
+      }
+
+    }
+
+  }
+);
+
+
+// 期末在庫を計算
+Object.keys(ammoSummary)
+  .forEach(function(type) {
+
+    ammoSummary[type].closing =
+      ammoSummary[type].opening +
+      ammoSummary[type].purchase -
+      ammoSummary[type].use;
+
+  });
+
+  // =================================
+// 譲受理由別集計
+// =================================
+
+const purchaseReasonSummary = {};
+
+appData.records.forEach(
+  function(record) {
+
+    const recordYear =
+      Number(
+        record['年度'] || 0
+      );
+
+    const kind =
+      String(
+        record['区分'] || ''
+      );
+
+    if (
+      recordYear !== year ||
+      kind !== '購入'
+    ) {
+      return;
+    }
+
+
+    let reason =
+      String(
+        record['譲受理由'] || ''
+      ).trim();
+
+    if (!reason) {
+      reason = '未設定';
+    }
+
+
+    const qty =
+      Number(
+        record['数量'] || 0
+      );
+
+    const amount =
+      Number(
+        record['金額'] || 0
+      );
+
+
+    if (!purchaseReasonSummary[reason]) {
+
+      purchaseReasonSummary[reason] = {
+        count: 0,
+        qty: 0,
+        amount: 0
+      };
+
+    }
+
+
+    purchaseReasonSummary[reason].count += 1;
+
+    purchaseReasonSummary[reason].qty += qty;
+
+    purchaseReasonSummary[reason].amount += amount;
+
+  }
+);
+
+    // =================================
+// 使用目的別集計
+// =================================
+
+const usePurposeSummary = {};
+
+appData.records.forEach(
+  function(record) {
+
+    const recordYear =
+      Number(
+        record['年度'] || 0
+      );
+
+    const kind =
+      String(
+        record['区分'] || ''
+      );
+
+    if (
+      recordYear !== year ||
+      kind !== '使用'
+    ) {
+      return;
+    }
+
+
+    let purpose =
+      String(
+        record['目的'] || ''
+      ).trim();
+
+    if (!purpose) {
+      purpose = '未設定';
+    }
+
+
+    const qty =
+      Number(
+        record['数量'] || 0
+      );
+
+
+    if (!usePurposeSummary[purpose]) {
+
+      usePurposeSummary[purpose] = {
+        count: 0,
+        qty: 0
+      };
+
+    }
+
+
+    usePurposeSummary[purpose].count += 1;
+
+    usePurposeSummary[purpose].qty += qty;
+
+  }
+);
+
+  // =================================
+// 捕獲集計
+// =================================
+
+const captureSummary = {};
+
+(appData.captures || []).forEach(
+  function(capture) {
+
+    const useRecordId =
+      String(
+        capture['使用記録ID'] || ''
+      );
+
+
+    // 捕獲明細に対応する使用記録を探す
+    const useRecord =
+      appData.records.find(
+        function(record) {
+
+          return String(
+            record['記録ID'] || ''
+          ) === useRecordId;
+
+        }
+      );
+
+
+    if (!useRecord) {
+      return;
+    }
+
+
+    const recordYear =
+      Number(
+        useRecord['年度'] || 0
+      );
+
+
+    // 選択年度以外は除外
+    if (recordYear !== year) {
+      return;
+    }
+
+
+    let animal =
+      String(
+        capture['鳥獣名'] || ''
+      ).trim();
+
+    if (!animal) {
+      animal = '未設定';
+    }
+
+
+    const qty =
+      Number(
+        capture['捕獲数'] || 0
+      );
+
+    const unit =
+      String(
+        capture['単位'] || ''
+      );
+
+
+    if (!captureSummary[animal]) {
+
+      captureSummary[animal] = {
+        qty: 0,
+        unit: unit
+      };
+
+    }
+
+
+    captureSummary[animal].qty += qty;
+
+  }
+);
+    
+  let ammoHtml = '';
+
+Object.keys(ammoSummary)
+  .forEach(function(type) {
+
+    const item =
+      ammoSummary[type];
+
+    ammoHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        type +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '期首：' +
+        item.opening +
+        '発</div>' +
+
+        '<div>購入：' +
+        item.purchase +
+        '発</div>' +
+
+        '<div>使用：' +
+        item.use +
+        '発</div>' +
+
+        '<div><strong>期末：' +
+        item.closing +
+        '発</strong></div>' +
+
+      '</div>';
+
+  });
+
+    let reasonHtml = '';
+
+const reasonOrder = [
+  '許可',
+  '無許可',
+  '有害駆除',
+  '未設定'
+];
+
+reasonOrder.forEach(
+  function(reason) {
+
+    const item =
+      purchaseReasonSummary[reason];
+
+    if (!item) {
+      return;
+    }
+
+    reasonHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        reason +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '購入回数：' +
+        item.count +
+        '回</div>' +
+
+        '<div>' +
+        '購入数量：' +
+        item.qty +
+        '発</div>' +
+
+        '<div>' +
+        '購入金額：' +
+        item.amount.toLocaleString(
+          'ja-JP'
+        ) +
+        '円</div>' +
+
+      '</div>';
+
+  }
+);
+
+　　　// =================================
+// 使用目的別表示
+// =================================
+
+let purposeHtml = '';
+
+const purposeOrder = [
+  '標的射撃',
+  '狩猟',
+  '有害鳥獣捕獲',
+  '未設定'
+];
+
+purposeOrder.forEach(
+  function(purpose) {
+
+    const item =
+      usePurposeSummary[purpose];
+
+    if (!item) {
+      return;
+    }
+
+
+    let icon = '📌';
+
+    if (purpose === '標的射撃') {
+      icon = '🎯';
+    }
+
+    if (purpose === '狩猟') {
+      icon = '🦌';
+    }
+
+    if (purpose === '有害鳥獣捕獲') {
+      icon = '⚠️';
+    }
+
+
+    purposeHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        icon +
+        ' ' +
+        purpose +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '使用回数：' +
+        item.count +
+        '回</div>' +
+
+        '<div>' +
+        '使用数量：' +
+        item.qty +
+        '発</div>' +
+
+      '</div>';
+
+  }
+);
+
+　　　// =================================
+// 捕獲集計表示
+// =================================
+
+let captureHtml = '';
+
+Object.keys(captureSummary)
+  .forEach(function(animal) {
+
+    const item =
+      captureSummary[animal];
+
+    let icon = '🐾';
+
+    if (animal === 'エゾシカ') {
+      icon = '🦌';
+    }
+
+    if (animal === 'ヒグマ') {
+      icon = '🐻';
+    }
+
+    if (animal === 'カモ類') {
+      icon = '🦆';
+    }
+
+
+    captureHtml +=
+
+      '<div style="' +
+      'margin-top:12px;' +
+      'padding:14px;' +
+      'background:#f5f5f5;' +
+      'border-radius:10px;' +
+      '">' +
+
+        '<strong>' +
+        icon +
+        ' ' +
+        animal +
+        '</strong>' +
+
+        '<div style="margin-top:8px;">' +
+        '捕獲数：' +
+        item.qty +
+        item.unit +
+        '</div>' +
+
+      '</div>';
+
+  }
+);
+
+
+// 捕獲記録がない場合
+if (!captureHtml) {
+
+  captureHtml =
+    '<div style="' +
+    'margin-top:12px;' +
+    'padding:14px;' +
+    'background:#f5f5f5;' +
+    'border-radius:10px;' +
+    '">' +
+    '捕獲記録なし' +
+    '</div>';
+
+}
+    
+content.innerHTML =
+
+  '<div style="margin-top:20px;">' +
+
+    '<h3>' +
+    year +
+    '年度 実包集計</h3>' +
+
+    '<div style="' +
+'display:grid;' +
+'grid-template-columns:1fr 1fr;' +
+'gap:10px;' +
+'margin-top:15px;' +
+'">' +
+
+  '<div style="' +
+  'padding:14px;' +
+  'background:#e8f5e9;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">購入</div>' +
+    '<div style="font-size:24px;font-weight:bold;">' +
+    purchases +
+    '発</div>' +
+  '</div>' +
+
+  '<div style="' +
+  'padding:14px;' +
+  'background:#fff3e0;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">使用</div>' +
+    '<div style="font-size:24px;font-weight:bold;">' +
+    uses +
+    '発</div>' +
+  '</div>' +
+
+  '<div style="' +
+  'padding:14px;' +
+  'background:#e3f2fd;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">期末在庫</div>' +
+    '<div style="font-size:24px;font-weight:bold;">' +
+    closingStock +
+    '発</div>' +
+  '</div>' +
+
+  '<div style="' +
+  'padding:14px;' +
+  'background:#f3e5f5;' +
+  'border-radius:12px;' +
+  'text-align:center;' +
+  '">' +
+    '<div style="font-size:13px;">購入金額</div>' +
+    '<div style="font-size:20px;font-weight:bold;">' +
+    purchaseTotal.toLocaleString(
+      'ja-JP'
+    ) +
+    '円</div>' +
+  '</div>' +
+
+'</div>' +
+
+'<div style="' +
+'margin-top:12px;' +
+'font-size:13px;' +
+'color:#666;' +
+'">' +
+  '期首在庫：' +
+  openingStock +
+  '発　／　年度内初期在庫：' +
+  initialStock +
+  '発' +
+'</div>' +
+
+    '<h3 style="margin-top:28px;">' +
+'弾種別集計' +
+'</h3>' +
+
+ammoHtml +
+
+'<h3 style="margin-top:28px;">' +
+'譲受理由別集計' +
+'</h3>' +
+
+reasonHtml +
+
+'<h3 style="margin-top:28px;">' +
+'使用目的別集計' +
+'</h3>' +
+
+purposeHtml +
+
+'<h3 style="margin-top:28px;">' +
+'捕獲集計' +
+'</h3>' +
+
+captureHtml +
+
+'</div>';
+
+}
+
+
+function setHistoryFilter(filter) {
+
+  historyFilter = filter;
+
+  renderHistory();
+
+}
+  
+  function renderHistory() {
+
+  const list =
+    document.getElementById('historyList');
+
+  if (!list) {
+    return;
+  }
+
+  list.innerHTML = '';
+
+
+  if (
+    !appData ||
+    !appData.records ||
+    appData.records.length === 0
+  ) {
+
+    list.textContent =
+      '履歴がありません。';
+
+    return;
+  }
+
+
+  let records =
+  appData.records.slice().reverse();
+
+
+if (historyFilter !== 'すべて') {
+
+  records =
+    records.filter(
+      function(record) {
+
+        return record['区分'] === historyFilter;
+
+      }
+    );
+
+}
+
+  records.forEach(function(record) {
+
+    const card =
+      document.createElement('div');
+
+    card.style.padding = '15px';
+    card.style.marginBottom = '12px';
+    card.style.border = '1px solid #ddd';
+    card.style.borderRadius = '12px';
+
+    if (record['区分'] === '購入') {
+
+  card.style.backgroundColor = '#e8f5e9';
+  card.style.borderLeft = '6px solid #2e7d32';
+
+} else if (record['区分'] === '使用') {
+
+  card.style.backgroundColor = '#fff3e0';
+  card.style.borderLeft = '6px solid #ef6c00';
+
+}
+
+    const date =
+      record['日付']
+        ? new Date(
+            record['日付']
+          ).toLocaleDateString('ja-JP')
+        : '';
+
+
+    const kind =
+      record['区分'] || '';
+
+    const type =
+      record['弾種'] || '';
+
+    const qty =
+      record['数量'] || 0;
+    const qtyText =
+  record['区分'] === '購入'
+    ? '＋' + qty + '発'
+    : record['区分'] === '使用'
+      ? '−' + qty + '発'
+      : qty + '発';
+
+    const purpose = record['目的'] || '';
+    
+    const purchaseMethod = record['譲受理由'] || '';
+
+    const gun = record['使用銃砲'] || '';
+
+    const place = record['入手先・場所'] || '';
+
+    const captures =
+      (appData.captures || []).filter(
+        function(capture) {
+
+      return String(
+        capture['使用記録ID'] || ''
+      ) === String(
+        record['記録ID'] || ''
+      );
+
+    }
+  );
+
+
+    card.innerHTML =
+      '<strong>' +
+      date +
+      '　' +
+      kind +
+      '</strong>' +
+
+      '<div style="margin-top:8px;">' +
+      type +
+      '　' +
+      qtyText +
+      '</div>' +
+
+      '<div>目的：' + purpose + '</div>' +
+      (
+        record['区分'] === '購入' &&
+        purchaseMethod
+        ? '<div>譲受理由：' + purchaseMethod + '</div>'
+        : ''
+      ) +
+
+      '<div>銃砲：' + gun + '</div>' +
+
+      (
+      place
+        ? '<div>場所：' +
+          place +
+          '</div>'
+        : ''
+      ) +
+
+      (
+  record['緯度'] &&
+  record['経度']
+    ? '<div style="margin-top:8px;">' +
+      '<a href="https://www.google.com/maps?q=' +
+      encodeURIComponent(record['緯度']) +
+      ',' +
+      encodeURIComponent(record['経度']) +
+      '" target="_blank" rel="noopener noreferrer">' +
+      '📍 GPSを地図で見る' +
+      '</a>' +
+      '</div>'
+    : ''
+) +
+      
+      (
+  record['レシートURL']
+    ? '<div style="margin-top:8px;">' +
+      '<a href="' +
+      record['レシートURL'] +
+      '" target="_blank" rel="noopener noreferrer">' +
+      '🧾 レシートを見る' +
+      '</a>' +
+      '</div>'
+    : ''
+) +
+
+      (
+  captures.length > 0
+    ? captures.map(
+        function(capture) {
+
+          return (
+  '<div style="margin-top:8px;">' +
+  
+  getAnimalIcon(
+  capture['鳥獣名']
+    ) +
+    ' ' +
+    capture['鳥獣名'] +
+
+    ' ' +
+
+    (
+  capture['捕獲結果'] === '捕獲なし'
+    ? '捕獲なし'
+    : (
+        capture['捕獲数'] +
+        capture['単位']
+      )
+    ) +
+
+    '</div>' +
+
+  (
+    capture['写真URL']
+      ? '<div style="margin-top:6px;">' +
+        '<a href="' +
+        capture['写真URL'] +
+        '" target="_blank" rel="noopener noreferrer">' +
+        '📷 捕獲写真を見る' +
+        '</a>' +
+        '</div>'
+      : ''
+  )
+);
+
+        }
+      ).join('')
+    : ''
+);
+
+
+    list.appendChild(card);
+
+  });
+
+}
+
+    // =================================
+  // 鳥獣
+  // =================================
+  
+  function renderAnimalsForUse() {
+
+  const select =
+    document.getElementById('captureAnimal');
+
+  if (!select) {
+    return;
+  }
+
+  select.innerHTML =
+    '<option value="">選択してください</option>';
+
+  if (!appData || !appData.animals) {
+    return;
+  }
+
+  appData.animals.forEach(function(animal) {
+
+    const option =
+      document.createElement('option');
+
+    option.value =
+      animal.name;
+
+    option.textContent =
+      animal.name;
+
+    option.dataset.unit =
+      animal.unit || '';
+
+    select.appendChild(option);
+
+  });
+}
+
+  // =================================
+  // 在庫
+  // =================================
+
+  function renderStock() {
+
+    const element =
+      document.getElementById('stock');
+
+    element.innerHTML = '';
+
+
+    if (
+      !appData ||
+      !appData.stock
+    ) {
+
+      element.textContent =
+        '在庫データがありません';
+
+      return;
+
+    }
+
+
+    const keys =
+      Object.keys(appData.stock);
+
+
+    if (keys.length === 0) {
+
+      element.textContent =
+        '在庫データがありません';
+
+      return;
+
+    }
+
+
+    keys.forEach(function(type) {
+
+      const row =
+        document.createElement('div');
+
+      row.className =
+        'stock-item';
+
+
+      const name =
+        document.createElement('span');
+
+      name.className =
+        'stock-name';
+
+      name.textContent =
+        type;
+
+
+      const quantity =
+        document.createElement('span');
+
+      quantity.className =
+        'stock-number';
+
+      quantity.textContent =
+        appData.stock[type] +
+        ' 発';
+
+
+      row.appendChild(name);
+
+      row.appendChild(quantity);
+
+      element.appendChild(row);
+
+    });
+
+  }
+
+
+  // =================================
+  // 弾種
+  // =================================
+
+  function renderAmmoTypes() {
+
+  const buySelect =
+    document.getElementById('buyType');
+
+  const useSelect =
+    document.getElementById('useType');
+
+
+  if (buySelect) {
+
+    buySelect.innerHTML =
+      '<option value="">選択してください</option>';
+
+    appData.ammoTypes.forEach(function(type) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = type;
+      option.textContent = type;
+
+      buySelect.appendChild(option);
+
+    });
+
+  }
+
+
+  if (useSelect) {
+
+    useSelect.innerHTML =
+      '<option value="">選択してください</option>';
+
+    appData.ammoTypes.forEach(function(type) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = type;
+      option.textContent = type;
+
+      useSelect.appendChild(option);
+
+    });
+
+  }
+
+}
+
+
+  // =================================
+  // 銃砲
+  // =================================
+
+  function renderGuns() {
+
+  const buySelect =
+    document.getElementById('buyGun');
+
+  const useSelect =
+    document.getElementById('useGun');
+
+
+  if (buySelect) {
+
+    buySelect.innerHTML =
+      '<option value="">選択してください</option>';
+
+    appData.guns.forEach(function(gun) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = gun.name;
+      option.textContent = gun.name;
+
+      buySelect.appendChild(option);
+
+    });
+
+  }
+
+
+  if (useSelect) {
+
+    useSelect.innerHTML =
+      '<option value="">選択してください</option>';
+
+    appData.guns.forEach(function(gun) {
+
+      const option =
+        document.createElement('option');
+
+      option.value = gun.name;
+      option.textContent = gun.name;
+
+      useSelect.appendChild(option);
+
+    });
+
+  }
+
+}
+
+
+  // =================================
+  // 件数
+  // =================================
+
+  function renderCounts() {
+
+    document.getElementById('ammoCount')
+      .textContent =
+      appData.ammoTypes
+        ? appData.ammoTypes.length
+        : 0;
+
+    document.getElementById('gunCount')
+      .textContent =
+      appData.guns
+        ? appData.guns.length
+        : 0;
+
+    document.getElementById('animalCount')
+      .textContent =
+      appData.animals
+        ? appData.animals.length
+        : 0;
+
+  }
+
+
+  // =================================
+  // 今日の日付
+  // =================================
+
+  function setToday() {
+
+    const input =
+      document.getElementById('buyDate');
+
+    if (input.value) {
+      return;
+    }
+
+
+    const now =
+      new Date();
+
+
+    const yyyy =
+      now.getFullYear();
+
+
+    const mm =
+      String(
+        now.getMonth() + 1
+      ).padStart(2,'0');
+
+
+    const dd =
+      String(
+        now.getDate()
+      ).padStart(2,'0');
+
+
+    input.value =
+      yyyy + '-' +
+      mm + '-' +
+      dd;
+
+  }
+
+
+  // =================================
+  // 金額計算
+  // =================================
+
+  document.getElementById('buyQty')
+    .addEventListener(
+      'input',
+      calculateTotal
+    );
+
+
+  document.getElementById('buyUnitPrice')
+    .addEventListener(
+      'input',
+      calculateTotal
+    );
+
+
+  function calculateTotal() {
+
+    const qty =
+      Number(
+        document.getElementById(
+          'buyQty'
+        ).value || 0
+      );
+
+
+    const unitPrice =
+      Number(
+        document.getElementById(
+          'buyUnitPrice'
+        ).value || 0
+      );
+
+
+    const total =
+      qty * unitPrice;
+
+
+    document.getElementById('buyTotal')
+      .textContent =
+      total.toLocaleString() +
+      '円';
+
+  }
+
+
+  // =================================
+  // 購入保存
+  // =================================
+
+  function saveBuy() {
+
+  const button =
+    document.getElementById('buySaveButton');
+
+  if (button.disabled) {
+    return;
+  }
+
+  const date =
+    document.getElementById('buyDate').value;
+
+  const type =
+    document.getElementById('buyType').value;
+
+  const qty =
+    Number(
+      document.getElementById('buyQty').value || 0
+    );
+
+  const purpose =
+  document.getElementById('buyPurpose').value;
+
+const purchaseMethod =
+  document.getElementById('buyPurchaseMethod').value;
+
+const gun =
+  document.getElementById('buyGun').value;
+
+  const place =
+    document.getElementById('buyPlace').value;
+
+  const unitPrice =
+    Number(
+      document.getElementById('buyUnitPrice').value || 0
+    );
+
+  const total =
+    qty * unitPrice;
+
+  const note =
+    document.getElementById('buyNote').value;
+
+  const receiptFile =
+    document.getElementById('buyReceipt').files[0];
+
+
+  // 入力チェック
+
+  if (!date) {
+    alert('日付を入力してください。');
+    return;
+  }
+
+  if (!type) {
+    alert('弾種を選択してください。');
+    return;
+  }
+
+  if (qty <= 0) {
+    alert('数量を入力してください。');
+    return;
+  }
+
+  if (!purchaseMethod) {
+  alert('譲受理由を選択してください。');
+  return;
+  }
+    
+  if (!gun) {
+    alert('使用銃砲を選択してください。');
+    return;
+  }
+
+  if (unitPrice < 0) {
+    alert('単価を確認してください。');
+    return;
+  }
+
+
+  // 二重登録防止
+
+  button.disabled = true;
+  button.textContent = '画像準備中…';
+
+
+  imageToDataUrl(
+    receiptFile,
+    1600,
+    0.7
+  )
+
+  .then(function(receiptDataUrl) {
+
+    const record = {
+
+      action: 'saveRecord',
+
+      recordId:
+        'BUY-' +
+        Date.now() +
+        '-' +
+        Math.random()
+          .toString(36)
+          .substring(2,10),
+
+      date: date,
+      kind: '購入',
+      type: type,
+      qty: qty,
+      purpose: purpose,
+      purchaseMethod: purchaseMethod,
+      gun: gun,
+      place: place,
+      unitPrice: unitPrice,
+      total: total,
+      receiptDataUrl: receiptDataUrl,
+      note: note
+
+    };
+
+
+    button.textContent = '保存中…';
+
+
+    return fetch(
+      API_URL,
+      {
+        method: 'POST',
+
+        headers: {
+          'Content-Type':
+            'application/json'
+        },
+
+        body:
+          JSON.stringify(record)
+      }
+    );
+
+  })
+
+  .then(function(response) {
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTPエラー: ' +
+        response.status
+      );
+
+    }
+
+    return response.json();
+
+  })
+
+  .then(function(data) {
+
+    if (!data.success) {
+
+      throw new Error(
+        data.error ||
+        '保存に失敗しました'
+      );
+
+    }
+
+
+    appData =
+      data.data;
+
+
+    renderAll();
+
+
+    // 入力クリア
+
+    document.getElementById(
+      'buyQty'
+    ).value = '';
+
+    document.getElementById(
+      'buyPlace'
+    ).value = '';
+
+    document.getElementById(
+      'buyUnitPrice'
+    ).value = '';
+
+    document.getElementById(
+      'buyNote'
+    ).value = '';
+
+    document.getElementById(
+      'buyReceipt'
+    ).value = '';
+
+    document.getElementById(
+      'buyReceiptPreview'
+    ).style.display = 'none';
+
+    document.getElementById(
+      'buyReceiptImage'
+    ).src = '';
+
+    calculateTotal();
+
+
+    alert(
+      '購入記録を保存しました。'
+    );
+
+
+    showPage('homePage');
+
+  })
+
+  .catch(function(error) {
+
+    console.error(error);
+
+    alert(
+      '購入記録の保存に失敗しました。\n' +
+      error.message
+    );
+
+  })
+
+  .finally(function() {
+
+    button.disabled = false;
+
+    button.textContent =
+      '購入記録を保存';
+
+  });
+
+}
+
+  // =================================
+// 捕獲結果変更
+// =================================
+
+function changeCaptureResult() {
+
+  const result =
+    document.getElementById(
+      'captureResult'
+    ).value;
+
+  const count =
+    document.getElementById(
+      'captureCount'
+    );
+
+
+  if (result === '捕獲なし') {
+
+    count.value = 0;
+
+    count.disabled = true;
+
+  } else {
+
+    count.disabled = false;
+
+    if (
+      result === '捕獲あり' &&
+      Number(count.value) === 0
+    ) {
+      count.value = '';
+    }
+
+  }
+
+}
+
+  // =================================
+// 使用保存
+// =================================
+
+  
+function saveUse() {
+
+  const button =
+    document.getElementById(
+      'useSaveButton'
+    );
+
+
+  if (button.disabled) {
+    return;
+  }
+
+
+  const date =
+    document.getElementById(
+      'useDate'
+    ).value;
+
+
+  const type =
+    document.getElementById(
+      'useType'
+    ).value;
+
+
+  const qty =
+    Number(
+      document.getElementById(
+        'useQty'
+      ).value || 0
+    );
+
+  const purchaseMethod =
+  document.getElementById(
+    'usePurchaseMethod'
+  ).value;
+
+
+  const purpose =
+    document.getElementById(
+      'usePurpose'
+    ).value;
+
+
+  const gun =
+    document.getElementById(
+      'useGun'
+    ).value;
+
+
+  const place =
+    document.getElementById(
+      'usePlace'
+    ).value;
+
+
+  const note =
+    document.getElementById(
+      'useNote'
+    ).value;
+
+
+  // 入力チェック
+
+  if (!date) {
+
+    alert(
+      '日付を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!type) {
+
+    alert(
+      '弾種を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (qty <= 0) {
+
+    alert(
+      '数量を入力してください。'
+    );
+
+    return;
+
+  }
+
+  if (!purchaseMethod) {
+
+  alert(
+    '譲受区分を選択してください。'
+  );
+
+  return;
+
+}
+
+
+  if (!gun) {
+
+    alert(
+      '使用銃砲を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  // 二重登録防止
+
+  button.disabled = true;
+
+  button.textContent =
+    '保存中…';
+
+
+const captureAnimal =
+  document.getElementById('captureAnimal').value;
+
+const captureCount =
+  Number(
+    document.getElementById('captureCount').value || 0
+  );
+
+const captureSelect =
+  document.getElementById('captureAnimal');
+
+const selectedOption =
+  captureSelect.options[
+    captureSelect.selectedIndex
+  ];
+
+const captureUnit =
+  selectedOption
+    ? (selectedOption.dataset.unit || '')
+    : '';
+
+const captures = [];
+  
+const capturePhotoFile =
+  document.getElementById('capturePhoto').files[0];
+
+const captureResult =
+  document.getElementById(
+    'captureResult'
+  ).value;
+
+
+// =================================
+// 捕獲あり
+// =================================
+
+if (captureResult === '捕獲あり') {
+
+  if (!captureAnimal) {
+
+    alert(
+      '捕獲鳥獣を選択してください。'
+    );
+
+    button.disabled = false;
+
+    button.textContent =
+      '使用記録を保存';
+
+    return;
+  }
+
+
+  if (captureCount <= 0) {
+
+    alert(
+      '捕獲数を入力してください。'
+    );
+
+    button.disabled = false;
+
+    button.textContent =
+      '使用記録を保存';
+
+    return;
+  }
+
+
+  captures.push({
+
+    animal:
+      captureAnimal,
+
+    count:
+      captureCount,
+
+    unit:
+      captureUnit,
+
+    result:
+      '捕獲あり',
+
+    latitude:
+      document.getElementById(
+        'captureLatitude'
+      ).textContent || '',
+
+    longitude:
+      document.getElementById(
+        'captureLongitude'
+      ).textContent || '',
+
+    gpsTime:
+      document.getElementById(
+        'captureGpsTime'
+      ).textContent || ''
+
+  });
+
+}
+
+
+// =================================
+// 捕獲なし
+// =================================
+
+if (captureResult === '捕獲なし') {
+
+  if (!captureAnimal) {
+
+    alert(
+      '対象となった鳥獣を選択してください。'
+    );
+
+    button.disabled = false;
+
+    button.textContent =
+      '使用記録を保存';
+
+    return;
+  }
+
+
+  captures.push({
+
+    animal:
+      captureAnimal,
+
+    count:
+      0,
+
+    unit:
+      captureUnit,
+
+    result:
+      '捕獲なし',
+
+    latitude:
+      document.getElementById(
+        'captureLatitude'
+      ).textContent || '',
+
+    longitude:
+      document.getElementById(
+        'captureLongitude'
+      ).textContent || '',
+
+    gpsTime:
+      document.getElementById(
+        'captureGpsTime'
+      ).textContent || ''
+
+  });
+
+}
+
+// 捕獲写真を送信用データに変換
+button.textContent = '画像準備中…';
+
+imageToDataUrl(
+  capturePhotoFile,
+  1600,
+  0.7
+)
+
+.then(function(photoDataUrl) {
+
+  // 捕獲情報がある場合、
+  // 写真データを捕獲明細に追加
+  if (captures.length > 0) {
+    captures[0].photoDataUrl =
+      photoDataUrl || '';
+  }
+
+  const record = {
+
+  action: 'saveRecord',
+
+  recordId:
+    'USE-' +
+      Date.now() +
+      '-' +
+      Math.random()
+        .toString(36)
+        .substring(2,10),
+
+    date: date,
+
+    kind: '使用',
+
+    type: type,
+
+    qty: qty,
+
+    purchaseMethod:
+    purchaseMethod,
+
+    purpose: purpose,
+
+    gun: gun,
+
+    place: place,
+
+    unitPrice: 0,
+
+    total: 0,
+
+    // 使用記録のGPS
+    latitude:
+      document
+        .getElementById(
+          'captureLatitude'
+        )
+        .textContent || '',
+
+    longitude:
+      document
+        .getElementById(
+          'captureLongitude'
+        )
+        .textContent || '',
+
+    gpsTime:
+      document
+        .getElementById(
+          'captureGpsTime'
+        )
+        .textContent || '',
+
+    // 捕獲情報
+    captures: captures,
+
+    note: note
+  };
+
+
+  console.log(
+    '送信する使用記録:',
+    JSON.stringify(
+      record,
+      null,
+      2
+    )
+  );
+
+
+  button.textContent =
+    '保存中…';
+
+
+  return fetch(
+    API_URL,
+    {
+      method: 'POST',
+
+      headers: {
+        'Content-Type':
+          'application/json'
+      },
+
+      body:
+        JSON.stringify(record)
+    }
+  );
+
+})
+
+.then(function(response) {
+
+  if (!response.ok) {
+
+    throw new Error(
+      'HTTPエラー: ' +
+      response.status
+    );
+  }
+
+  return response.json();
+
+})
+
+.then(function(data) {
+
+  if (!data.success) {
+
+    throw new Error(
+      data.error ||
+      '保存に失敗しました'
+    );
+  }
+
+
+  // GASから返ってきた最新データ
+  appData =
+    data.data;
+
+
+  renderAll();
+
+
+  // 使用記録をクリア
+  document.getElementById(
+    'useQty'
+  ).value = '';
+
+  document.getElementById(
+    'usePlace'
+  ).value = '';
+
+  document.getElementById(
+    'useNote'
+  ).value = '';
+
+
+  // 捕獲情報をクリア
+  document.getElementById(
+    'captureAnimal'
+  ).value = '';
+
+  document.getElementById(
+    'captureCount'
+  ).value = '';
+
+  document.getElementById(
+    'capturePhoto'
+  ).value = '';
+
+  // GPS情報をクリア
+document.getElementById(
+  'captureLatitude'
+).textContent = '';
+
+document.getElementById(
+  'captureLongitude'
+).textContent = '';
+
+document.getElementById(
+  'captureGpsTime'
+).textContent = '';
+
+document.getElementById(
+  'gpsStatus'
+).style.display = 'none';
+  
+  // 写真プレビューを消す
+  document.getElementById(
+    'capturePhotoPreview'
+  ).style.display = 'none';
+
+  document.getElementById(
+    'capturePhotoImage'
+  ).src = '';
+
+
+  alert(
+    '使用記録を保存しました。'
+  );
+
+
+  showPage(
+    'homePage'
+  );
+
+})
+
+.catch(function(error) {
+
+  console.error(error);
+
+  alert(
+    '使用記録の保存に失敗しました。\n' +
+    error.message
+  );
+
+})
+
+.finally(function() {
+
+  button.disabled = false;
+
+  button.textContent =
+    '使用記録を保存';
+
+});
+
+}
+
+function updateCaptureSection() {
+
+  const purpose =
+    document.getElementById('usePurpose').value;
+
+  const section =
+    document.getElementById('captureSection');
+
+  if (!section) {
+    return;
+  }
+
+  if (
+    purpose === '狩猟' ||
+    purpose === '有害鳥獣捕獲'
+  ) {
+
+    section.style.display = 'block';
+
+ } else {
+
+  section.style.display = 'none';
+
+  clearCaptureInputs();
+
+}
+}
+  
+function clearCaptureInputs() {
+
+  const animal =
+    document.getElementById('captureAnimal');
+
+  const count =
+    document.getElementById('captureCount');
+
+  const photo =
+    document.getElementById('capturePhoto');
+
+  const preview =
+    document.getElementById('capturePhotoPreview');
+
+  const image =
+    document.getElementById('capturePhotoImage');
+
+  const latitude =
+    document.getElementById('captureLatitude');
+
+  const longitude =
+    document.getElementById('captureLongitude');
+
+  const gpsTime =
+    document.getElementById('captureGpsTime');
+
+  const gpsStatus =
+    document.getElementById('gpsStatus');
+
+
+  if (animal) {
+    animal.value = '';
+  }
+
+  if (count) {
+    count.value = '';
+  }
+
+  if (photo) {
+    photo.value = '';
+  }
+
+  if (preview) {
+    preview.style.display = 'none';
+  }
+
+  if (image) {
+    image.src = '';
+  }
+
+  if (latitude) {
+    latitude.textContent = '';
+  }
+
+  if (longitude) {
+    longitude.textContent = '';
+  }
+
+  if (gpsTime) {
+    gpsTime.textContent = '';
+  }
+
+  if (gpsStatus) {
+    gpsStatus.style.display = 'none';
+  }
+}
+  
+function getCaptureGPS() {
+  const button = document.getElementById('gpsButton');
+  const status = document.getElementById('gpsStatus');
+
+  if (!navigator.geolocation) {
+    alert('この端末ではGPSを利用できません。');
+    return;
+  }
+
+  button.disabled = true;
+  button.textContent = '📍 現在地を取得中…';
+
+  navigator.geolocation.getCurrentPosition(
+    function(position) {
+
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+      const gpsTime = new Date().toISOString();
+
+      document.getElementById('captureLatitude').textContent =
+        latitude.toFixed(6);
+
+      document.getElementById('captureLongitude').textContent =
+        longitude.toFixed(6);
+
+      document.getElementById('captureGpsTime').textContent =
+        new Date(gpsTime).toLocaleString('ja-JP');
+
+      status.style.display = 'block';
+
+      button.disabled = false;
+      button.textContent = '📍 現在地を取得';
+
+    },
+    function(error) {
+
+      let message = 'GPSの取得に失敗しました。';
+
+      if (error.code === 1) {
+        message += '\n位置情報の利用を許可してください。';
+      } else if (error.code === 2) {
+        message += '\n現在地を取得できませんでした。';
+      } else if (error.code === 3) {
+        message += '\nGPS取得がタイムアウトしました。';
+      }
+
+      alert(message);
+
+      button.disabled = false;
+      button.textContent = '📍 現在地を取得';
+
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+  );
+}
+  
+  // =================================
+  // ページ切替
+  // =================================
+
+  function showPage(pageId) {
+
+    document
+      .querySelectorAll('.page')
+      .forEach(
+        function(page) {
+
+          page.classList.remove(
+            'active'
+          );
+
+        }
+      );
+
+
+    const page =
+      document.getElementById(
+        pageId
+      );
+
+
+    if (page) {
+
+      page.classList.add(
+        'active'
+      );
+
+    }
+
+
+    document
+      .querySelectorAll(
+        '.bottom-nav button'
+      )
+      .forEach(
+        function(button) {
+
+          button.classList.remove(
+            'active'
+          );
+
+        }
+      );
+
+
+    if (pageId === 'homePage') {
+
+      document.getElementById(
+        'homeTab'
+      ).classList.add(
+        'active'
+      );
+
+    }
+
+
+    window.scrollTo(0,0);
+
+  }
+
+  document
+  .getElementById('buyReceipt')
+  .addEventListener('change', function() {
+
+    const file = this.files[0];
+
+    const preview =
+      document.getElementById('buyReceiptPreview');
+
+    const image =
+      document.getElementById('buyReceiptImage');
+
+    if (!file) {
+      preview.style.display = 'none';
+      image.src = '';
+      return;
+    }
+
+    const reader =
+      new FileReader();
+
+    reader.onload = function(e) {
+
+      image.src = e.target.result;
+
+      preview.style.display = 'block';
+
+    };
+
+    reader.readAsDataURL(file);
+
+  });
+
+  // =========================
+// 捕獲写真のプレビュー
+// =========================
+  
+  document
+  .getElementById('capturePhoto')
+  .addEventListener('change', function() {
+
+    const file = this.files[0];
+
+    const preview =
+      document.getElementById('capturePhotoPreview');
+
+    const image =
+      document.getElementById('capturePhotoImage');
+
+    if (!file) {
+      preview.style.display = 'none';
+      image.src = '';
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      image.src = e.target.result;
+      preview.style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+  });
+
+  function imageToDataUrl(
+  file,
+  maxSize,
+  quality
+) {
+
+  return new Promise(function(
+    resolve,
+    reject
+  ) {
+
+    // レシートなしなら空文字
+    if (!file) {
+      resolve('');
+      return;
+    }
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      function(event) {
+
+        const image =
+          new Image();
+
+
+        image.onload =
+          function() {
+
+            let width =
+              image.width;
+
+            let height =
+              image.height;
+
+
+            if (
+              width > maxSize ||
+              height > maxSize
+            ) {
+
+              if (width > height) {
+
+                height =
+                  Math.round(
+                    height *
+                    maxSize /
+                    width
+                  );
+
+                width =
+                  maxSize;
+
+              } else {
+
+                width =
+                  Math.round(
+                    width *
+                    maxSize /
+                    height
+                  );
+
+                height =
+                  maxSize;
+
+              }
+
+            }
+
+
+            const canvas =
+              document.createElement(
+                'canvas'
+              );
+
+
+            canvas.width =
+              width;
+
+            canvas.height =
+              height;
+
+
+            const context =
+              canvas.getContext(
+                '2d'
+              );
+
+
+            context.drawImage(
+              image,
+              0,
+              0,
+              width,
+              height
+            );
+
+
+            const dataUrl =
+              canvas.toDataURL(
+                'image/jpeg',
+                quality
+              );
+
+
+            resolve(dataUrl);
+
+          };
+
+
+        image.onerror =
+          function() {
+
+            reject(
+              new Error(
+                'レシート画像を読み込めませんでした。'
+              )
+            );
+
+          };
+
+
+        image.src =
+          event.target.result;
+
+      };
+
+
+    reader.onerror =
+      function() {
+
+        reject(
+          new Error(
+            'レシート画像の読み込みに失敗しました。'
+          )
+        );
+
+      };
+
+
+    reader.readAsDataURL(file);
+
+  });
+
+}
+
+  async function saveBasicSettings() {
+
+  const button =
+    document.getElementById(
+      'basicSaveButton'
+    );
+
+    const photoInput =
+  document.getElementById(
+    'basicGunPermitPhoto'
+  );
+
+let gunPermitPhotoDataUrl = '';
+
+if (
+  photoInput &&
+  photoInput.files &&
+  photoInput.files.length > 0
+) {
+
+  gunPermitPhotoDataUrl =
+    await fileToDataUrl_(
+      photoInput.files[0]
+    );
+
+}
+  const data = {
+
+    action:
+      'saveBasicSettings',
+
+    name:
+      document.getElementById(
+        'basicName'
+      ).value.trim(),
+
+    birthDate:
+      document.getElementById(
+        'basicBirthDate'
+      ).value,
+
+    address:
+      document.getElementById(
+        'basicAddress'
+      ).value.trim(),
+
+    gunPermitNumber:
+      document.getElementById(
+        'basicGunPermitNumber'
+      ).value.trim(),
+
+    gunPermitExpiry:
+      document.getElementById(
+        'basicGunPermitExpiry'
+      ).value,
+
+    note:
+  document.getElementById(
+    'basicNote'
+  ).value.trim(),
+
+    gunPermitPhotoDataUrl:
+      gunPermitPhotoDataUrl
+
+  };
+
+
+  if (!data.name) {
+
+    alert(
+      '氏名を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '基本情報を保存しました。'
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '基本情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+
+  function fileToDataUrl_(file) {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload =
+        function() {
+          resolve(reader.result);
+        };
+
+
+      reader.onerror =
+        function() {
+          reject(
+            new Error(
+              '写真の読み込みに失敗しました。'
+            )
+          );
+        };
+
+
+      reader.readAsDataURL(file);
+
+    }
+  );
+
+}
+
+  async function saveHuntingLicense() {
+
+  const button =
+    document.getElementById(
+      'licenseSaveButton'
+    );
+
+  const frontPhotoInput =
+    document.getElementById(
+      'licenseFrontPhoto'
+    );
+
+  const backPhotoInput =
+    document.getElementById(
+      'licenseBackPhoto'
+    );
+
+
+  const data = {
+
+    action:
+      'saveHuntingLicense',
+
+    licenseType:
+      document.getElementById(
+        'licenseType'
+      ).value,
+
+    licenseNumber:
+      document.getElementById(
+        'licenseNumber'
+      ).value.trim(),
+
+    licenseExpiry:
+      document.getElementById(
+        'licenseExpiry'
+      ).value,
+
+    note:
+      document.getElementById(
+        'licenseNote'
+      ).value.trim(),
+
+    frontPhotoDataUrl: '',
+
+    backPhotoDataUrl: ''
+
+  };
+
+
+  if (!data.licenseType) {
+
+    alert(
+      '免許種類を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.licenseNumber) {
+
+    alert(
+      '免状番号を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.licenseExpiry) {
+
+    alert(
+      '有効期限を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // ===============================
+    // 表写真をDataURLへ変換
+    // ===============================
+
+    if (
+      frontPhotoInput &&
+      frontPhotoInput.files &&
+      frontPhotoInput.files[0]
+    ) {
+
+      data.frontPhotoDataUrl =
+        await fileToDataUrl_(
+          frontPhotoInput.files[0]
+        );
+
+    }
+
+
+    // ===============================
+    // 裏写真をDataURLへ変換
+    // ===============================
+
+    if (
+      backPhotoInput &&
+      backPhotoInput.files &&
+      backPhotoInput.files[0]
+    ) {
+
+      data.backPhotoDataUrl =
+        await fileToDataUrl_(
+          backPhotoInput.files[0]
+        );
+
+    }
+
+
+    // ===============================
+    // GASへ送信
+    // ===============================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '狩猟免許を保存しました。'
+    );
+
+
+    // ===============================
+    // 入力欄をクリア
+    // ===============================
+
+    document.getElementById(
+      'licenseType'
+    ).value = '';
+
+    document.getElementById(
+      'licenseNumber'
+    ).value = '';
+
+    document.getElementById(
+      'licenseExpiry'
+    ).value = '';
+
+    document.getElementById(
+      'licenseNote'
+    ).value = '';
+
+
+    if (frontPhotoInput) {
+
+      frontPhotoInput.value = '';
+
+    }
+
+
+    if (backPhotoInput) {
+
+      backPhotoInput.value = '';
+
+    }
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '狩猟免許の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+
+ async function saveGunSettings() {
+    
+  const button =
+    document.getElementById(
+      'gunSettingSaveButton'
+    );
+
+  // =================================
+  // 銃写真
+  // =================================
+
+  const photoInput =
+    document.getElementById(
+      'gunSettingPhoto'
+    );
+
+
+  // =================================
+  // 許可証写真
+  // =================================
+
+  const permitPhotoInput =
+    document.getElementById(
+      'gunSettingPermitPhoto'
+    );
+
+
+  // =================================
+  // 入力データ
+  // =================================
+
+  const gauge =
+    document.getElementById(
+      'gunSettingGauge'
+    ).value.trim();
+
+
+  const data = {
+
+    action:
+      'saveGunSettings',
+
+    rowNumber:
+      Number(
+        document.getElementById(
+          'gunSettingSelect'
+        ).value
+      ) || 0,
+
+    gunName:
+      document.getElementById(
+        'gunSettingName'
+      ).value.trim(),
+
+        active:
+      document.getElementById(
+        'gunSettingActive'
+      ).checked,
+
+
+    permitNumber:
+      document.getElementById(
+        'gunSettingPermitNumber'
+      ).value.trim(),
+
+    gunType:
+      document.getElementById(
+        'gunSettingType'
+      ).value.trim(),
+
+    typeModel:
+      document.getElementById(
+        'gunSettingTypeModel'
+      ).value.trim(),
+
+    serialNumber:
+      document.getElementById(
+        'gunSettingSerialNumber'
+      ).value.trim(),
+
+    maker:
+      document.getElementById(
+        'gunSettingMaker'
+      ).value.trim(),
+
+    model:
+      document.getElementById(
+        'gunSettingModel'
+      ).value.trim(),
+
+    totalLength:
+      document.getElementById(
+        'gunSettingTotalLength'
+      ).value.trim(),
+
+    barrelLength:
+      document.getElementById(
+        'gunSettingBarrelLength'
+      ).value.trim(),
+
+    // C列「口径・番径」
+    caliber:
+      gauge,
+
+    // L列「公称口（番）径」
+    gauge:
+      gauge,
+
+    magazineType:
+      document.getElementById(
+        'gunSettingMagazineType'
+      ).value.trim(),
+
+    ammo:
+      document.getElementById(
+        'gunSettingAmmo'
+      ).value.trim(),
+
+    riflingRatio:
+      document.getElementById(
+        'gunSettingRiflingRatio'
+      ).value.trim(),
+
+    applicationDate:
+      document.getElementById(
+        'gunSettingApplicationDate'
+      ).value,
+
+    expiry:
+      document.getElementById(
+        'gunSettingExpiry'
+      ).value,
+
+    seller:
+      document.getElementById(
+        'gunSettingSeller'
+      ).value.trim(),
+
+    // 銃本体写真
+    gunPhotoDataUrl:
+      '',
+
+    // 許可証写真
+    permitPhotoDataUrl:
+      ''
+
+  };
+
+
+  // =================================
+  // 必須チェック
+  // =================================
+
+  if (!data.gunName) {
+
+    alert(
+      '銃の名称を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.gauge) {
+
+    alert(
+      '公称口（番）径を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // =================================
+    // 銃写真
+    // =================================
+
+    if (
+      photoInput &&
+      photoInput.files &&
+      photoInput.files[0]
+    ) {
+
+      data.gunPhotoDataUrl =
+        await fileToDataUrl_(
+          photoInput.files[0]
+        );
+
+    }
+
+
+    // =================================
+    // 許可証写真
+    // =================================
+
+    if (
+      permitPhotoInput &&
+      permitPhotoInput.files &&
+      permitPhotoInput.files[0]
+    ) {
+
+      data.permitPhotoDataUrl =
+        await fileToDataUrl_(
+          permitPhotoInput.files[0]
+        );
+
+    }
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '銃砲情報を保存しました。'
+    );
+
+
+    // =================================
+    // 最新データを再取得
+    // =================================
+
+    loadData(
+      result.rowNumber
+    );
+
+
+    // =================================
+    // ファイル選択だけクリア
+    // =================================
+
+    if (photoInput) {
+
+      photoInput.value = '';
+
+    }
+
+
+    if (permitPhotoInput) {
+
+      permitPhotoInput.value = '';
+
+    }
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '銃砲情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+
+  // =================================
+// 弾種設定一覧表示
+// =================================
+
+function renderAmmoSettings() {
+
+  const select =
+    document.getElementById(
+      'ammoSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  // 現在選択中の行番号
+  const currentValue =
+    select.value;
+
+
+  // 一旦クリア
+  select.innerHTML =
+    '<option value="">新しい弾種を登録</option>';
+
+
+  if (
+    !appData.ammoSettings ||
+    !Array.isArray(
+      appData.ammoSettings
+    )
+  ) {
+    return;
+  }
+
+
+  appData.ammoSettings
+    .forEach(function(ammo) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        String(
+          ammo.rowNumber
+        );
+
+      option.textContent =
+        ammo.ammoName;
+
+      select.appendChild(
+        option
+      );
+
+    });
+
+
+  // 以前の選択状態を戻す
+  if (currentValue) {
+
+    select.value =
+      currentValue;
+
+  }
+
+}
+
+// =================================
+// 鳥獣設定一覧表示
+// =================================
+
+function renderAnimalSettings() {
+
+  const select =
+    document.getElementById(
+      'animalSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  const currentValue =
+    select.value;
+
+
+  select.innerHTML =
+    '<option value="">新しい鳥獣を登録</option>';
+
+
+  if (
+    !appData.animalSettings ||
+    !Array.isArray(
+      appData.animalSettings
+    )
+  ) {
+    return;
+  }
+
+
+  appData.animalSettings
+    .forEach(function(animal) {
+
+      const option =
+        document.createElement(
+          'option'
+        );
+
+      option.value =
+        String(
+          animal.row
+        );
+
+      option.textContent =
+        animal.name;
+
+      select.appendChild(
+        option
+      );
+
+    });
+
+
+  // 選択状態を維持
+  if (currentValue) {
+
+    select.value =
+      currentValue;
+
+  }
+
+}
+
+// =================================
+// 初期在庫設定
+// =================================
+
+function renderInitialStockSettings() {
+
+  const dateInput =
+    document.getElementById(
+      'initialStockDate'
+    );
+
+  const ammoSelect =
+    document.getElementById(
+      'initialStockAmmo'
+    );
+
+  const initialStockSelect =
+    document.getElementById(
+      'initialStockSelect'
+    );
+
+
+  if (
+    !dateInput ||
+    !ammoSelect ||
+    !initialStockSelect
+  ) {
+    return;
+  }
+
+
+  // =================================
+  // 基準日
+  // =================================
+
+  // 日付がまだ入力されていない場合だけ
+  // 今日の日付を設定する
+  if (!dateInput.value) {
+
+    const today =
+      new Date();
+
+    const year =
+      today.getFullYear();
+
+    const month =
+      String(
+        today.getMonth() + 1
+      ).padStart(2, '0');
+
+    const day =
+      String(
+        today.getDate()
+      ).padStart(2, '0');
+
+    dateInput.value =
+      year +
+      '-' +
+      month +
+      '-' +
+      day;
+  }
+
+
+  // =================================
+  // 弾種
+  // =================================
+
+  const currentAmmoValue =
+    ammoSelect.value;
+
+
+  ammoSelect.innerHTML =
+    '<option value="">弾種を選択</option>';
+
+
+  if (
+    appData.ammoTypes &&
+    Array.isArray(
+      appData.ammoTypes
+    )
+  ) {
+
+    appData.ammoTypes
+      .forEach(function(ammo) {
+
+        const option =
+          document.createElement(
+            'option'
+          );
+
+        option.value =
+          ammo;
+
+        option.textContent =
+          ammo;
+
+        ammoSelect.appendChild(
+          option
+        );
+
+      });
+
+  }
+
+
+  // 選択中の弾種があれば維持
+  if (currentAmmoValue) {
+    ammoSelect.value =
+      currentAmmoValue;
+  }
+
+
+  // =================================
+  // 登録済み初期在庫
+  // =================================
+
+  const currentInitialStock =
+    initialStockSelect.value;
+
+
+  initialStockSelect.innerHTML =
+    '<option value="">新しい初期在庫を登録</option>';
+
+
+  if (
+    appData.records &&
+    Array.isArray(
+      appData.records
+    )
+  ) {
+
+    appData.records
+      .forEach(function(record) {
+
+        if (
+          record['区分'] !==
+          '初期在庫'
+        ) {
+          return;
+        }
+
+
+        const recordId =
+          record['記録ID'] || '';
+
+        const date =
+          record['日付'] || '';
+
+        const ammo =
+          record['弾種'] || '';
+
+        const quantity =
+          Number(
+            record['数量'] || 0
+          );
+
+
+        if (!recordId) {
+          return;
+        }
+
+
+        const option =
+          document.createElement(
+            'option'
+          );
+
+        option.value =
+          recordId;
+
+        option.textContent =
+          date +
+          ' / ' +
+          ammo +
+          ' / ' +
+          quantity +
+          '発';
+
+
+        initialStockSelect
+          .appendChild(
+            option
+          );
+
+      });
+
+  }
+
+
+  // 選択中の初期在庫があれば維持
+  if (currentInitialStock) {
+    initialStockSelect.value =
+      currentInitialStock;
+  }
+
+}
+
+// =================================
+// 初期在庫を保存
+// =================================
+
+async function saveInitialStockSettings() {
+
+  const button =
+    document.getElementById(
+      'initialStockSaveButton'
+    );
+
+  // 登録済み初期在庫を選択している場合は
+  // 記録IDが入る
+  const recordId =
+    document.getElementById(
+      'initialStockSelect'
+    ).value;
+
+    const date =
+    document.getElementById(
+      'initialStockDate'
+    ).value;
+
+  const purpose =
+    document.getElementById(
+      'initialStockPurpose'
+    ).value;
+
+  const ammo =
+    document.getElementById(
+      'initialStockAmmo'
+    ).value;
+
+  const quantity =
+    Number(
+      document.getElementById(
+        'initialStockQuantity'
+      ).value
+    );
+
+  const note =
+    document.getElementById(
+      'initialStockNote'
+    ).value.trim();
+
+
+  // =================================
+  // 入力チェック
+  // =================================
+
+  if (!date) {
+
+    alert(
+      '基準日を入力してください。'
+    );
+
+    return;
+  }
+
+
+  if (!ammo) {
+
+    alert(
+      '弾種を選択してください。'
+    );
+
+    return;
+  }
+
+
+  if (
+    !Number.isFinite(quantity) ||
+    quantity <= 0
+  ) {
+
+    alert(
+      '初期在庫数は1発以上を入力してください。'
+    );
+
+    return;
+  }
+
+
+  // =================================
+  // 送信データ
+  // =================================
+
+  const data = {
+
+    action:
+      'saveInitialStock',
+
+    recordId:
+      recordId,
+
+      date:
+      date,
+
+    purpose:
+      purpose,
+
+    ammoType:
+      ammo,
+
+    quantity:
+      quantity,
+
+    note:
+      note
+
+  };
+
+
+  try {
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      '保存中…';
+
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:
+            'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(
+              data
+            )
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        'HTTPエラー: ' +
+        response.status
+      );
+
+    }
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        result.message ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      recordId
+        ? '初期在庫を更新しました。'
+        : '初期在庫を保存しました。'
+    );
+
+
+    // 最新データを再取得
+    loadData();
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+    alert(
+      '初期在庫の保存に失敗しました。\n' +
+      error.message
+    );
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+
+// =================================
+// 登録済み初期在庫をフォームに読み込む
+// =================================
+
+function loadInitialStockSettings() {
+
+  const select =
+    document.getElementById(
+      'initialStockSelect'
+    );
+
+  const recordId =
+    select.value;
+
+
+  // 「新しい初期在庫を登録」の場合
+   if (!recordId) {
+
+    document.getElementById(
+      'initialStockPurpose'
+    ).value = '';
+
+    document.getElementById(
+      'initialStockAmmo'
+    ).value = '';
+
+    document.getElementById(
+      'initialStockQuantity'
+    ).value = '';
+
+    document.getElementById(
+      'initialStockNote'
+    ).value = '';
+
+    return;
+  }
+
+
+  const record =
+    (appData.records || [])
+      .find(function(item) {
+
+        return (
+          item['記録ID'] ===
+          recordId
+        );
+
+      });
+
+
+  if (!record) {
+    return;
+  }
+
+
+  // 基準日
+  const dateValue =
+    String(
+      record['日付'] || ''
+    );
+
+  document.getElementById(
+    'initialStockDate'
+  ).value =
+    dateValue.substring(0, 10);
+
+    // 目的
+  document.getElementById(
+    'initialStockPurpose'
+  ).value =
+    record['目的'] || '';
+
+  // 弾種
+  document.getElementById(
+    'initialStockAmmo'
+  ).value =
+    record['弾種'] || '';
+
+
+  // 数量
+  document.getElementById(
+    'initialStockQuantity'
+  ).value =
+    record['数量'] || '';
+
+
+  // 備考
+  document.getElementById(
+    'initialStockNote'
+  ).value =
+    record['備考'] || '';
+
+}
+  
+// =================================
+// 鳥獣設定読み込み
+// =================================
+
+function loadAnimalSettings() {
+
+  const select =
+    document.getElementById(
+      'animalSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  const rowNumber =
+    Number(
+      select.value
+    );
+
+
+  // 新しい鳥獣を登録
+  if (!rowNumber) {
+
+    clearAnimalSettingsForm();
+
+    return;
+
+  }
+
+
+  const animal =
+    appData.animalSettings.find(
+      function(item) {
+
+        return Number(
+          item.row
+        ) === rowNumber;
+
+      }
+    );
+
+
+  if (!animal) {
+
+    alert(
+      '鳥獣情報が見つかりません。'
+    );
+
+    return;
+
+  }
+
+
+  // 鳥獣名
+  document.getElementById(
+    'animalSettingName'
+  ).value =
+    animal.name || '';
+
+
+  // 単位
+  document.getElementById(
+    'animalSettingUnit'
+  ).value =
+    animal.unit || '頭';
+
+
+  // 使用中
+  document.getElementById(
+    'animalSettingActive'
+  ).checked =
+    animal.active !== false;
+
+}
+
+// =================================
+// 鳥獣設定保存
+// =================================
+
+async function saveAnimalSettings() {
+
+  const button =
+    document.getElementById(
+      'animalSettingSaveButton'
+    );
+
+
+  const data = {
+
+    action:
+      'saveAnimalSettings',
+
+    rowNumber:
+      Number(
+        document.getElementById(
+          'animalSettingSelect'
+        ).value
+      ) || 0,
+
+    animalName:
+      document.getElementById(
+        'animalSettingName'
+      ).value.trim(),
+
+    unit:
+      document.getElementById(
+        'animalSettingUnit'
+      ).value,
+
+    active:
+      document.getElementById(
+        'animalSettingActive'
+      ).checked
+
+  };
+
+
+  // =================================
+  // 必須チェック
+  // =================================
+
+  if (!data.animalName) {
+
+    alert(
+      '鳥獣名を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  if (!data.unit) {
+
+    alert(
+      '単位を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '鳥獣情報を保存しました。'
+    );
+
+
+    // 最新データを再取得
+    loadData(
+      0,
+      0,
+      result.rowNumber
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+
+    alert(
+      '鳥獣情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+
+// =================================
+// 鳥獣設定フォームクリア
+// =================================
+
+function clearAnimalSettingsForm() {
+
+  document.getElementById(
+    'animalSettingName'
+  ).value = '';
+
+
+  document.getElementById(
+    'animalSettingUnit'
+  ).value =
+    '頭';
+
+
+  document.getElementById(
+    'animalSettingActive'
+  ).checked =
+    true;
+
+}
+
+  
+  
+
+  // =================================
+// 弾種設定読み込み
+// =================================
+
+function loadAmmoSettings() {
+
+  const select =
+    document.getElementById(
+      'ammoSettingSelect'
+    );
+
+  if (!select) {
+    return;
+  }
+
+
+  const rowNumber =
+    Number(
+      select.value
+    );
+
+
+  // 「新しい弾種を登録」の場合
+  if (!rowNumber) {
+
+    clearAmmoSettingsForm();
+
+    return;
+
+  }
+
+
+  const ammo =
+    appData.ammoSettings.find(
+      function(item) {
+
+        return Number(
+          item.rowNumber
+        ) === rowNumber;
+
+      }
+    );
+
+
+  if (!ammo) {
+
+    alert(
+      '弾種情報が見つかりません。'
+    );
+
+    return;
+
+  }
+
+
+  document.getElementById(
+    'ammoSettingName'
+  ).value =
+    ammo.ammoName || '';
+
+
+  document.getElementById(
+    'ammoSettingMaker'
+  ).value =
+    ammo.maker || '';
+
+
+  document.getElementById(
+    'ammoSettingProductName'
+  ).value =
+    ammo.productName || '';
+
+
+  document.getElementById(
+    'ammoSettingCaliber'
+  ).value =
+    ammo.caliber || '';
+
+
+  document.getElementById(
+    'ammoSettingWeight'
+  ).value =
+    ammo.weight || '';
+
+
+  document.getElementById(
+    'ammoSettingShotSize'
+  ).value =
+    ammo.shotSize || '';
+
+
+  document.getElementById(
+    'ammoSettingMaterial'
+  ).value =
+    ammo.material || '';
+
+
+  document.getElementById(
+    'ammoSettingBoxQuantity'
+  ).value =
+    ammo.boxQuantity || '';
+
+
+  document.getElementById(
+    'ammoSettingPurpose'
+  ).value =
+    ammo.purpose || '';
+
+
+  document.getElementById(
+    'ammoSettingActive'
+  ).checked =
+    ammo.active !== false;
+
+}
+
+// =================================
+// 弾種設定保存
+// =================================
+
+async function saveAmmoSettings() {
+
+  const button =
+    document.getElementById(
+      'ammoSettingSaveButton'
+    );
+
+
+  const data = {
+
+    action:
+      'saveAmmoSettings',
+
+    rowNumber:
+      Number(
+        document.getElementById(
+          'ammoSettingSelect'
+        ).value
+      ) || 0,
+
+    ammoName:
+      document.getElementById(
+        'ammoSettingName'
+      ).value.trim(),
+
+    active:
+      document.getElementById(
+        'ammoSettingActive'
+      ).checked,
+
+    maker:
+      document.getElementById(
+        'ammoSettingMaker'
+      ).value.trim(),
+
+    productName:
+      document.getElementById(
+        'ammoSettingProductName'
+      ).value.trim(),
+
+    caliber:
+      document.getElementById(
+        'ammoSettingCaliber'
+      ).value.trim(),
+
+    weight:
+      document.getElementById(
+        'ammoSettingWeight'
+      ).value.trim(),
+
+    shotSize:
+      document.getElementById(
+        'ammoSettingShotSize'
+      ).value.trim(),
+
+    material:
+      document.getElementById(
+        'ammoSettingMaterial'
+      ).value.trim(),
+
+    boxQuantity:
+      document.getElementById(
+        'ammoSettingBoxQuantity'
+      ).value,
+
+    purpose:
+      document.getElementById(
+        'ammoSettingPurpose'
+      ).value.trim()
+
+  };
+
+
+  // =================================
+  // 必須チェック
+  // =================================
+
+  if (!data.ammoName) {
+
+    alert(
+      '弾種を入力してください。'
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '保存中…';
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify(data)
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '保存に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      '弾種情報を保存しました。'
+    );
+
+
+    // 最新データを再取得
+    // 保存した弾種を再選択する
+    loadData(
+      0,
+    result.rowNumber
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '弾種情報の保存に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '保存';
+
+  }
+
+}
+  
+  // =================================
+// 弾種設定フォームクリア
+// =================================
+
+function clearAmmoSettingsForm() {
+
+  document.getElementById(
+    'ammoSettingName'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingMaker'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingProductName'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingCaliber'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingWeight'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingShotSize'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingMaterial'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingBoxQuantity'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingPurpose'
+  ).value = '';
+
+  document.getElementById(
+    'ammoSettingActive'
+  ).checked = true;
+
+}
+
+  function updateGunRenewalInfo() {
+
+  const expiryInput =
+    document.getElementById(
+      'gunSettingExpiry'
+    );
+
+  const info =
+    document.getElementById(
+      'gunRenewalInfo'
+    );
+
+  const period =
+    document.getElementById(
+      'gunRenewalPeriod'
+    );
+
+  const message =
+    document.getElementById(
+      'gunRenewalMessage'
+    );
+
+
+  if (
+    !expiryInput ||
+    !info ||
+    !period ||
+    !message
+  ) {
+    return;
+  }
+
+
+  // 許可期限が未入力
+  if (!expiryInput.value) {
+
+    info.style.display = 'none';
+
+    return;
+  }
+
+
+  // =================================
+  // 許可期限
+  // =================================
+
+  const expiry =
+    new Date(
+      expiryInput.value +
+      'T00:00:00'
+    );
+
+
+  // =================================
+  // 更新申請開始日
+  // 許可期限の2か月前
+  // =================================
+
+  const renewalStart =
+    new Date(expiry);
+
+  renewalStart.setMonth(
+    renewalStart.getMonth() - 2
+  );
+
+
+  // =================================
+  // 更新申請終了日
+  // 許可期限の1か月前
+  // =================================
+
+  const renewalEnd =
+    new Date(expiry);
+
+  renewalEnd.setMonth(
+    renewalEnd.getMonth() - 1
+  );
+
+
+  // =================================
+  // 黄色警告開始日
+  // 更新申請開始日の1か月前
+  // =================================
+
+  const warningStart =
+    new Date(renewalStart);
+
+  warningStart.setMonth(
+    warningStart.getMonth() - 1
+  );
+
+
+  // 今日
+  const today =
+    new Date();
+
+  today.setHours(
+    0, 0, 0, 0
+  );
+
+
+  // =================================
+  // 日付表示
+  // =================================
+
+  function formatDate(date) {
+
+    return (
+      date.getFullYear() +
+      '/' +
+      String(
+        date.getMonth() + 1
+      ).padStart(2, '0') +
+      '/' +
+      String(
+        date.getDate()
+      ).padStart(2, '0')
+    );
+
+  }
+
+
+  period.textContent =
+    formatDate(renewalStart) +
+    ' ～ ' +
+    formatDate(renewalEnd);
+
+
+  info.style.display =
+    'block';
+
+
+  // =================================
+  // 状態判定
+  // =================================
+
+  if (today > expiry) {
+
+    // 許可期限超過
+
+    info.style.background =
+      '#ffcccc';
+
+    info.style.border =
+      '2px solid #b00020';
+
+    info.style.color =
+      '#b00020';
+
+    message.textContent =
+      '⚠ 許可期限を過ぎています。';
+
+
+  } else if (
+    today >= renewalStart &&
+    today <= renewalEnd
+  ) {
+
+    // 更新申請期間中
+
+    info.style.background =
+      '#ffd6d6';
+
+    info.style.border =
+      '2px solid #d00000';
+
+    info.style.color =
+      '#b00000';
+
+    message.textContent =
+      '🔴 更新申請期間中です。';
+
+
+  } else if (
+    today >= warningStart &&
+    today < renewalStart
+  ) {
+
+    // 更新申請期間が近い
+
+    info.style.background =
+      '#fff3cd';
+
+    info.style.border =
+      '2px solid #d6a700';
+
+    info.style.color =
+      '#765800';
+
+    message.textContent =
+      '🟡 更新申請期間が近づいています。';
+
+
+  } else {
+
+    // 通常
+
+    info.style.background =
+      '#f5f5f5';
+
+    info.style.border =
+      '1px solid #cccccc';
+
+    info.style.color =
+      '#333333';
+
+    message.textContent =
+      '';
+
+  }
+
+}
+
+  function renderGunRenewalAlerts() {
+
+  const alertBox =
+    document.getElementById(
+      'gunRenewalAlert'
+    );
+
+  const alertTitle =
+    document.getElementById(
+      'gunRenewalAlertTitle'
+    );
+
+  const alertDetails =
+    document.getElementById(
+      'gunRenewalAlertDetails'
+    );
+
+
+  if (
+    !alertBox ||
+    !alertTitle ||
+    !alertDetails
+  ) {
+    return;
+  }
+
+
+  // いったん非表示
+  alertBox.style.display = 'none';
+  alertDetails.innerHTML = '';
+
+
+  if (
+    !appData ||
+    !Array.isArray(appData.gunSettings)
+  ) {
+    return;
+  }
+
+
+  // =================================
+  // 今日
+  // =================================
+
+  const today = new Date();
+
+  today.setHours(
+    0, 0, 0, 0
+  );
+
+
+  const alerts = [];
+
+
+  // =================================
+  // 登録銃をすべて確認
+  // =================================
+
+  appData.gunSettings.forEach(
+    function(gun) {
+
+      if (!gun.expiry) {
+        return;
+      }
+
+
+      const expiry =
+        new Date(
+          gun.expiry +
+          'T00:00:00'
+        );
+
+
+      // 更新申請開始
+      // 許可期限の2か月前
+      const renewalStart =
+        new Date(expiry);
+
+      renewalStart.setMonth(
+        renewalStart.getMonth() - 2
+      );
+
+
+      // 更新申請終了
+      // 許可期限の1か月前
+      const renewalEnd =
+        new Date(expiry);
+
+      renewalEnd.setMonth(
+        renewalEnd.getMonth() - 1
+      );
+
+
+      // 黄色警告開始
+      // 更新申請開始の1か月前
+      const warningStart =
+        new Date(renewalStart);
+
+      warningStart.setMonth(
+        warningStart.getMonth() - 1
+      );
+
+
+      let level = 0;
+      let status = '';
+
+
+      // =================================
+      // 状態判定
+      // =================================
+
+      if (today > expiry) {
+
+        level = 3;
+        status =
+          '許可期限を過ぎています';
+
+      } else if (
+        today >= renewalStart &&
+        today <= renewalEnd
+      ) {
+
+        level = 2;
+        status =
+          '更新申請期間中です';
+
+      } else if (
+        today >= warningStart &&
+        today < renewalStart
+      ) {
+
+        level = 1;
+        status =
+          '更新申請期間が近づいています';
+
+      }
+
+
+      // 警告対象外
+      if (!level) {
+        return;
+      }
+
+
+      // =================================
+      // 残り日数
+      // =================================
+
+      let daysRemaining = null;
+
+      if (level === 2) {
+
+        daysRemaining =
+          Math.ceil(
+            (
+              renewalEnd.getTime() -
+              today.getTime()
+            ) /
+            86400000
+          );
+
+      }
+
+
+      alerts.push({
+
+        gunName:
+          gun.gunName || '名称未設定',
+
+        expiry:
+          expiry,
+
+        renewalStart:
+          renewalStart,
+
+        renewalEnd:
+          renewalEnd,
+
+        level:
+          level,
+
+        status:
+          status,
+
+        daysRemaining:
+          daysRemaining
+
+      });
+
+    }
+  );
+
+
+  // 警告なし
+  if (alerts.length === 0) {
+
+    alertBox.style.display =
+      'none';
+
+    return;
+
+  }
+
+
+  // =================================
+  // 危険度の高い順に並べる
+  // =================================
+
+  alerts.sort(
+    function(a, b) {
+
+      return b.level - a.level;
+
+    }
+  );
+
+
+  const highestLevel =
+    alerts[0].level;
+
+
+  // =================================
+  // 色設定
+  // =================================
+
+  if (highestLevel >= 2) {
+
+    alertBox.style.background =
+      '#ffd6d6';
+
+    alertBox.style.border =
+      '2px solid #d00000';
+
+    alertBox.style.color =
+      '#b00000';
+
+  } else {
+
+    alertBox.style.background =
+      '#fff3cd';
+
+    alertBox.style.border =
+      '2px solid #d6a700';
+
+    alertBox.style.color =
+      '#765800';
+
+  }
+
+
+  // =================================
+  // タイトル
+  // =================================
+
+  if (highestLevel === 3) {
+
+    alertTitle.textContent =
+      '🔴 銃所持許可の期限を確認してください';
+
+  } else if (highestLevel === 2) {
+
+    alertTitle.textContent =
+      '🔴 銃所持許可の更新申請期間中です';
+
+  } else {
+
+    alertTitle.textContent =
+      '🟡 銃所持許可の更新時期が近づいています';
+
+  }
+
+
+  // =================================
+  // 日付表示
+  // =================================
+
+  function formatDate(date) {
+
+    return (
+      date.getFullYear() +
+      '/' +
+      String(
+        date.getMonth() + 1
+      ).padStart(2, '0') +
+      '/' +
+      String(
+        date.getDate()
+      ).padStart(2, '0')
+    );
+
+  }
+
+
+  // =================================
+  // 詳細表示
+  // =================================
+
+  alertDetails.innerHTML =
+    alerts.map(
+      function(item) {
+
+        let html =
+          '<div style="' +
+          'margin-top:10px;' +
+          'padding-top:10px;' +
+          'border-top:1px solid currentColor;' +
+          '">' +
+
+          '<div>' +
+          '🔫 ' +
+          item.gunName +
+          '</div>' +
+
+          '<div>' +
+          '許可期限：' +
+          formatDate(item.expiry) +
+          '</div>' +
+
+          '<div>' +
+          '更新申請期間：' +
+          formatDate(item.renewalStart) +
+          ' ～ ' +
+          formatDate(item.renewalEnd) +
+          '</div>' +
+
+          '<div>' +
+          item.status +
+          '</div>';
+
+
+        if (
+          item.level === 2 &&
+          item.daysRemaining !== null
+        ) {
+
+          html +=
+            '<div>' +
+            '申請期間終了まで：あと' +
+            item.daysRemaining +
+            '日' +
+            '</div>';
+
+        }
+
+
+        html +=
+          '</div>';
+
+        return html;
+
+      }
+    ).join('');
+
+
+  alertBox.style.display =
+    'block';
+
+}
+
+  async function generateAnnualLedger() {
+
+  const select =
+    document.getElementById(
+      'summaryFiscalYear'
+    );
+
+  const button =
+    document.getElementById(
+      'generateLedgerButton'
+    );
+
+
+  // =================================
+  // 年度確認
+  // =================================
+
+  const fiscalYear =
+    Number(
+      select ? select.value : 0
+    );
+
+
+  if (!fiscalYear) {
+
+    alert(
+      '年度を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  // =================================
+  // 実行確認
+  // =================================
+
+  const confirmed =
+    confirm(
+      fiscalYear +
+      '年度の実包等管理帳簿を作成します。\n\n' +
+      'よろしいですか？'
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      '📋 帳簿を作成中…';
+
+
+    // =================================
+    // GASへ送信
+    // =================================
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+
+              action:
+                'generateAmmoLedger',
+
+              fiscalYear:
+                fiscalYear
+
+            })
+
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        '年度帳簿の作成に失敗しました。'
+      );
+
+    }
+
+
+    // =================================
+    // 完了
+    // =================================
+
+    alert(
+      fiscalYear +
+      '年度の実包等管理帳簿を作成しました。\n\n' +
+      '作成ページ数：' +
+      (result.pages || 0) +
+      '\n' +
+      '全弾種残数：' +
+      (result.totalBalance || 0) +
+      '発'
+    );
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      '年度帳簿の作成に失敗しました。\n' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.textContent =
+      '📋 年度帳簿を作成';
+
+  }
+
+}
+
+  async function generateAnnualLedgerPdf() {
+
+  const fiscalYear =
+    document.getElementById(
+      'summaryFiscalYear'
+    ).value;
+
+
+  if (!fiscalYear) {
+
+    alert(
+      '年度を選択してください。'
+    );
+
+    return;
+
+  }
+
+
+  const ok =
+    confirm(
+      fiscalYear +
+      '年度の実包等管理帳簿PDFを作成しますか？'
+    );
+
+
+  if (!ok) {
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      'generateLedgerPdfButton'
+    );
+
+
+  const resultArea =
+    document.getElementById(
+      'ledgerPdfResult'
+    );
+
+
+  button.disabled = true;
+
+  button.textContent =
+    '📄 PDFを作成中…';
+
+
+  resultArea.style.display =
+    'none';
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+              action:
+                'generateAmmoLedgerPdf',
+
+              fiscalYear:
+                Number(
+                  fiscalYear
+                )
+            })
+        }
+      );
+
+
+    const result =
+      await response.json();
+
+
+    if (!result.success) {
+
+      throw new Error(
+        result.error ||
+        'PDFの作成に失敗しました。'
+      );
+
+    }
+
+
+    // ===============================
+    // 作成結果表示
+    // ===============================
+
+    document.getElementById(
+      'ledgerPdfInfo'
+    ).innerHTML =
+      '<strong>' +
+      result.fiscalYear +
+      '年度 実包等管理帳簿</strong><br>' +
+      '作成ページ数：' +
+      result.pages +
+      '<br>' +
+      '全弾種残数：' +
+      result.totalBalance +
+      '発';
+
+
+    // ===============================
+    // PDFを開く
+    // ===============================
+
+    const openButton =
+      document.getElementById(
+        'openLedgerPdfButton'
+      );
+
+
+    openButton.onclick =
+      function() {
+
+        window.open(
+          result.fileUrl,
+          '_blank'
+        );
+
+      };
+
+
+    // 後で共有処理でも使用
+    window.latestLedgerPdf =
+      result;
+
+
+    resultArea.style.display =
+      'block';
+
+
+    alert(
+      result.fiscalYear +
+      '年度のPDFを作成しました。'
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      'PDF作成エラー：' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '📄 年度帳簿PDFを作成';
+
+  }
+
+}
+
+  async function sendAnnualLedgerPdfEmail() {
+
+  const result =
+    window.latestLedgerPdf;
+
+
+  if (
+    !result ||
+    !result.fileId
+  ) {
+
+    alert(
+      '先に年度帳簿PDFを作成してください。'
+    );
+
+    return;
+
+  }
+
+
+  const emailInput =
+    document.getElementById(
+      'ledgerPdfEmail'
+    );
+
+
+  const email =
+    emailInput.value.trim();
+
+
+  if (!email) {
+
+    alert(
+      '送信先メールアドレスを入力してください。'
+    );
+
+    emailInput.focus();
+
+    return;
+
+  }
+
+
+  // 簡単なメールアドレス形式チェック
+  if (
+    !emailInput.checkValidity()
+  ) {
+
+    alert(
+      '正しいメールアドレスを入力してください。'
+    );
+
+    emailInput.focus();
+
+    return;
+
+  }
+
+
+  const ok =
+    confirm(
+      email +
+      '\n\nへPDFをメール送信しますか？'
+    );
+
+
+  if (!ok) {
+    return;
+  }
+
+
+  const button =
+    document.getElementById(
+      'sendLedgerPdfEmailButton'
+    );
+
+
+  button.disabled =
+    true;
+
+  button.textContent =
+    '✉️ 送信中…';
+
+
+  try {
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:
+            'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json'
+          },
+
+          body:
+            JSON.stringify({
+
+              action:
+                'sendAmmoLedgerPdfEmail',
+
+              fiscalYear:
+                Number(
+                  result.fiscalYear
+                ),
+
+              fileId:
+                result.fileId,
+
+              email:
+                email
+
+            })
+
+        }
+      );
+
+
+    const sendResult =
+      await response.json();
+
+
+    if (!sendResult.success) {
+
+      throw new Error(
+        sendResult.error ||
+        'メール送信に失敗しました。'
+      );
+
+    }
+
+
+    alert(
+      'PDFをメール送信しました。\n\n' +
+      '送信先：' +
+      email +
+      '\n' +
+      '添付：' +
+      sendResult.fileName
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      'メール送信エラー：' +
+      error.message
+    );
+
+
+  } finally {
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      '✉️ PDFをメール送信';
+
+  }
+
+}
+
+  async function shareAnnualLedgerPdf() {
+
+  const result =
+    window.latestLedgerPdf;
+
+
+  if (
+    !result ||
+    !result.fileUrl
+  ) {
+
+    alert(
+      '先に年度帳簿PDFを作成してください。'
+    );
+
+    return;
+
+  }
+
+
+  const shareData = {
+
+    title:
+      result.fiscalYear +
+      '年度 実包等管理帳簿',
+
+    text:
+      result.fiscalYear +
+      '年度の実包等管理帳簿PDFです。',
+
+    url:
+      result.fileUrl
+
+  };
+
+
+  // スマホなどで共有機能が使える場合
+  if (navigator.share) {
+
+    try {
+
+      await navigator.share(
+        shareData
+      );
+
+      return;
+
+    } catch (error) {
+
+      // ユーザーが共有画面を閉じた場合
+      if (
+        error.name ===
+        'AbortError'
+      ) {
+
+        return;
+
+      }
+
+      console.error(
+        '共有エラー：',
+        error
+      );
+
+    }
+
+  }
+
+
+  // 共有機能が使えない場合はPDFを開く
+  window.open(
+    result.fileUrl,
+    '_blank'
+  );
+
+}
+ 
+</script>
+
+  <script>
+  if ('serviceWorker' in navigator) {
+
+    window.addEventListener(
+      'load',
+      function() {
+
+        navigator.serviceWorker
+          .register('./sw.js')
+          .then(function(registration) {
+
+            console.log(
+              'Service Worker登録成功:',
+              registration.scope
+            );
+
+          })
+          .catch(function(error) {
+
+            console.error(
+              'Service Worker登録失敗:',
+              error
+            );
+
+          });
+
+      }
+    );
+
+  }
+
+    
+</script>
+
+</body>
+
+</html>
